@@ -1,0 +1,19 @@
+# Dépendances — ne jamais commiter (trop lourd, régénéré par npm install)
+node_modules/
+
+# Build local — GitHub Actions génère le sien sur Linux
+dist/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+*.local
+
+# Logs
+npm-debug.log*
+*.log
+
+# Environnement (si on ajoute des variables secrètes plus tard)
+.env
+.env.local
+.env.production

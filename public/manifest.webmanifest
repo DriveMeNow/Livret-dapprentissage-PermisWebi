@@ -1,0 +1,24 @@
+{
+  "name": "Livret Permis Webi",
+  "short_name": "Livret PW",
+  "description": "Livret d'apprentissage numérique pour candidats libres au permis de conduire",
+  "theme_color": "#FFBE00",
+  "background_color": "#07111f",
+  "display": "standalone",
+  "start_url": "/Livret-dapprentissage-PermisWebi/",
+  "scope": "/Livret-dapprentissage-PermisWebi/",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantcl%C3%A9.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantcl%C3%A9.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

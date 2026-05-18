@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: linear-gradient(160deg, #0d1b3e, #07111f, #0a1e2f);
+    background-attachment: fixed;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* Scrollbar personnalisée */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 190, 0, 0.3);
+    border-radius: 2px;
+  }
+
+  /* Safe area pour les iPhones avec notch */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
