@@ -6,7 +6,7 @@ import App from './App.jsx'
 // Enregistrement du Service Worker pour le mode PWA hors-ligne
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/Livret-dapprentissage-PermisWebi/sw.js').catch(() => {})
+    navigator.serviceWorker.register('/sw.js').catch(() => {})
   })
 }
 

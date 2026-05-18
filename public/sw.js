@@ -1,12 +1,12 @@
 // Service Worker — Livret Permis Webi
 // Cache-first pour les assets statiques, network-first pour le reste
 
-const CACHE_NAME = 'livret-pw-v1'
+const CACHE_NAME = 'livret-pw-v2'
 
 const STATIC_ASSETS = [
-  '/Livret-dapprentissage-PermisWebi/',
-  '/Livret-dapprentissage-PermisWebi/index.html',
-  '/Livret-dapprentissage-PermisWebi/manifest.webmanifest',
+  '/',
+  '/index.html',
+  '/manifest.webmanifest',
 ]
 
 // Installation : mise en cache initiale

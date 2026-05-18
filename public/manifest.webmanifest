@@ -5,8 +5,8 @@
   "theme_color": "#FFBE00",
   "background_color": "#07111f",
   "display": "standalone",
-  "start_url": "/Livret-dapprentissage-PermisWebi/",
-  "scope": "/Livret-dapprentissage-PermisWebi/",
+  "start_url": "/",
+  "scope": "/",
   "orientation": "portrait",
   "icons": [
     {
