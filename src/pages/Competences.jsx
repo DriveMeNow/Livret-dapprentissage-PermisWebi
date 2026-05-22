@@ -1,211 +1,189 @@
-// Onglet 3 — Grille de compétences REMC
-// TON : officiel et pédagogique — données REMC verbatim
-
+// Onglet 2 — Mon livret / Compétences REMC (version Permis Webi)
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { GROUPES_REMC, COULEURS_GROUPE, ETATS } from '../data/remc'
+import { COMPETENCES_PW, COULEURS, ETATS_PW, progressGroupe } from '../data/competences-pw'
 
-export default function Competences() {
+export default function Competences({ groupeInitial }) {
   const [etats, setEtats] = useLocalStorage('pw_competences', {})
-  const [groupeOuvert, setGroupeOuvert] = useState('G1')
+  const [groupeActif, setGroupeActif] = useState(groupeInitial || 'C1')
+  const [scOuverte, setScOuverte] = useState(null)
+  const [confirmLevel3, setConfirmLevel3] = useState(null) // { id, currentState }
 
-  const toggleEtat = (id) => {
-    setEtats(prev => {
-      const actuel = prev[id] || null
-      const cycle = [null, 'aborde', 'maitrise', 'confirme']
-      const idx = cycle.indexOf(actuel)
-      const suivant = cycle[(idx + 1) % cycle.length]
-      return { ...prev, [id]: suivant }
-    })
+  const groupe = COMPETENCES_PW.find(g => g.id === groupeActif)
+  const c = COULEURS[groupe.couleur]
+
+  const handleChangeEtat = (id, etatActuel) => {
+    const next = (etatActuel + 1) % 4
+    // Garde-fou anti-optimisme pour le niveau 3 (Maîtrisé)
+    if (next === 3) {
+      setConfirmLevel3({ id, etatActuel })
+      return
+    }
+    setEtats(prev => ({ ...prev, [id]: next }))
   }
 
-  const resetGroupe = (groupeId) => {
-    const groupe = GROUPES_REMC.find(g => g.id === groupeId)
-    if (!groupe) return
+  const confirmerLevel3 = () => {
+    if (!confirmLevel3) return
+    setEtats(prev => ({ ...prev, [confirmLevel3.id]: 3 }))
+    setConfirmLevel3(null)
+  }
+
+  const resetGroupe = () => {
     setEtats(prev => {
       const next = { ...prev }
-      groupe.objectifs.forEach(o => { next[o.id] = null })
+      groupe.sousCompetences.forEach(sc => { next[sc.id] = 0 })
       return next
     })
   }
 
-  // Score global
-  const totalObjectifs = GROUPES_REMC.reduce((sum, g) => sum + g.objectifs.length, 0)
-  const confirmes = Object.values(etats).filter(v => v === 'confirme').length
-  const abordes  = Object.values(etats).filter(v => v === 'aborde').length
-  const maitrise = Object.values(etats).filter(v => v === 'maitrise').length
-  const pct = Math.round((confirmes / totalObjectifs) * 100)
+  const pct = progressGroupe(groupeActif, etats)
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-thin px-4 py-5 pb-6">
+    <div className="h-full overflow-y-auto scrollbar-thin pb-6">
 
-      {/* En-tête */}
-      <div className="text-center mb-4">
-        <h1 className="text-xl font-extrabold text-white">Mes compétences</h1>
-        <p className="text-xs text-white/50 mt-1">29 objectifs REMC — appuie pour changer l'état</p>
+      {/* Sélecteur de groupe — onglets horizontaux */}
+      <div className="flex gap-2 px-4 pt-4 pb-3 overflow-x-auto scrollbar-none">
+        {COMPETENCES_PW.map(g => {
+          const col = COULEURS[g.couleur]
+          const isActive = g.id === groupeActif
+          const pctG = progressGroupe(g.id, etats)
+          return (
+            <button key={g.id}
+                    onClick={() => { setGroupeActif(g.id); setScOuverte(null) }}
+                    className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl shrink-0 transition-all"
+                    style={{
+                      background: isActive ? col.bg : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${isActive ? col.border : 'rgba(255,255,255,0.08)'}`,
+                      minWidth: '70px',
+                    }}>
+              <span className="text-base">{g.emoji}</span>
+              <span className="text-[10px] font-bold text-white/70">{g.id}</span>
+              <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                <div className="h-full rounded-full" style={{ width: `${pctG}%`, background: col.bar }} />
+              </div>
+            </button>
+          )
+        })}
       </div>
 
-      {/* Barre de progression globale */}
-      <div className="rounded-2xl p-4 mb-4"
-           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-white/70">Progression globale</span>
-          <span className="text-sm font-extrabold" style={{ color: '#FFBE00' }}>{pct}%</span>
+      {/* En-tête du groupe actif */}
+      <div className="mx-4 rounded-2xl p-4 mb-3"
+           style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">{groupe.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-extrabold text-white">{groupe.titre}</p>
+              <span className="text-sm font-extrabold shrink-0" style={{ color: c.text }}>{pct}%</span>
+            </div>
+            <p className="text-[10px] text-white/50 mt-0.5">{groupe.sousTitre} · {groupe.poids}% du score total</p>
+            <div className="w-full h-1.5 rounded-full mt-2 overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: c.bar }} />
+            </div>
+          </div>
         </div>
-        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-          <div className="h-full rounded-full transition-all duration-500"
-               style={{ width: `${pct}%`, background: '#FFBE00' }} />
-        </div>
-        {/* Légende */}
-        <div className="flex gap-3 mt-3 flex-wrap">
-          <StatBadge couleur="orange" label="Abordé" count={abordes} symbol="/" />
-          <StatBadge couleur="blue"   label="Maîtrisé" count={maitrise} symbol="X" />
-          <StatBadge couleur="green"  label="Confirmé" count={confirmes} symbol="■" />
-          <span className="text-xs text-white/40 ml-auto">{confirmes}/{totalObjectifs}</span>
-        </div>
+        <p className="text-xs text-white/60 leading-relaxed mt-3 italic">{groupe.description}</p>
       </div>
 
-      {/* Légende des états */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
-        {[
-          { etat: 'aborde',   label: 'Abordé' },
-          { etat: 'maitrise', label: 'Maîtrisé' },
-          { etat: 'confirme', label: 'Confirmé' },
-        ].map(({ etat, label }) => (
-          <div key={etat} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full shrink-0"
-               style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <SymboleEtat etat={etat} size="sm" />
-            <span className="text-[10px] text-white/60">{label}</span>
+      {/* Légende */}
+      <div className="flex gap-2 px-4 mb-3 overflow-x-auto scrollbar-none">
+        {Object.entries(ETATS_PW).map(([niveau, e]) => (
+          <div key={niveau} className="flex items-center gap-1.5 shrink-0">
+            <CarreEtat etat={parseInt(niveau)} size="sm" />
+            <span className="text-[10px] text-white/50">{e.label}</span>
           </div>
         ))}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full shrink-0"
-             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <span className="text-[10px] w-4 h-4 rounded flex items-center justify-center"
-                style={{ background: 'rgba(255,255,255,0.1)' }}></span>
-          <span className="text-[10px] text-white/60">Non commencé</span>
-        </div>
       </div>
 
-      {/* Groupes REMC */}
-      {GROUPES_REMC.map(groupe => {
-        const c = COULEURS_GROUPE[groupe.couleur]
-        const isOpen = groupeOuvert === groupe.id
-        const objectifsGroupe = groupe.objectifs
-        const confirmes_g = objectifsGroupe.filter(o => etats[o.id] === 'confirme').length
-        const pct_g = Math.round((confirmes_g / objectifsGroupe.length) * 100)
-
-        return (
-          <div key={groupe.id} className="rounded-2xl mb-3 overflow-hidden"
-               style={{ border: `1px solid rgba(255,255,255,0.09)`, background: 'rgba(255,255,255,0.03)' }}>
-
-            {/* Header groupe */}
-            <button
-              className="w-full px-4 py-3 flex items-center gap-3 text-left"
-              onClick={() => setGroupeOuvert(isOpen ? null : groupe.id)}>
-              {/* Numéro */}
-              <div className={`w-8 h-8 min-w-[32px] rounded-full flex items-center justify-center text-xs font-extrabold ${c.text}`}
-                   style={{ background: 'rgba(255,255,255,0.08)' }}>
-                {groupe.id.replace('G', '')}
-              </div>
-
-              {/* Titre + barre mini */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-bold text-white leading-tight line-clamp-2 flex-1">{groupe.titre}</p>
-                  <span className={`text-xs font-extrabold shrink-0 ${c.text}`}>{pct_g}%</span>
-                </div>
-                <div className="w-full h-1 rounded-full mt-1.5 overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                  <div className={`h-full rounded-full transition-all duration-300 ${c.dot}`}
-                       style={{ width: `${pct_g}%` }} />
-                </div>
-              </div>
-
-              {/* Chevron */}
-              <span className={`text-white/40 text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
-            </button>
-
-            {/* Corps groupe */}
-            {isOpen && (
-              <div className="px-3 pb-3">
-                <div className="space-y-1.5">
-                  {objectifsGroupe.map(obj => {
-                    const etatActuel = etats[obj.id] || null
-                    return (
-                      <button
-                        key={obj.id}
-                        onClick={() => toggleEtat(obj.id)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all active:scale-[0.98]"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                        {/* Symbole état */}
-                        <SymboleEtat etat={etatActuel} size="md" />
-                        {/* Libellé */}
-                        <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold text-white/40 mr-1">{obj.id}</span>
-                          <span className="text-xs text-white/80 leading-snug">{obj.label}</span>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-
-                {/* Reset groupe */}
-                <button
-                  onClick={() => resetGroupe(groupe.id)}
-                  className="mt-3 w-full py-1.5 rounded-full text-xs text-white/30 transition-all hover:text-white/50"
-                  style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
-                  Remettre à zéro ce groupe
+      {/* Liste des sous-compétences */}
+      <div className="px-4 space-y-2">
+        {groupe.sousCompetences.map(sc => {
+          const etatActuel = etats[sc.id] || 0
+          const isOpen = scOuverte === sc.id
+          return (
+            <div key={sc.id} className="rounded-xl overflow-hidden"
+                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="flex items-center gap-3 px-3 py-3">
+                {/* Carré état — tap pour changer */}
+                <button onClick={() => handleChangeEtat(sc.id, etatActuel)}
+                        className="shrink-0 transition-all active:scale-90">
+                  <CarreEtat etat={etatActuel} size="md" />
+                </button>
+                {/* Label */}
+                <button className="flex-1 text-left min-w-0"
+                        onClick={() => setScOuverte(isOpen ? null : sc.id)}>
+                  <p className="text-xs font-semibold text-white leading-snug">{sc.label}</p>
+                  <p className="text-[10px] text-white/40 mt-0.5">{ETATS_PW[etatActuel].label}</p>
+                </button>
+                {/* Chevron description */}
+                <button onClick={() => setScOuverte(isOpen ? null : sc.id)}
+                        className="text-white/30 text-xs transition-transform duration-200 shrink-0"
+                        style={{ transform: isOpen ? 'rotate(180deg)' : 'none' }}>
+                  ▼
                 </button>
               </div>
-            )}
+              {/* Description détaillée */}
+              {isOpen && (
+                <div className="px-3 pb-3 border-t border-white/[0.06] pt-2">
+                  <p className="text-xs text-white/65 leading-relaxed">{sc.description}</p>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Reset groupe */}
+      <button onClick={resetGroupe}
+              className="mx-4 mt-4 w-[calc(100%-2rem)] py-2 rounded-full text-xs text-white/25 hover:text-white/45 transition-colors"
+              style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+        Remettre ce groupe à zéro
+      </button>
+
+      {/* Modal garde-fou level 3 */}
+      {confirmLevel3 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6"
+             style={{ background: 'rgba(7,17,31,0.92)' }}>
+          <div className="w-full max-w-sm rounded-2xl p-6"
+               style={{ background: 'linear-gradient(135deg, #0d1b3e, #07111f)', border: '1px solid rgba(255,190,0,0.3)' }}>
+            <p className="text-base font-extrabold text-white mb-3">Es-tu sûr·e ?</p>
+            <p className="text-sm text-white/70 leading-relaxed mb-5">
+              Valider une compétence en "Maîtrisé" trop tôt peut te donner une fausse confiance le jour de l'examen.
+              Tu peux toujours revenir en arrière.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmLevel3(null)}
+                      className="flex-1 py-2.5 rounded-full text-sm font-bold"
+                      style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}>
+                Annuler
+              </button>
+              <button onClick={confirmerLevel3}
+                      className="flex-1 py-2.5 rounded-full text-sm font-extrabold"
+                      style={{ background: '#1d9e75', color: '#fff' }}>
+                ✓ Maîtrisé !
+              </button>
+            </div>
           </div>
-        )
-      })}
-
-      {/* Note REMC */}
-      <p className="text-center text-[10px] text-white/25 mt-2 pb-2">
-        Référentiel REMC — Arrêté du 13 mai 2013
-      </p>
+        </div>
+      )}
     </div>
   )
 }
 
-// Symbole d'état (pastille + caractère)
-function SymboleEtat({ etat, size = 'md' }) {
-  const dim = size === 'sm' ? 'w-4 h-4 text-[9px]' : 'w-7 h-7 min-w-[28px] text-xs'
+// Carré état visuel — 4 niveaux
+export function CarreEtat({ etat = 0, size = 'md' }) {
+  const dim = size === 'sm' ? 'w-5 h-5 text-[9px]' : 'w-7 h-7 text-xs'
+  const e = {
+    0: { bg: 'transparent',            border: 'rgba(255,255,255,0.2)',  symbol: '', color: 'transparent' },
+    1: { bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.6)',   symbol: '/', color: '#fb923c' },
+    2: { bg: 'rgba(255,190,0,0.15)',   border: 'rgba(255,190,0,0.7)',    symbol: 'X', color: '#FFBE00' },
+    3: { bg: 'rgba(29,158,117,0.25)',  border: 'rgba(29,158,117,0.7)',   symbol: '■', color: '#34d399' },
+  }[etat] || { bg: 'transparent', border: 'rgba(255,255,255,0.2)', symbol: '', color: 'transparent' }
 
-  if (!etat) {
-    return (
-      <div className={`${dim} rounded flex items-center justify-center`}
-           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }} />
-    )
-  }
-  const map = {
-    aborde:   { bg: 'rgba(249,115,22,0.2)',  border: 'rgba(249,115,22,0.5)',  color: '#fb923c', symbol: '/' },
-    maitrise: { bg: 'rgba(59,130,246,0.2)',   border: 'rgba(59,130,246,0.5)',  color: '#60a5fa', symbol: 'X' },
-    confirme: { bg: 'rgba(16,185,129,0.2)',   border: 'rgba(16,185,129,0.5)',  color: '#34d399', symbol: '■' },
-  }
-  const s = map[etat]
   return (
-    <div className={`${dim} rounded flex items-center justify-center font-extrabold`}
-         style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color }}>
-      {s.symbol}
-    </div>
-  )
-}
-
-// Badge statistique
-function StatBadge({ couleur, label, count, symbol }) {
-  const colors = {
-    orange: { bg: 'rgba(249,115,22,0.15)', border: 'rgba(249,115,22,0.4)', text: '#fb923c' },
-    blue:   { bg: 'rgba(59,130,246,0.15)',  border: 'rgba(59,130,246,0.4)',  text: '#60a5fa' },
-    green:  { bg: 'rgba(16,185,129,0.15)',  border: 'rgba(16,185,129,0.4)',  text: '#34d399' },
-  }
-  const c = colors[couleur]
-  return (
-    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-         style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
-      <span className="font-extrabold">{symbol}</span>
-      <span>{count} {label}</span>
+    <div className={`${dim} rounded flex items-center justify-center font-extrabold transition-all duration-200`}
+         style={{ background: e.bg, border: `2px solid ${e.border}`, color: e.color }}>
+      {e.symbol}
     </div>
   )
 }

@@ -1,38 +1,45 @@
-// App principale — navigation 5 onglets
+// App principale — V1.0 — 4 onglets avec navigation entre vues
 import { useState } from 'react'
 import NavBar from './components/NavBar'
-import Preambule from './pages/Preambule'
-import Profil from './pages/Profil'
+import Dashboard from './pages/Dashboard'
 import Competences from './pages/Competences'
 import Seances from './pages/Seances'
-import Debrief from './pages/Debrief'
-
-const PAGES = {
-  preambule:   <Preambule />,
-  profil:      <Profil />,
-  competences: <Competences />,
-  seances:     <Seances />,
-  debrief:     <Debrief />,
-}
+import Profil from './pages/Profil'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('profil')
+  const [activeTab, setActiveTab] = useState('dashboard')
+  // Paramètre optionnel passé à la page cible (ex: groupe C2, mode présentation, nouvelle séance)
+  const [tabParam, setTabParam] = useState(null)
+
+  // Navigation avec paramètre optionnel
+  const navigate = (tab, param = null) => {
+    setActiveTab(tab)
+    setTabParam(param)
+  }
 
   return (
     <div className="flex flex-col h-full">
-      {/* Zone de contenu — prend tout l'espace au-dessus de la NavBar */}
       <main className="flex-1 overflow-hidden" style={{ paddingBottom: '72px' }}>
-        {/* On garde tous les onglets montés pour préserver l'état scroll */}
-        {Object.entries(PAGES).map(([id, page]) => (
-          <div key={id}
-               className="h-full"
-               style={{ display: activeTab === id ? 'block' : 'none' }}>
-            {page}
-          </div>
-        ))}
+
+        {activeTab === 'dashboard' && (
+          <Dashboard onNavigate={navigate} />
+        )}
+
+        {activeTab === 'competences' && (
+          <Competences groupeInitial={tabParam || 'C1'} />
+        )}
+
+        {activeTab === 'seances' && (
+          <Seances ouvrirForm={tabParam === 'new'} />
+        )}
+
+        {activeTab === 'profil' && (
+          <Profil ouvrirPresentation={tabParam === 'presentation'} />
+        )}
+
       </main>
 
-      <NavBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <NavBar activeTab={activeTab} onTabChange={(tab) => navigate(tab)} />
     </div>
   )
 }

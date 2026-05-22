@@ -1,11 +1,9 @@
-// Barre de navigation fixe en bas de l'écran — 5 onglets
-
+// Barre de navigation fixe — 4 onglets (V1.0)
 const TABS = [
-  { id: 'preambule',   label: 'Préambule',   emoji: '📋' },
-  { id: 'profil',      label: 'Profil',       emoji: '👤' },
-  { id: 'competences', label: 'Compétences',  emoji: '✅' },
-  { id: 'seances',     label: 'Séances',      emoji: '📝' },
-  { id: 'debrief',     label: 'Débrief',      emoji: '💬' },
+  { id: 'dashboard',   label: 'Accueil',    emoji: '🧭' },
+  { id: 'competences', label: 'Mon livret', emoji: '📋' },
+  { id: 'seances',     label: 'Séances',    emoji: '▶' },
+  { id: 'profil',      label: 'Profil',     emoji: '👤' },
 ]
 
 export default function NavBar({ activeTab, onTabChange }) {
@@ -19,19 +17,15 @@ export default function NavBar({ activeTab, onTabChange }) {
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-all duration-200 ${
-                isActive ? 'text-[#FFBE00]' : 'text-white/40 hover:text-white/70'
-              }`}
-              style={{ minHeight: '56px' }}
-            >
+              className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 relative transition-all duration-200"
+              style={{ minHeight: '56px', color: isActive ? '#FFBE00' : 'rgba(255,255,255,0.4)' }}>
               <span className="text-lg leading-none">{tab.emoji}</span>
-              <span className={`text-[9px] font-700 uppercase tracking-wide leading-none mt-0.5 ${
-                isActive ? 'font-extrabold' : 'font-medium'
-              }`}>
+              <span className={`text-[9px] uppercase tracking-wide leading-none mt-0.5 ${isActive ? 'font-extrabold' : 'font-medium'}`}>
                 {tab.label}
               </span>
               {isActive && (
-                <span className="absolute bottom-0 w-6 h-0.5 rounded-full bg-[#FFBE00]" />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full"
+                      style={{ background: '#FFBE00' }} />
               )}
             </button>
           )

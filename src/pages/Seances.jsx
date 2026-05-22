@@ -1,44 +1,74 @@
-// Onglet 4 — Journal de séances
-// TON : Permis Webi — chaleureux, tutoiement
-
+// Onglet 3 — Séances (liste + nouvelle séance avec signature)
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { GROUPES_REMC } from '../data/remc'
+import { COMPETENCES_PW, ETATS_PW } from '../data/competences-pw'
+import SignatureCanvas from '../components/SignatureCanvas'
+import { CarreEtat } from './Competences'
 
-const OBJECTIFS_FLAT = GROUPES_REMC.flatMap(g =>
-  g.objectifs.map(o => ({ ...o, groupe: g.id, groupeTitre: g.titre }))
+const OBJECTIFS_FLAT = COMPETENCES_PW.flatMap(g =>
+  g.sousCompetences.map(sc => ({ ...sc, groupeId: g.id, groupeTitre: g.titre, couleur: g.couleur }))
 )
 
 function formatDate(iso) {
   if (!iso) return ''
-  const d = new Date(iso)
-  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function dureeSeance(s) {
+  if (!s.heureDebut || !s.heureFin) return null
+  const [h1, m1] = s.heureDebut.split(':').map(Number)
+  const [h2, m2] = s.heureFin.split(':').map(Number)
+  const mins = (h2 * 60 + m2) - (h1 * 60 + m1)
+  if (mins <= 0) return null
+  return mins >= 60 ? `${Math.floor(mins / 60)}h${String(mins % 60).padStart(2, '0')}` : `${mins} min`
 }
 
 function newSeance() {
   return {
     id: Date.now(),
     date: new Date().toISOString().split('T')[0],
-    heureDebut: '',
-    heureFin: '',
-    km: '',
-    conditions: '',
-    objectifsAbordes: [],
-    commentaire: '',
+    heureDebut: '', heureFin: '', km: '', lieu: '',
+    competencesEvaluees: {},
+    accompagnateur: { nom: '', prenom: '', numeroPermis: '' },
+    signature: null,
+    notes: '',
+    debriefRessenti: '', debriefTechnique: '', debriefSuite: '',
   }
 }
 
-export default function Seances() {
+export default function Seances({ ouvrirForm }) {
   const [seances, setSeances] = useLocalStorage('pw_seances', [])
-  const [afficher, setAfficher] = useState('liste') // 'liste' | 'form'
+  const [etatsGlobal, setEtatsGlobal] = useLocalStorage('pw_competences', {})
+  const [vue, setVue] = useState(ouvrirForm ? 'form' : 'liste')
   const [draft, setDraft] = useState(newSeance())
   const [seanceOuverte, setSeanceOuverte] = useState(null)
+  const [etapeForm, setEtapeForm] = useState(1) // 1: infos, 2: compétences, 3: accompagnateur+débrief
 
   const handleSave = () => {
     if (!draft.date) return
+    // Sauvegarder la séance
     setSeances(prev => [draft, ...prev])
+    // Mettre à jour les états des compétences si la nouvelle valeur est supérieure
+    if (Object.keys(draft.competencesEvaluees).length > 0) {
+      setEtatsGlobal(prev => {
+        const next = { ...prev }
+        Object.entries(draft.competencesEvaluees).forEach(([id, val]) => {
+          if ((val || 0) > (next[id] || 0)) next[id] = val
+        })
+        return next
+      })
+    }
     setDraft(newSeance())
-    setAfficher('liste')
+    setEtapeForm(1)
+    setVue('liste')
+  }
+
+  const setEtatSc = (id, val) => {
+    setDraft(d => ({ ...d, competencesEvaluees: { ...d.competencesEvaluees, [id]: val } }))
+  }
+
+  const setAccomp = (champ, val) => {
+    setDraft(d => ({ ...d, accompagnateur: { ...d.accompagnateur, [champ]: val } }))
   }
 
   const handleDelete = (id) => {
@@ -46,26 +76,6 @@ export default function Seances() {
     if (seanceOuverte === id) setSeanceOuverte(null)
   }
 
-  const toggleObjectif = (id) => {
-    setDraft(d => {
-      const list = d.objectifsAbordes
-      return {
-        ...d,
-        objectifsAbordes: list.includes(id) ? list.filter(x => x !== id) : [...list, id]
-      }
-    })
-  }
-
-  const duree = (s) => {
-    if (!s.heureDebut || !s.heureFin) return null
-    const [h1, m1] = s.heureDebut.split(':').map(Number)
-    const [h2, m2] = s.heureFin.split(':').map(Number)
-    const mins = (h2 * 60 + m2) - (h1 * 60 + m1)
-    if (mins <= 0) return null
-    return `${Math.floor(mins / 60)}h${String(mins % 60).padStart(2, '0')}`
-  }
-
-  // Compteurs
   const totalSeances = seances.length
   const totalKm = seances.reduce((s, x) => s + (parseInt(x.km) || 0), 0)
 
@@ -75,187 +85,333 @@ export default function Seances() {
       {/* En-tête */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-xl font-extrabold text-white">Mes séances</h1>
-          <p className="text-xs text-white/50 mt-0.5">
-            {totalSeances} séance{totalSeances !== 1 ? 's' : ''} · {totalKm} km au total
-          </p>
+          <h1 className="text-xl font-extrabold text-white">
+            {vue === 'form' ? 'Nouvelle séance' : 'Mes séances'}
+          </h1>
+          {vue === 'liste' && (
+            <p className="text-xs text-white/50 mt-0.5">
+              {totalSeances} séance{totalSeances !== 1 ? 's' : ''} · {totalKm} km
+            </p>
+          )}
         </div>
-        {afficher === 'liste' && (
-          <button
-            onClick={() => { setDraft(newSeance()); setAfficher('form') }}
-            className="px-4 py-2 rounded-full text-xs font-extrabold transition-all active:scale-95"
-            style={{ background: '#FFBE00', color: '#07111f' }}>
+        {vue === 'liste' ? (
+          <button onClick={() => { setDraft(newSeance()); setEtapeForm(1); setVue('form') }}
+                  className="px-4 py-2 rounded-full text-xs font-extrabold transition-all active:scale-95"
+                  style={{ background: '#FFBE00', color: '#07111f' }}>
             + Séance
+          </button>
+        ) : (
+          <button onClick={() => { setVue('liste'); setEtapeForm(1) }}
+                  className="text-xs text-white/50 hover:text-white/70">
+            Annuler
           </button>
         )}
       </div>
 
-      {/* Formulaire nouvelle séance */}
-      {afficher === 'form' && (
-        <div className="rounded-2xl p-4 mb-4"
-             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,190,0,0.25)' }}>
-          <h2 className="text-sm font-extrabold text-white mb-4">Nouvelle séance</h2>
-
-          {/* Date */}
-          <Champ label="Date">
-            <input type="date" value={draft.date}
-                   onChange={e => setDraft(d => ({ ...d, date: e.target.value }))}
-                   className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
-                   style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
-                   onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                   onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-          </Champ>
-
-          {/* Heures */}
-          <div className="grid grid-cols-2 gap-3">
-            <Champ label="Heure début">
-              <input type="time" value={draft.heureDebut}
-                     onChange={e => setDraft(d => ({ ...d, heureDebut: e.target.value }))}
-                     className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
-                     style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
-                     onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                     onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </Champ>
-            <Champ label="Heure fin">
-              <input type="time" value={draft.heureFin}
-                     onChange={e => setDraft(d => ({ ...d, heureFin: e.target.value }))}
-                     className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
-                     style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
-                     onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                     onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </Champ>
+      {/* === FORMULAIRE NOUVELLE SÉANCE === */}
+      {vue === 'form' && (
+        <>
+          {/* Étapes */}
+          <div className="flex gap-1.5 mb-5">
+            {[1, 2, 3].map(e => (
+              <div key={e} className="flex-1 h-1 rounded-full transition-all"
+                   style={{ background: e <= etapeForm ? '#FFBE00' : 'rgba(255,255,255,0.12)' }} />
+            ))}
           </div>
 
-          {/* KM */}
-          <Champ label="Kilométrage parcouru">
-            <input type="number" inputMode="numeric" placeholder="ex: 35"
-                   value={draft.km}
-                   onChange={e => setDraft(d => ({ ...d, km: e.target.value }))}
-                   className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
-                   style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                   onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                   onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-          </Champ>
-
-          {/* Conditions météo */}
-          <Champ label="Conditions de conduite">
-            <input type="text" placeholder="ex: Nuit, pluie, autoroute…"
-                   value={draft.conditions}
-                   onChange={e => setDraft(d => ({ ...d, conditions: e.target.value }))}
-                   className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
-                   style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                   onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                   onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-          </Champ>
-
-          {/* Objectifs travaillés */}
-          <Champ label="Objectifs travaillés (optionnel)">
-            <div className="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin pr-1">
-              {OBJECTIFS_FLAT.map(o => {
-                const sel = draft.objectifsAbordes.includes(o.id)
-                return (
-                  <button key={o.id} onClick={() => toggleObjectif(o.id)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all"
-                          style={{
-                            background: sel ? 'rgba(255,190,0,0.12)' : 'rgba(255,255,255,0.04)',
-                            border: `1px solid ${sel ? 'rgba(255,190,0,0.45)' : 'rgba(255,255,255,0.08)'}`,
-                          }}>
-                    <span className="w-4 h-4 rounded flex items-center justify-center text-[10px] shrink-0"
-                          style={{ background: sel ? '#FFBE00' : 'rgba(255,255,255,0.1)', color: '#07111f' }}>
-                      {sel ? '✓' : ''}
-                    </span>
-                    <span className="text-[10px] font-bold text-white/40 shrink-0">{o.id}</span>
-                    <span className="text-xs text-white/75 leading-snug">{o.label}</span>
-                  </button>
-                )
-              })}
+          {/* Étape 1 — Infos de la séance */}
+          {etapeForm === 1 && (
+            <div className="space-y-3">
+              <div className="rounded-2xl p-4"
+                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                  📅 Informations de la séance
+                </p>
+                <Champ label="Date">
+                  <input type="date" value={draft.date}
+                         onChange={e => setDraft(d => ({ ...d, date: e.target.value }))}
+                         className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
+                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
+                         onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                </Champ>
+                <div className="grid grid-cols-2 gap-3">
+                  <Champ label="Heure début">
+                    <input type="time" value={draft.heureDebut}
+                           onChange={e => setDraft(d => ({ ...d, heureDebut: e.target.value }))}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                  <Champ label="Heure fin">
+                    <input type="time" value={draft.heureFin}
+                           onChange={e => setDraft(d => ({ ...d, heureFin: e.target.value }))}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Champ label="Km parcourus">
+                    <input type="number" inputMode="numeric" placeholder="35"
+                           value={draft.km}
+                           onChange={e => setDraft(d => ({ ...d, km: e.target.value }))}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                  <Champ label="Lieu (ville)">
+                    <input type="text" placeholder="Paris 15e"
+                           value={draft.lieu}
+                           onChange={e => setDraft(d => ({ ...d, lieu: e.target.value }))}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                </div>
+              </div>
+              <button onClick={() => setEtapeForm(2)}
+                      className="w-full py-3 rounded-full font-extrabold text-sm transition-all active:scale-95"
+                      style={{ background: '#FFBE00', color: '#07111f' }}>
+                Suivant — Évaluer les compétences →
+              </button>
             </div>
-          </Champ>
+          )}
 
-          {/* Commentaire libre */}
-          <Champ label="Notes libres">
-            <textarea rows={3} placeholder="Points forts, difficultés, remarques de l'accompagnateur…"
-                      value={draft.commentaire}
-                      onChange={e => setDraft(d => ({ ...d, commentaire: e.target.value }))}
-                      className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none resize-none"
-                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                      onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                      onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-          </Champ>
+          {/* Étape 2 — Compétences évaluées */}
+          {etapeForm === 2 && (
+            <div>
+              <div className="rounded-2xl p-4 mb-3"
+                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: '#FFBE00' }}>
+                  📋 Compétences travaillées
+                </p>
+                <p className="text-[10px] text-white/45 mb-3">
+                  Appuie sur le carré pour changer l'état. Seules les compétences améliorées seront mises à jour dans ton livret.
+                </p>
+                <div className="space-y-1.5 max-h-[55vh] overflow-y-auto scrollbar-thin pr-1">
+                  {OBJECTIFS_FLAT.map(sc => {
+                    const etatSeance = draft.competencesEvaluees[sc.id] ?? 0
+                    return (
+                      <div key={sc.id} className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl"
+                           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <button onClick={() => setEtatSc(sc.id, (etatSeance + 1) % 4)}
+                                className="shrink-0 transition-all active:scale-90">
+                          <CarreEtat etat={etatSeance} size="md" />
+                        </button>
+                        <div className="min-w-0">
+                          <span className="text-[9px] font-bold text-white/35 mr-1">{sc.id}</span>
+                          <span className="text-xs text-white/75">{sc.label}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setEtapeForm(1)}
+                        className="py-3 px-4 rounded-full text-sm font-bold"
+                        style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)' }}>
+                  ← Retour
+                </button>
+                <button onClick={() => setEtapeForm(3)}
+                        className="flex-1 py-3 rounded-full font-extrabold text-sm transition-all active:scale-95"
+                        style={{ background: '#FFBE00', color: '#07111f' }}>
+                  Suivant — Signature →
+                </button>
+              </div>
+            </div>
+          )}
 
-          {/* Actions */}
-          <div className="flex gap-2 mt-2">
-            <button onClick={() => setAfficher('liste')}
-                    className="flex-1 py-2.5 rounded-full text-xs font-bold"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)' }}>
-              Annuler
-            </button>
-            <button onClick={handleSave}
-                    className="flex-1 py-2.5 rounded-full text-xs font-extrabold transition-all active:scale-95"
-                    style={{ background: '#FFBE00', color: '#07111f' }}>
-              ✅ Enregistrer
-            </button>
-          </div>
-        </div>
+          {/* Étape 3 — Accompagnateur + Débrief + Signature */}
+          {etapeForm === 3 && (
+            <div className="space-y-3">
+              {/* Accompagnateur */}
+              <div className="rounded-2xl p-4"
+                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                  👥 Accompagnateur·rice
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Champ label="Prénom">
+                    <input type="text" placeholder="Mohammed"
+                           value={draft.accompagnateur.prenom}
+                           onChange={e => setAccomp('prenom', e.target.value)}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                  <Champ label="Nom">
+                    <input type="text" placeholder="Martin"
+                           value={draft.accompagnateur.nom}
+                           onChange={e => setAccomp('nom', e.target.value)}
+                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
+                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                  </Champ>
+                </div>
+                <Champ label="N° de permis de conduire">
+                  <input type="text" placeholder="12AA12345"
+                         value={draft.accompagnateur.numeroPermis}
+                         onChange={e => setAccomp('numeroPermis', e.target.value)}
+                         className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none uppercase"
+                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                         onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                </Champ>
+                <SignatureCanvas
+                  value={draft.signature}
+                  onChange={sig => setDraft(d => ({ ...d, signature: sig }))} />
+              </div>
+
+              {/* Débrief rapide */}
+              <div className="rounded-2xl p-4"
+                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                  ✍️ Débrief de séance
+                </p>
+                {[
+                  { key: 'debriefRessenti', emoji: '🌡️', q: 'Comment tu t\'es senti·e au volant ?' },
+                  { key: 'debriefTechnique', emoji: '🔧', q: 'Ce qui était difficile / ce qui s\'est bien passé ?' },
+                  { key: 'debriefSuite', emoji: '🎯', q: 'Sur quoi te concentrer à la prochaine séance ?' },
+                ].map(({ key, emoji, q }) => (
+                  <div key={key} className="mb-3">
+                    <label className="text-xs font-semibold text-white/60 mb-1 flex items-center gap-1.5">
+                      <span>{emoji}</span> {q}
+                    </label>
+                    <textarea rows={2} placeholder="..."
+                              value={draft[key]}
+                              onChange={e => setDraft(d => ({ ...d, [key]: e.target.value }))}
+                              className="w-full px-3 py-2 rounded-xl text-xs text-white placeholder-white/20 outline-none resize-none"
+                              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                              onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
+                              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+                  </div>
+                ))}
+                <Champ label="Notes libres (optionnel)">
+                  <textarea rows={2} placeholder="Consignes, points à retenir..."
+                            value={draft.notes}
+                            onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl text-xs text-white placeholder-white/20 outline-none resize-none"
+                            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                            onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
+                            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+                </Champ>
+              </div>
+
+              <div className="flex gap-2">
+                <button onClick={() => setEtapeForm(2)}
+                        className="py-3 px-4 rounded-full text-sm font-bold"
+                        style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)' }}>
+                  ← Retour
+                </button>
+                <button onClick={handleSave}
+                        className="flex-1 py-3 rounded-full font-extrabold text-sm transition-all active:scale-95"
+                        style={{ background: '#FFBE00', color: '#07111f' }}>
+                  ✅ Valider la séance
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
-      {/* Liste des séances */}
-      {afficher === 'liste' && (
+      {/* === LISTE DES SÉANCES === */}
+      {vue === 'liste' && (
         <>
           {seances.length === 0 ? (
             <div className="text-center py-12 text-white/30">
               <p className="text-4xl mb-3">📝</p>
-              <p className="text-sm font-semibold">Aucune séance enregistrée</p>
-              <p className="text-xs mt-1">Appuie sur + Séance pour commencer</p>
+              <p className="text-sm font-semibold">Aucune séance encore</p>
+              <p className="text-xs mt-1">Appuie sur + Séance après chaque entraînement</p>
             </div>
           ) : (
             <div className="space-y-3">
               {seances.map(s => {
                 const isOpen = seanceOuverte === s.id
-                const d = duree(s)
+                const d = dureeSeance(s)
+                const nbComp = Object.keys(s.competencesEvaluees || {}).filter(k => s.competencesEvaluees[k] > 0).length
                 return (
                   <div key={s.id} className="rounded-2xl overflow-hidden"
                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
                     <button className="w-full px-4 py-3 flex items-center justify-between"
                             onClick={() => setSeanceOuverte(isOpen ? null : s.id)}>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 min-w-[40px] rounded-xl flex items-center justify-center text-base"
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-base shrink-0"
                              style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.25)' }}>
                           🚗
                         </div>
                         <div className="text-left">
                           <p className="text-sm font-bold text-white">{formatDate(s.date)}</p>
-                          <p className="text-xs text-white/40">
-                            {d ? `${d} · ` : ''}{s.km ? `${s.km} km` : ''}{s.conditions ? ` · ${s.conditions}` : ''}
+                          <p className="text-[10px] text-white/40">
+                            {d ? `${d}` : ''}{s.km ? ` · ${s.km} km` : ''}{s.lieu ? ` · ${s.lieu}` : ''}
+                            {nbComp > 0 ? ` · ${nbComp} compétence${nbComp > 1 ? 's' : ''}` : ''}
                           </p>
                         </div>
                       </div>
-                      <span className={`text-white/40 text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+                      <div className="flex items-center gap-2">
+                        {s.signature && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full"
+                                style={{ background: 'rgba(29,158,117,0.2)', color: '#34d399', border: '1px solid rgba(29,158,117,0.4)' }}>
+                            ✓ Signé
+                          </span>
+                        )}
+                        <span className="text-white/40 text-xs transition-transform duration-200"
+                              style={{ transform: isOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      </div>
                     </button>
 
                     {isOpen && (
                       <div className="px-4 pb-4 border-t border-white/[0.06] pt-3 space-y-3">
-                        {s.objectifsAbordes?.length > 0 && (
+                        {/* Accompagnateur */}
+                        {s.accompagnateur?.nom && (
                           <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1.5">Objectifs travaillés</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1">Accompagnateur·rice</p>
+                            <p className="text-xs text-white/70">
+                              {s.accompagnateur.prenom} {s.accompagnateur.nom}
+                              {s.accompagnateur.numeroPermis ? ` — Permis ${s.accompagnateur.numeroPermis}` : ''}
+                            </p>
+                          </div>
+                        )}
+                        {/* Compétences */}
+                        {nbComp > 0 && (
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1.5">Compétences évaluées</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {s.objectifsAbordes.map(id => (
-                                <span key={id} className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                                      style={{ background: 'rgba(255,190,0,0.15)', color: '#FFBE00', border: '1px solid rgba(255,190,0,0.35)' }}>
-                                  {id}
-                                </span>
+                              {Object.entries(s.competencesEvaluees).filter(([, v]) => v > 0).map(([id, val]) => (
+                                <div key={id} className="flex items-center gap-1 px-2 py-0.5 rounded-full"
+                                     style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                  <CarreEtat etat={val} size="sm" />
+                                  <span className="text-[10px] text-white/60">{id}</span>
+                                </div>
                               ))}
                             </div>
                           </div>
                         )}
-                        {s.commentaire && (
+                        {/* Signature */}
+                        {s.signature && (
                           <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1">Notes</p>
-                            <p className="text-xs text-white/70 leading-relaxed">{s.commentaire}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1">Signature</p>
+                            <img src={s.signature} alt="Signature" className="h-10 opacity-80" />
+                          </div>
+                        )}
+                        {/* Débrief */}
+                        {(s.debriefRessenti || s.debriefTechnique || s.debriefSuite) && (
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-white/40 mb-1">Débrief</p>
+                            {s.debriefRessenti && <p className="text-xs text-white/65">🌡️ {s.debriefRessenti}</p>}
+                            {s.debriefTechnique && <p className="text-xs text-white/65">🔧 {s.debriefTechnique}</p>}
+                            {s.debriefSuite && <p className="text-xs text-white/65">🎯 {s.debriefSuite}</p>}
                           </div>
                         )}
                         <button onClick={() => handleDelete(s.id)}
-                                className="text-xs text-red-400/60 hover:text-red-400 transition-colors">
+                                className="text-xs text-red-400/50 hover:text-red-400 transition-colors">
                           Supprimer cette séance
                         </button>
                       </div>
