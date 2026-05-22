@@ -32,7 +32,7 @@ export default function NavBar({ activeTab, onTabChange }) {
               className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 relative tap-scale"
               style={{
                 minHeight: '62px',
-                color: isActive ? '#FFBE00' : 'rgba(255,255,255,0.32)',
+                color: isActive ? '#FFBE00' : 'rgba(255,255,255,0.72)',
                 transition: 'color 0.2s ease',
               }}
             >
@@ -66,10 +66,11 @@ export default function NavBar({ activeTab, onTabChange }) {
                 className="relative z-10 leading-none"
                 style={{
                   fontSize: '9px',
-                  fontWeight: isActive ? 800 : 500,
+                  fontWeight: isActive ? 800 : 600,
                   letterSpacing: '0.05em',
                   textTransform: 'uppercase',
                   transition: 'all 0.2s ease',
+                  color: isActive ? '#FFBE00' : 'rgba(255,255,255,0.72)',
                 }}
               >
                 {tab.label}

@@ -31,7 +31,7 @@ function AppInner() {
       <main className="flex-1 overflow-hidden" style={{ paddingBottom: '72px' }}>
 
         {activeTab === 'dashboard'   && <Dashboard onNavigate={navigate} />}
-        {activeTab === 'competences' && <Competences groupeInitial={tabParam || 'C1'} />}
+        {activeTab === 'competences' && <Competences groupeInitial={tabParam} />}
         {activeTab === 'seances'     && <Seances ouvrirForm={tabParam === 'new'} />}
         {activeTab === 'profil'      && <Profil ouvrirPresentation={tabParam === 'presentation'} />}
 
