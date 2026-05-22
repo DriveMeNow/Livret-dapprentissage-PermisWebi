@@ -229,12 +229,13 @@ export const COMPETENCES_PW = [
   }
 ]
 
-// Couleurs par groupe
+// Couleurs REMC officielles — Référentiel Éducation à une Mobilité Citoyenne
+// C1 Bleu royal · C2 Magenta · C3 Orange · C4 Vert
 export const COULEURS = {
-  blue:   { bg: 'rgba(59,130,246,0.15)',  border: 'rgba(59,130,246,0.4)',  text: '#60a5fa',  bar: '#3b82f6' },
-  purple: { bg: 'rgba(168,85,247,0.15)',  border: 'rgba(168,85,247,0.4)',  text: '#c084fc',  bar: '#a855f7' },
-  orange: { bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.4)',  text: '#fb923c',  bar: '#f97316' },
-  green:  { bg: 'rgba(29,158,117,0.15)',  border: 'rgba(29,158,117,0.4)',  text: '#34d399',  bar: '#1d9e75' },
+  blue:   { bg: 'rgba(0,102,204,0.14)',  border: 'rgba(0,102,204,0.50)',  text: '#4dabff', bar: '#0066cc', solid: '#0066cc' },
+  purple: { bg: 'rgba(230,0,126,0.14)',  border: 'rgba(230,0,126,0.50)',  text: '#ff77cc', bar: '#e6007e', solid: '#e6007e' },
+  orange: { bg: 'rgba(255,153,0,0.14)',  border: 'rgba(255,153,0,0.50)',  text: '#ffbb55', bar: '#ff9900', solid: '#ff9900' },
+  green:  { bg: 'rgba(0,153,51,0.14)',   border: 'rgba(0,153,51,0.50)',   text: '#33cc66', bar: '#009933', solid: '#009933' },
 }
 
 // États de compétence — 4 niveaux

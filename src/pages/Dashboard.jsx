@@ -1,6 +1,6 @@
 /**
- * Dashboard — Tableau de bord premium
- * Anneau SVG de progression + glassmorphisme + animations
+ * Dashboard — Tableau de bord V1.3
+ * Badges REMC officiels (C1-C4) + contraste textes + anneau SVG
  */
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, progressGroupe, progressGlobal } from '../data/competences-pw'
@@ -15,9 +15,9 @@ function ProgressRing({ pct }) {
   const radius = 38
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (pct / 100) * circumference
-  const color = pct >= 80 ? '#1d9e75' : pct >= 40 ? '#FFBE00' : '#fb923c'
+  const color = pct >= 80 ? '#009933' : pct >= 40 ? '#FFBE00' : '#fb923c'
   const glowColor = pct >= 80
-    ? 'rgba(29,158,117,0.35)'
+    ? 'rgba(0,153,51,0.35)'
     : pct >= 40
     ? 'rgba(255,190,0,0.35)'
     : 'rgba(251,146,60,0.35)'
@@ -25,30 +25,16 @@ function ProgressRing({ pct }) {
   return (
     <div className="relative w-32 h-32 mx-auto mb-3">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-        {/* Piste de fond */}
-        <circle
-          cx="50" cy="50" r={radius}
-          fill="none"
-          stroke="rgba(255,255,255,0.07)"
-          strokeWidth="5"
-        />
-        {/* Arc de progression */}
-        <circle
-          cx="50" cy="50" r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="5"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
+        <circle cx="50" cy="50" r={radius} fill="none"
+          stroke="rgba(255,255,255,0.07)" strokeWidth="5" />
+        <circle cx="50" cy="50" r={radius} fill="none"
+          stroke={color} strokeWidth="5" strokeLinecap="round"
+          strokeDasharray={circumference} strokeDashoffset={offset}
           style={{
             transition: 'stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1), stroke 0.5s ease',
             filter: `drop-shadow(0 0 6px ${glowColor})`,
-          }}
-        />
+          }} />
       </svg>
-
-      {/* Contenu central */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
         <img
           src="https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantclé.png"
@@ -56,10 +42,7 @@ function ProgressRing({ pct }) {
           className="w-9 h-9 rounded-full animate-float"
           style={{ boxShadow: `0 0 12px ${glowColor}` }}
         />
-        <span
-          className="text-sm font-extrabold tabular-nums leading-none mt-0.5"
-          style={{ color }}
-        >
+        <span className="text-sm font-extrabold tabular-nums leading-none mt-0.5" style={{ color }}>
           {pct}%
         </span>
       </div>
@@ -84,36 +67,31 @@ export default function Dashboard({ onNavigate }) {
       {/* ── Hero — anneau + identité ───────────────── */}
       <div className="text-center mb-5 animate-fadeIn">
         <ProgressRing pct={pctGlobal} />
-
         {profil.nom ? (
           <div>
             <h1 className="text-base font-extrabold text-white leading-tight">
               {prenom}{prenom && nom ? ' ' : ''}<span style={{ color: '#FFBE00' }}>{nom}</span>
             </h1>
             {nephAffiche && (
-              <p className="text-[10px] text-white/35 mt-0.5 font-mono tracking-wider">
+              <p className="text-[10px] text-white/60 mt-0.5 font-mono tracking-wider">
                 NEPH {nephAffiche}
               </p>
             )}
           </div>
         ) : (
-          <button
-            onClick={() => onNavigate('profil')}
-            className="text-sm font-bold"
-            style={{ color: 'rgba(255,255,255,0.5)' }}
-          >
+          <button onClick={() => onNavigate('profil')}
+                  className="text-sm font-bold text-white/80">
             👤 Complète ton profil →
           </button>
         )}
-
-        <p className="text-[10px] text-white/25 mt-1.5 font-medium">
+        <p className="text-[10px] text-white/55 mt-1.5 font-medium">
           {seances.length > 0
             ? `${seances.length} séance${seances.length > 1 ? 's' : ''} enregistrée${seances.length > 1 ? 's' : ''}`
             : 'Aucune séance pour l\'instant'}
         </p>
       </div>
 
-      {/* ── 4 blocs compétences (2 × 2) ─────────────── */}
+      {/* ── 4 blocs compétences avec badges REMC ───── */}
       <div className="grid grid-cols-2 gap-2.5 mb-4">
         {COMPETENCES_PW.map((g, i) => {
           const pct = progressGroupe(g.id, etats)
@@ -126,8 +104,15 @@ export default function Dashboard({ onNavigate }) {
               className={`rounded-2xl p-3.5 text-left card-hover tap-scale animate-fadeIn ${delay}`}
               style={{ background: c.bg, border: `1px solid ${c.border}` }}
             >
+              {/* Badge REMC + emoji + % */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-lg leading-none">{g.emoji}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+                        style={{ background: c.solid }}>
+                    {g.id}
+                  </span>
+                  <span className="text-base leading-none">{g.emoji}</span>
+                </div>
                 <span className="text-xs font-extrabold tabular-nums" style={{ color: c.text }}>
                   {pct}%
                 </span>
@@ -136,12 +121,10 @@ export default function Dashboard({ onNavigate }) {
                 {g.titre}
               </p>
               <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.09)' }}>
-                <div
-                  className="h-full rounded-full progress-bar-fill"
-                  style={{ width: `${pct}%`, background: c.bar }}
-                />
+                <div className="h-full rounded-full progress-bar-fill"
+                     style={{ width: `${pct}%`, background: c.bar }} />
               </div>
-              <p className="text-[9px] mt-1.5 font-semibold" style={{ color: c.text, opacity: 0.7 }}>
+              <p className="text-[9px] mt-1.5 font-semibold" style={{ color: c.text, opacity: 0.8 }}>
                 {g.poids}% du score global
               </p>
             </button>
@@ -162,9 +145,9 @@ export default function Dashboard({ onNavigate }) {
           onClick={() => onNavigate('profil', 'presentation')}
           className="py-3.5 px-5 rounded-full text-sm font-bold tap-scale"
           style={{
-            background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            color: 'rgba(255,255,255,0.75)',
+            background: 'rgba(255,255,255,0.09)',
+            border: '1px solid rgba(255,255,255,0.20)',
+            color: '#ffffff',
           }}
         >
           🪪 Contrôle
@@ -175,51 +158,34 @@ export default function Dashboard({ onNavigate }) {
       {dernSeances.length > 0 && (
         <div className="animate-fadeIn">
           <div className="flex items-center justify-between mb-2.5">
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-white/35">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-white/70">
               Dernières séances
             </p>
-            <button
-              onClick={() => onNavigate('seances')}
-              className="text-[10px] font-bold transition-opacity hover:opacity-80"
-              style={{ color: '#FFBE00' }}
-            >
+            <button onClick={() => onNavigate('seances')}
+                    className="text-[10px] font-bold" style={{ color: '#FFBE00' }}>
               Voir tout →
             </button>
           </div>
 
           <div className="space-y-2">
             {dernSeances.map(s => (
-              <div
-                key={s.id}
-                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
-                style={{
-                  background: 'rgba(255,255,255,0.035)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                }}
-              >
-                <div
-                  className="w-8 h-8 min-w-[32px] rounded-lg flex items-center justify-center text-base"
-                  style={{ background: 'rgba(255,190,0,0.1)' }}
-                >
+              <div key={s.id} className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
+                   style={{ background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="w-8 h-8 min-w-[32px] rounded-lg flex items-center justify-center text-base"
+                     style={{ background: 'rgba(255,190,0,0.1)' }}>
                   🚗
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold text-white">{formatDate(s.date)}</p>
-                  <p className="text-[10px] text-white/38 truncate mt-0.5">
+                  <p className="text-[10px] text-white/60 truncate mt-0.5">
                     {s.km ? `${s.km} km` : ''}
                     {s.km && s.accompagnateur?.nom ? ' · ' : ''}
                     {s.accompagnateur?.nom ? `Avec ${s.accompagnateur.nom}` : ''}
                   </p>
                 </div>
                 {s.signature && (
-                  <span
-                    className="text-[10px] px-2 py-0.5 rounded-full shrink-0 font-bold"
-                    style={{
-                      background: 'rgba(29,158,117,0.18)',
-                      color: '#34d399',
-                      border: '1px solid rgba(29,158,117,0.35)',
-                    }}
-                  >
+                  <span className="text-[10px] px-2 py-0.5 rounded-full shrink-0 font-bold"
+                        style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
                     ✓ Signé
                   </span>
                 )}
@@ -229,22 +195,14 @@ export default function Dashboard({ onNavigate }) {
         </div>
       )}
 
-      {/* ── Alerte profil manquant ───────────────────── */}
+      {/* ── Alerte profil incomplet ───────────────── */}
       {!profil.nom && dernSeances.length === 0 && (
-        <div
-          className="mt-2 px-4 py-3.5 rounded-2xl text-center"
-          style={{
-            background: 'rgba(255,190,0,0.07)',
-            border: '1px solid rgba(255,190,0,0.18)',
-          }}
-        >
-          <p className="text-xs text-white/55 leading-relaxed">
+        <div className="mt-2 px-4 py-3.5 rounded-2xl text-center"
+             style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.18)' }}>
+          <p className="text-xs text-white/80 leading-relaxed">
             Commence par{' '}
-            <button
-              onClick={() => onNavigate('profil')}
-              className="font-extrabold underline"
-              style={{ color: '#FFBE00' }}
-            >
+            <button onClick={() => onNavigate('profil')}
+                    className="font-extrabold underline" style={{ color: '#FFBE00' }}>
               compléter ton profil
             </button>
             {' '}pour accéder au mode présentation accompagnateur.
@@ -253,11 +211,10 @@ export default function Dashboard({ onNavigate }) {
       )}
 
       {/* ── Pied de page légal ─────────────────────── */}
-      <p className="text-center text-[9px] text-white/15 mt-6 pb-1 leading-relaxed">
+      <p className="text-center text-[9px] text-white/40 mt-6 pb-1 leading-relaxed">
         Livret conforme au REMC — Arrêté du 29 juillet 2013<br />
         Permis Webi © 2026 — Marion Falquerho — SIREN 992 387 894
       </p>
-
     </div>
   )
 }
