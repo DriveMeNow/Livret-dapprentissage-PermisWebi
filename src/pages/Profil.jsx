@@ -1,7 +1,153 @@
-// Onglet 4 — Profil candidat (V1.4 — documents obligatoires)
+// Onglet 4 — Profil candidat (V1.5 — guide installation PWA intelligent)
 import { useState, useRef, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import ModePresentation from './ModePresentation'
+
+/**
+ * Détecte la plateforme et l'état d'installation de la PWA.
+ * Renvoie un guide d'installation adapté :
+ *  - Si déjà en mode standalone (installée) → rien
+ *  - iOS Safari → instructions Partager → Ajouter
+ *  - Android Chrome → bouton natif si dispo + instructions manuelles
+ *  - Autre → instructions génériques
+ */
+function BandeauInstall() {
+  const [installe, setInstalle] = useLocalStorage('pw_pwa_installed', false)
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [etape, setEtape] = useState(null) // null | 'guide'
+
+  // Détections
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || navigator.standalone === true
+  const ua = navigator.userAgent
+  const isIOS     = /iphone|ipad|ipod/i.test(ua)
+  const isAndroid = /android/i.test(ua)
+  const isSamsung = /samsungbrowser/i.test(ua)
+
+  useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setInstallPrompt(e) }
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  // Déjà installée en standalone ou utilisateur a confirmé → ne rien afficher
+  if (isStandalone || installe) return null
+
+  const handleInstallNatif = async () => {
+    if (!installPrompt) return
+    await installPrompt.prompt()
+    const { outcome } = await installPrompt.userChoice
+    if (outcome === 'accepted') setInstalle(true)
+  }
+
+  // ── iOS ──────────────────────────────────────────────────────
+  if (isIOS) {
+    return (
+      <div className="mb-4 rounded-2xl p-4"
+           style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.25)' }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-extrabold text-white">📲 Ajouter à l'écran d'accueil</p>
+          <button onClick={() => setInstalle(true)}
+                  className="text-[10px] text-white/35 hover:text-white/60">✕ Masquer</button>
+        </div>
+        <p className="text-[11px] text-white/65 leading-relaxed mb-3">
+          Sur iPhone/iPad, Apple ne permet pas l'installation automatique. Voici comment faire en 3 secondes :
+        </p>
+        <div className="space-y-2">
+          {[
+            { n: '1', texte: 'Appuie sur le bouton Partager', sub: '📤 en bas de Safari (pas dans Chrome !)' },
+            { n: '2', texte: 'Fais défiler et appuie sur', sub: '"Sur l\'écran d\'accueil"' },
+            { n: '3', texte: 'Appuie sur "Ajouter" en haut à droite', sub: 'L\'icône apparaît sur ton bureau' },
+          ].map(({ n, texte, sub }) => (
+            <div key={n} className="flex items-start gap-2.5">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-extrabold mt-0.5"
+                   style={{ background: '#FFBE00', color: '#07111f' }}>{n}</div>
+              <div>
+                <p className="text-xs font-semibold text-white">{texte}</p>
+                <p className="text-[10px] text-white/55">{sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-[9px] text-white/35 mt-3">⚠️ Doit être fait depuis Safari — pas Chrome iOS</p>
+        <button onClick={() => setInstalle(true)}
+                className="w-full mt-3 py-2 rounded-full text-xs font-bold tap-scale"
+                style={{ background: 'rgba(255,190,0,0.15)', border: '1px solid rgba(255,190,0,0.35)', color: '#FFBE00' }}>
+          ✓ C'est fait — j'ai ajouté l'icône
+        </button>
+      </div>
+    )
+  }
+
+  // ── Android ──────────────────────────────────────────────────
+  if (isAndroid) {
+    return (
+      <div className="mb-4 rounded-2xl p-4"
+           style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.25)' }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-extrabold text-white">📲 Ajouter à l'écran d'accueil</p>
+          <button onClick={() => setInstalle(true)}
+                  className="text-[10px] text-white/35 hover:text-white/60">✕ Masquer</button>
+        </div>
+
+        {/* Bouton natif Chrome si disponible */}
+        {installPrompt && (
+          <button onClick={handleInstallNatif}
+                  className="w-full mb-3 py-2.5 rounded-xl text-sm font-extrabold tap-scale"
+                  style={{ background: '#FFBE00', color: '#07111f' }}>
+            ⚡ Installer en un clic
+          </button>
+        )}
+
+        {/* Instructions manuelles toujours visibles */}
+        <p className="text-[11px] text-white/65 leading-relaxed mb-2">
+          {installPrompt
+            ? 'Ou manuellement :'
+            : 'Le bouton automatique n\'est plus disponible. Voici comment faire :'}
+        </p>
+        <div className="space-y-2 mb-3">
+          {[
+            { n: '1', texte: 'Ouvre Chrome (pas Samsung Internet)', sub: 'L\'URL doit afficher livret-dapprentissage-candidat-libre.permiswebi.fr' },
+            { n: '2', texte: 'Appuie sur ⋮ (3 points) en haut à droite', sub: isSamsung ? 'Avec Samsung Internet : Menu → Ajouter la page' : '' },
+            { n: '3', texte: 'Sélectionne "Ajouter à l\'écran d\'accueil"', sub: '' },
+            { n: '4', texte: isSamsung ? 'L\'icône va dans le tiroir d\'applis Samsung' : 'L\'icône s\'ajoute sur ton écran d\'accueil', sub: isSamsung ? 'Long-appui sur l\'icône → "Ajouter à l\'accueil" pour la mettre sur le bureau' : '' },
+          ].map(({ n, texte, sub }) => (
+            <div key={n} className="flex items-start gap-2.5">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-extrabold mt-0.5"
+                   style={{ background: '#FFBE00', color: '#07111f' }}>{n}</div>
+              <div>
+                <p className="text-xs font-semibold text-white">{texte}</p>
+                {sub && <p className="text-[10px] text-white/50 leading-snug mt-0.5">{sub}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+        {isSamsung && (
+          <div className="px-3 py-2 rounded-xl mb-3"
+               style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.3)' }}>
+            <p className="text-[10px] text-white/70 leading-relaxed">
+              ⚠️ <strong className="text-white">Samsung Galaxy :</strong> Chrome ajoute l'icône dans le tiroir d'applis, pas directement sur le bureau. Pour la mettre sur l'écran d'accueil, appuie long sur l'icône dans le tiroir → "Ajouter à l'accueil".
+            </p>
+          </div>
+        )}
+        <button onClick={() => setInstalle(true)}
+                className="w-full py-2 rounded-full text-xs font-bold tap-scale"
+                style={{ background: 'rgba(255,190,0,0.15)', border: '1px solid rgba(255,190,0,0.35)', color: '#FFBE00' }}>
+          ✓ C'est fait — j'ai ajouté l'icône
+        </button>
+      </div>
+    )
+  }
+
+  // ── Autre navigateur ──────────────────────────────────────────
+  return (
+    <div className="mb-4 px-3 py-2.5 rounded-xl text-xs text-white/55 text-center"
+         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      📱 Pour installer l'app : Menu de ton navigateur → "Ajouter à l'écran d'accueil"
+      <button onClick={() => setInstalle(true)} className="block mx-auto mt-1 text-[10px] text-white/30">✕ Masquer</button>
+    </div>
+  )
+}
 
 const CHAMPS = [
   { id: 'nom',           label: 'Nom',                     type: 'text',  placeholder: 'Dupont' },
@@ -114,16 +260,8 @@ export default function Profil({ ouvrirPresentation }) {
 
   const [modeEdition, setModeEdition] = useState(!profil.nom)
   const [draft, setDraft] = useState(profil)
-  const [installPrompt, setInstallPrompt] = useState(null)
-  const [installe, setInstalle] = useState(false)
   const [showPresentation, setShowPresentation] = useState(!!ouvrirPresentation)
   const fileRef = useRef()
-
-  useEffect(() => {
-    const handler = (e) => { e.preventDefault(); setInstallPrompt(e) }
-    window.addEventListener('beforeinstallprompt', handler)
-    return () => window.removeEventListener('beforeinstallprompt', handler)
-  }, [])
 
   useEffect(() => {
     if (ouvrirPresentation) setShowPresentation(true)
@@ -138,13 +276,6 @@ export default function Profil({ ouvrirPresentation }) {
   }
 
   const handleSave = () => { setProfil(draft); setModeEdition(false) }
-
-  const handleInstall = async () => {
-    if (!installPrompt) return
-    await installPrompt.prompt()
-    const { outcome } = await installPrompt.userChoice
-    if (outcome === 'accepted') { setInstalle(true); setInstallPrompt(null) }
-  }
 
   const docs = {
     aipc: docAipc,
@@ -185,20 +316,8 @@ export default function Profil({ ouvrirPresentation }) {
         🪪 Mode présentation — Contrôle / Examen
       </button>
 
-      {/* PWA install */}
-      {installPrompt && !installe && (
-        <button onClick={handleInstall}
-                className="w-full mb-3 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
-                style={{ background: 'rgba(255,190,0,0.1)', border: '1px solid rgba(255,190,0,0.3)', color: '#FFBE00' }}>
-          📲 Installer le livret sur mon écran d'accueil
-        </button>
-      )}
-      {!installPrompt && !installe && (
-        <div className="mb-4 px-3 py-2.5 rounded-xl text-xs text-white/50 text-center"
-             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          📱 iPhone : Menu <strong className="text-white/70">Partager</strong> → <strong className="text-white/70">Ajouter à l'écran d'accueil</strong>
-        </div>
-      )}
+      {/* Guide installation PWA — détecte automatiquement iOS / Android / Samsung */}
+      <BandeauInstall />
 
       {/* Carte profil */}
       {!modeEdition && profilComplet && (
