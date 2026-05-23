@@ -245,6 +245,32 @@ function DocUpload({ label, icone = '📎', valeur, onChange }) {
   )
 }
 
+/**
+ * Accordéon réutilisable — style dark app, chevron animé, un seul ouvert à la fois
+ */
+function Accordeon({ titre, ouvert, onToggle, children }) {
+  return (
+    <div className="rounded-xl overflow-hidden mb-2"
+         style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${ouvert ? 'rgba(255,190,0,0.30)' : 'rgba(255,255,255,0.08)'}`, transition: 'border-color 0.2s' }}>
+      <button
+        className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left tap-scale"
+        onClick={onToggle}
+      >
+        <span className="text-xs font-extrabold text-white leading-snug flex-1">{titre}</span>
+        <span className="text-[10px] shrink-0 transition-transform duration-250"
+              style={{ color: ouvert ? '#FFBE00' : 'rgba(255,255,255,0.35)', transform: ouvert ? 'rotate(180deg)' : 'none' }}>
+          ▼
+        </span>
+      </button>
+      {ouvert && (
+        <div className="px-4 pb-4 pt-1 border-t border-white/[0.06] space-y-3">
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Profil({ ouvrirPresentation }) {
   const [profil, setProfil] = useLocalStorage('pw_profil', {})
   const [photo, setPhoto] = useLocalStorage('pw_photo', null)
@@ -261,6 +287,8 @@ export default function Profil({ ouvrirPresentation }) {
   const [modeEdition, setModeEdition] = useState(!profil.nom)
   const [draft, setDraft] = useState(profil)
   const [showPresentation, setShowPresentation] = useState(!!ouvrirPresentation)
+  const [accordeonOuvert, setAccordeonOuvert] = useState(null)
+  const [alerteVue, setAlerteVue] = useLocalStorage('pw_preambule_alerte_vue', null)
   const fileRef = useRef()
 
   useEffect(() => {
@@ -488,6 +516,224 @@ export default function Profil({ ouvrirPresentation }) {
               💡 Ajoute tes documents dès maintenant pour les avoir toujours disponibles — même sans internet.
             </p>
           </div>
+        )}
+      </div>
+
+      {/* ── PRÉAMBULE ──────────────────────────────────────────── */}
+      <div className="rounded-2xl p-4 mb-4"
+           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: '#FFBE00' }}>
+            📖 Préambule
+          </p>
+          {!alerteVue && (
+            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full animate-pulse"
+                  style={{ background: 'rgba(255,190,0,0.15)', color: '#FFBE00', border: '1px solid rgba(255,190,0,0.4)' }}>
+              À lire
+            </span>
+          )}
+        </div>
+        <p className="text-[10px] text-white/45 mb-4 leading-relaxed">
+          Lis cette section au moins une fois — elle t'explique comment fonctionne ce livret, comment tes progrès sont évalués, et comment se déroule l'examen.
+        </p>
+
+        {/* Accordéon 1 */}
+        <Accordeon
+          titre="🚗 Pourquoi mieux apprendre à conduire ?"
+          ouvert={accordeonOuvert === 0}
+          onToggle={() => setAccordeonOuvert(accordeonOuvert === 0 ? null : 0)}
+        >
+          <p className="text-xs text-white/80 leading-relaxed">
+            Tu as déjà eu le permis. Tu connais la route, ses règles, ses contraintes. Tu n'es pas quelqu'un qui découvre tout.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            Et pourtant, tu es là — à reprendre une formation, à repartir de zéro administrativement. Peut-être suite à une perte de points, une suspension, une annulation. Quelle qu'en soit la raison, cette étape est une vraie opportunité : celle de remettre à plat des habitudes, de regarder honnêtement ce qui n'allait pas, et de repartir avec des bases solides.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            La route reste dangereuse. Et elle ne pardonne pas l'excès de confiance.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            En France, des milliers de personnes perdent la vie chaque année sur la route, et des dizaines de milliers sont blessées — parfois grièvement, parfois à vie. Derrière chaque accident, il y a rarement une fatalité. Il y a le plus souvent un enchaînement de mauvais choix : vitesse mal gérée, alcool, stupéfiants, fatigue ignorée, téléphone, inattention d'une fraction de seconde.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            Ce que la route ne pardonne pas, c'est le sentiment de "déjà savoir". Ce sentiment que tu as peut-être eu — comme beaucoup — avant que quelque chose se passe.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            Conduire en sécurité n'est pas un acquis définitif. C'est une compétence qui s'entretient, une attention constante à soi, aux autres, à l'environnement. Ce livret ne te demande pas de tout réapprendre comme si tu étais débutant. Il te demande quelque chose de plus exigeant : regarder honnêtement ce que tu maîtrises vraiment, identifier ce qui reste fragile, et travailler précisément là où c'est nécessaire.
+          </p>
+          <p className="text-xs font-semibold leading-relaxed" style={{ color: '#FFBE00' }}>
+            Pour toi. Et pour tous ceux qui partagent la route avec toi.
+          </p>
+        </Accordeon>
+
+        {/* Accordéon 2 */}
+        <Accordeon
+          titre="📘 Quelle est l'utilité du livret d'apprentissage ?"
+          ouvert={accordeonOuvert === 1}
+          onToggle={() => setAccordeonOuvert(accordeonOuvert === 1 ? null : 1)}
+        >
+          <p className="text-xs text-white/80 leading-relaxed">
+            Le livret d'apprentissage est un document obligatoire pour tout candidat au permis B, y compris en candidat libre. Tu dois l'avoir avec toi dans le véhicule lors de chaque séance de conduite sur voie ouverte.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed">
+            Il peut être présenté à l'inspecteur (sur demande) le jour de l'épreuve pratique. Sa présentation est obligatoire lors des contrôles par les forces de l'ordre pendant tes séances d'entraînement.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed mb-1">
+            Au-delà de l'obligation réglementaire, ce livret numérique est ton outil de pilotage personnel. Il te permet de :
+          </p>
+          {[
+            'visualiser précisément où tu en es sur chacune des 30 sous-compétences du programme REMC',
+            'préparer chaque séance de façon ciblée et efficace avec ton accompagnateur',
+            'mesurer ta progression dans le temps, séance après séance',
+            'identifier ce qui reste à consolider avant de te présenter à l\'examen',
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-[10px] mt-0.5 shrink-0" style={{ color: '#FFBE00' }}>—</span>
+              <p className="text-xs text-white/80 leading-relaxed">{item}</p>
+            </div>
+          ))}
+          <p className="text-xs text-white/80 leading-relaxed mt-1">
+            Aucun volume minimum d'heures n'est exigé. Ce qui compte, c'est la maîtrise réelle des compétences — et ce livret est là pour en garder la trace rigoureuse.
+          </p>
+        </Accordeon>
+
+        {/* Accordéon 3 */}
+        <Accordeon
+          titre="📊 Comment sont évalués mes progrès ?"
+          ouvert={accordeonOuvert === 2}
+          onToggle={() => setAccordeonOuvert(accordeonOuvert === 2 ? null : 2)}
+        >
+          <p className="text-xs text-white/80 leading-relaxed mb-3">
+            Ta progression est mesurée selon 4 niveaux, définis par le REMC :
+          </p>
+          {/* Tableau des 4 niveaux */}
+          <div className="rounded-xl overflow-hidden mb-3"
+               style={{ border: '1px solid rgba(255,255,255,0.10)' }}>
+            {[
+              { symbole: '',  bg: 'transparent',           border: 'rgba(255,255,255,0.22)', label: 'Non abordé',    desc: 'pas encore travaillé' },
+              { symbole: '/', bg: 'rgba(249,115,22,0.15)', border: 'rgba(249,115,22,0.6)',   label: 'Abordé',        desc: 'travaillé mais pas encore maîtrisé', color: '#fb923c' },
+              { symbole: 'X', bg: 'rgba(255,190,0,0.15)',  border: 'rgba(255,190,0,0.7)',    label: 'Traité',        desc: 'acquis dans la plupart des situations', color: '#FFBE00' },
+              { symbole: '■', bg: 'rgba(29,158,117,0.25)', border: 'rgba(29,158,117,0.7)',   label: 'Maîtrisé',     desc: 'restitué systématiquement et en autonomie', color: '#34d399' },
+            ].map((n, i) => (
+              <div key={i} className="flex items-center gap-3 px-3 py-2.5"
+                   style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none', background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
+                <div className="w-6 h-6 rounded flex items-center justify-center text-xs font-extrabold shrink-0"
+                     style={{ background: n.bg, border: `2px solid ${n.border}`, color: n.color || 'transparent' }}>
+                  {n.symbole}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-white">{n.label}</p>
+                  <p className="text-[10px] text-white/50">{n.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-white/80 leading-relaxed mb-1">
+            Pour chaque sous-compétence, 3 dimensions sont évaluées par l'inspecteur le jour de l'examen :
+          </p>
+          {[
+            'Analyse des situations : tu perçois et comprends ce qui se passe autour de toi',
+            'Adaptation aux situations : tu ajustes ta conduite en temps réel',
+            'Autonomie : tu agis de façon préventive, sans avoir besoin d\'être guidé',
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-[10px] mt-0.5 shrink-0" style={{ color: '#FFBE00' }}>—</span>
+              <p className="text-xs text-white/80 leading-relaxed">{item}</p>
+            </div>
+          ))}
+          <p className="text-xs text-white/70 leading-relaxed mt-2">
+            Deux éléments supplémentaires peuvent rapporter chacun 1 point bonus à l'examen : la courtoisie envers les autres usagers, et la conduite économique et respectueuse de l'environnement.
+          </p>
+        </Accordeon>
+
+        {/* Accordéon 4 */}
+        <Accordeon
+          titre="🎯 Quel programme de formation ?"
+          ouvert={accordeonOuvert === 3}
+          onToggle={() => setAccordeonOuvert(accordeonOuvert === 3 ? null : 3)}
+        >
+          <p className="text-xs text-white/80 leading-relaxed">
+            Ta formation au permis B s'organise autour de 4 compétences et 30 sous-compétences, définies par le REMC — le Référentiel pour l'Éducation à une Mobilité Citoyenne, mis en place par l'arrêté du 13 mai 2013 en remplacement de l'ancien Programme National de Formation (PNF).
+          </p>
+          {[
+            { id: 'C1', titre: 'Maîtriser le véhicule', detail: 'trafic faible ou nul — 9 sous-compétences', texte: "Prise en main, commandes, vérifications, trajectoires, manœuvres de base. Pour la grande majorité des candidats libres qui ont déjà conduit, les automatismes sont là. Ce livret te permet de le confirmer rapidement et de passer à l'essentiel.", color: '#4dabff', bg: 'rgba(0,102,204,0.12)' },
+            { id: 'C2', titre: 'Appréhender la route', detail: 'circulation normale — 7 sous-compétences', texte: "Signalisation, positionnement, intersections, priorités, stationnement. C'est souvent ici que se nichent les erreurs les plus fréquentes à l'examen — des règles précises que l'habitude a parfois déformées.", color: '#ff77cc', bg: 'rgba(230,0,126,0.12)' },
+            { id: 'C3', titre: 'Conditions difficiles', detail: 'partage de la route — 7 sous-compétences', texte: "Voie rapide, visibilité réduite, trafic dense, autres usagers. Les situations que l'on croit maîtriser parce qu'on les a vécues — et qui méritent pourtant d'être retravaillées avec un regard neuf.", color: '#ffbb55', bg: 'rgba(255,153,0,0.12)' },
+            { id: 'C4', titre: 'Conduite autonome', detail: 'sûre et économique — 7 sous-compétences', texte: "Itinéraire en autonomie, facteurs de risque, conduite à tenir face à un accident (protéger / alerter / secourir), aides embarquées, écoconduite. Une compétence souvent sous-estimée, qui fait la différence le jour J.", color: '#33cc66', bg: 'rgba(0,153,51,0.12)' },
+          ].map(g => (
+            <div key={g.id} className="rounded-xl p-3"
+                 style={{ background: g.bg, border: `1px solid ${g.color}30` }}>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white"
+                      style={{ background: g.color.replace('ff', '99') }}>
+                  {g.id}
+                </span>
+                <p className="text-xs font-extrabold text-white">{g.titre}</p>
+              </div>
+              <p className="text-[10px] mb-1.5" style={{ color: g.color }}>{g.detail}</p>
+              <p className="text-[10px] text-white/70 leading-relaxed">{g.texte}</p>
+            </div>
+          ))}
+          <p className="text-xs text-white/70 leading-relaxed">
+            Ces 4 compétences sont progressives — mais en tant que candidat libre avec une expérience de conduite, tu n'es pas obligé de les parcourir dans l'ordre. Ce livret t'aide à identifier précisément ce qui est déjà solide, et à concentrer ton énergie là où c'est vraiment nécessaire.
+          </p>
+        </Accordeon>
+
+        {/* Accordéon 5 */}
+        <Accordeon
+          titre="🏁 Comment se déroule l'examen ?"
+          ouvert={accordeonOuvert === 4}
+          onToggle={() => setAccordeonOuvert(accordeonOuvert === 4 ? null : 4)}
+        >
+          <p className="text-xs text-white/80 leading-relaxed">
+            L'épreuve pratique est présentée individuellement, évaluée par un inspecteur du permis de conduire et de la sécurité routière (IPCSR). Elle dure <strong className="text-white">32 minutes</strong>.
+          </p>
+          <p className="text-xs text-white/80 leading-relaxed mb-1">Elle comprend :</p>
+          {[
+            'une phase de conduite d\'au moins 25 minutes',
+            '2 manœuvres : un freinage pour s\'arrêter avec précision + une manœuvre particulière (marche arrière, stationnement en bataille, créneau… selon ce que l\'inspecteur choisit)',
+            'la vérification d\'un élément technique à l\'intérieur ou à l\'extérieur du véhicule',
+            'une question sur la sécurité routière',
+            'une question sur les premiers secours',
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-[10px] mt-0.5 shrink-0" style={{ color: '#FFBE00' }}>—</span>
+              <p className="text-xs text-white/80 leading-relaxed">{item}</p>
+            </div>
+          ))}
+          <div className="mt-3 px-3 py-2.5 rounded-xl"
+               style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.2)' }}>
+            <p className="text-[10px] font-extrabold text-white mb-1.5">🪪 Spécificités candidat libre</p>
+            <p className="text-[10px] text-white/70 leading-relaxed">
+              Tu dois fournir toi-même un véhicule équipé de double commande conforme à la réglementation. Tu déclares lors de la réservation sur RdvPermis le proche qui t'accompagnera ce jour-là — il doit avoir le permis B, ne pas être professionnel de l'éducation routière, et le lien doit être établi par attestation sur l'honneur.
+            </p>
+          </div>
+          <div className="mt-2 px-3 py-2.5 rounded-xl"
+               style={{ background: 'rgba(29,158,117,0.08)', border: '1px solid rgba(29,158,117,0.25)' }}>
+            <p className="text-[10px] font-extrabold text-white mb-1">✅ Pour être reçu</p>
+            <p className="text-[10px] text-white/70 leading-relaxed">
+              Obtenir <strong className="text-white">20 points ou plus sur 31</strong>, sans commettre d'erreur éliminatoire (franchissement ligne continue, circulation à contresens, non-respect d'un signal prescrivant l'arrêt…).
+            </p>
+          </div>
+          <p className="text-[10px] text-white/50 leading-relaxed mt-2">
+            ℹ️ L'inspecteur ne communique pas le résultat oralement. Tu le consultes en ligne dès le lendemain sur le site de l'ANTS.
+          </p>
+        </Accordeon>
+
+        {/* Bouton "J'ai lu" */}
+        {!alerteVue ? (
+          <button
+            onClick={() => setAlerteVue('1')}
+            className="w-full mt-3 py-3 rounded-full text-sm font-extrabold tap-scale glow-yellow"
+            style={{ background: '#FFBE00', color: '#07111f' }}
+          >
+            ✓ J'ai lu le préambule
+          </button>
+        ) : (
+          <p className="text-center text-[10px] mt-3" style={{ color: '#33cc66' }}>
+            ✓ Préambule lu
+          </p>
         )}
       </div>
 
