@@ -7,11 +7,37 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
-export default function ModePresentation({ profil, photo, etats, seances, onQuitter }) {
+/** Miniature d'un document — image ou icône PDF */
+function MiniDoc({ label, valeur }) {
+  if (!valeur) return null
+  const isImage = valeur.startsWith('data:image')
+  return (
+    <div className="flex items-start gap-3 mb-3">
+      {isImage ? (
+        <img src={valeur} alt={label}
+             className="w-20 h-14 object-cover rounded-lg flex-shrink-0"
+             style={{ border: '1px solid #ddd' }} />
+      ) : (
+        <div className="w-14 h-14 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
+             style={{ background: '#f9f9f9', border: '1px solid #ddd' }}>
+          📄
+        </div>
+      )}
+      <div className="flex-1 min-w-0 pt-1">
+        <p className="text-[10px] font-extrabold uppercase tracking-wide text-gray-500 mb-0.5">{label}</p>
+        <p className="text-xs font-semibold" style={{ color: '#1d9e75' }}>✓ Document fourni</p>
+      </div>
+    </div>
+  )
+}
+
+export default function ModePresentation({ profil, photo, etats, seances, docs = {}, onQuitter }) {
   const dernSeance = seances[0] || null
   const pctGlobal = Math.round(
     COMPETENCES_PW.reduce((sum, g) => sum + (progressGroupe(g.id, etats) * g.poids / 100), 0)
   )
+
+  const hasAnyDoc = Object.values(docs).some(Boolean)
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto" style={{ background: '#ffffff', color: '#0D0D0D', fontFamily: 'Montserrat, sans-serif' }}>
@@ -68,20 +94,54 @@ export default function ModePresentation({ profil, photo, etats, seances, onQuit
           </div>
         </div>
 
-        {/* Bloc 2 — Progression des compétences */}
+        {/* Bloc 2 — Documents obligatoires */}
+        {hasAnyDoc && (
+          <div className="mb-5 p-4 rounded-xl" style={{ background: '#f9f9f9', border: '1px solid #e5e5e5', borderLeft: '4px solid #FFBE00' }}>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-gray-500 mb-4">
+              Documents obligatoires
+            </p>
+
+            {docs.aipc && (
+              <>
+                <p className="text-[9px] font-extrabold uppercase tracking-wide text-gray-400 mb-2">Candidat</p>
+                <MiniDoc label="AIPC ou récépissé de dépôt" valeur={docs.aipc} />
+              </>
+            )}
+
+            {(docs.charte || docs.attestation || docs.permisRecto || docs.permisVerso) && (
+              <>
+                <p className="text-[9px] font-extrabold uppercase tracking-wide text-gray-400 mb-2 mt-3">Accompagnateur·rice</p>
+                <MiniDoc label="Charte de l'accompagnateur"             valeur={docs.charte} />
+                <MiniDoc label="Attestation sur l'honneur (lien parenté)" valeur={docs.attestation} />
+                <MiniDoc label="Permis de conduire — Recto"              valeur={docs.permisRecto} />
+                <MiniDoc label="Permis de conduire — Verso"              valeur={docs.permisVerso} />
+              </>
+            )}
+
+            <p className="text-[9px] text-gray-400 mt-3 leading-relaxed italic">
+              À présenter en cas de contrôle routier et le jour de l'examen pratique.
+            </p>
+          </div>
+        )}
+
+        {/* Bloc 3 — Progression des compétences */}
         <div className="mb-5 p-4 rounded-xl" style={{ background: '#f9f9f9', border: '1px solid #e5e5e5', borderLeft: '4px solid #FFBE00' }}>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-gray-500">Progression</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-gray-500">Progression REMC</p>
             <span className="text-sm font-extrabold" style={{ color: '#1d9e75' }}>{pctGlobal}% validé</span>
           </div>
           <div className="space-y-2.5">
             {COMPETENCES_PW.map(g => {
               const pct = progressGroupe(g.id, etats)
-              const COLORS_PRINT = { blue: '#3b82f6', purple: '#a855f7', orange: '#f97316', green: '#1d9e75' }
+              const COLORS_PRINT = { blue: '#0066cc', purple: '#e6007e', orange: '#ff9900', green: '#009933' }
               return (
                 <div key={g.id}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-semibold text-gray-700">{g.emoji} {g.titre}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded text-[8px] font-extrabold text-white"
+                            style={{ background: COLORS_PRINT[g.couleur] }}>{g.id}</span>
+                      <span className="text-xs font-semibold text-gray-700">{g.emoji} {g.titre}</span>
+                    </div>
                     <span className="text-xs font-bold text-gray-600">{pct}%</span>
                   </div>
                   <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#e5e5e5' }}>
@@ -93,7 +153,7 @@ export default function ModePresentation({ profil, photo, etats, seances, onQuit
           </div>
         </div>
 
-        {/* Bloc 3 — Dernière séance */}
+        {/* Bloc 4 — Dernière séance */}
         {dernSeance && (
           <div className="mb-5 p-4 rounded-xl" style={{ background: '#f9f9f9', border: '1px solid #e5e5e5', borderLeft: '4px solid #FFBE00' }}>
             <p className="text-[10px] font-extrabold uppercase tracking-widest text-gray-500 mb-3">Dernière séance validée</p>
@@ -102,7 +162,9 @@ export default function ModePresentation({ profil, photo, etats, seances, onQuit
                 <p className="text-sm font-bold text-gray-900">{formatDate(dernSeance.date)}</p>
                 <p className="text-xs text-gray-600">
                   {dernSeance.km ? `${dernSeance.km} km parcourus` : ''}
-                  {dernSeance.lieu ? ` · ${dernSeance.lieu}` : ''}
+                  {dernSeance.villes?.length
+                    ? ` · ${dernSeance.villes.join(', ')}`
+                    : dernSeance.lieu ? ` · ${dernSeance.lieu}` : ''}
                 </p>
               </div>
             </div>

@@ -1,4 +1,4 @@
-// Onglet 4 — Profil candidat (V1.0 — champs étendus + mode présentation)
+// Onglet 4 — Profil candidat (V1.4 — documents obligatoires)
 import { useState, useRef, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import ModePresentation from './ModePresentation'
@@ -14,11 +14,104 @@ const CHAMPS = [
   { id: 'email',         label: 'Email',                    type: 'email', placeholder: 'karim.dupont@email.fr' },
 ]
 
+/**
+ * Composant d'upload d'un document (photo ou PDF)
+ * Stocké en base64 dans localStorage
+ */
+function DocUpload({ label, icone = '📎', valeur, onChange }) {
+  const refFile = useRef()
+
+  const handleFile = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 3 * 1024 * 1024) {
+      alert('Ce fichier est trop lourd (max 3 Mo). Prends une photo directement ou compresse le document.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = ev => onChange(ev.target.result)
+    reader.readAsDataURL(file)
+  }
+
+  const isImage = valeur?.startsWith('data:image')
+
+  return (
+    <div className="mb-3">
+      {valeur ? (
+        <div className="rounded-xl p-3 flex items-center gap-3"
+             style={{ background: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.4)' }}>
+          {isImage ? (
+            <img src={valeur} alt={label}
+                 className="h-14 w-14 min-w-[56px] rounded-lg object-cover"
+                 style={{ border: '1px solid rgba(255,255,255,0.15)' }} />
+          ) : (
+            <div className="h-14 w-14 min-w-[56px] rounded-lg flex items-center justify-center text-2xl"
+                 style={{ background: 'rgba(255,255,255,0.08)' }}>
+              📄
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-0.5">
+              {label}
+            </p>
+            <p className="text-xs font-semibold" style={{ color: '#33cc66' }}>✓ Document ajouté</p>
+          </div>
+          <div className="flex flex-col gap-1.5 shrink-0">
+            <button
+              onClick={() => refFile.current.click()}
+              className="text-[10px] px-2 py-1 rounded-full font-bold"
+              style={{ background: 'rgba(255,190,0,0.15)', color: '#FFBE00', border: '1px solid rgba(255,190,0,0.35)' }}
+            >
+              ↺ Changer
+            </button>
+            <button
+              onClick={() => onChange(null)}
+              className="text-[10px] px-2 py-1 rounded-full font-bold"
+              style={{ background: 'rgba(248,113,113,0.12)', color: '#f87171', border: '1px solid rgba(248,113,113,0.3)' }}
+            >
+              × Retirer
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => refFile.current.click()}
+          className="w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all tap-scale"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '2px dashed rgba(255,255,255,0.16)',
+            color: 'rgba(255,255,255,0.55)',
+          }}
+        >
+          <span className="text-lg">{icone}</span>
+          <span>{label}</span>
+        </button>
+      )}
+      <input
+        ref={refFile}
+        type="file"
+        accept="image/*,application/pdf"
+        capture="environment"
+        className="hidden"
+        onChange={handleFile}
+      />
+    </div>
+  )
+}
+
 export default function Profil({ ouvrirPresentation }) {
   const [profil, setProfil] = useLocalStorage('pw_profil', {})
   const [photo, setPhoto] = useLocalStorage('pw_photo', null)
   const [etats] = useLocalStorage('pw_competences', {})
   const [seances] = useLocalStorage('pw_seances', [])
+
+  // Documents obligatoires
+  const [docAipc, setDocAipc]               = useLocalStorage('pw_doc_aipc', null)
+  const [docCharte, setDocCharte]            = useLocalStorage('pw_doc_charte', null)
+  const [docAttestation, setDocAttestation] = useLocalStorage('pw_doc_attestation', null)
+  const [docPermisRecto, setDocPermisRecto] = useLocalStorage('pw_doc_permis_recto', null)
+  const [docPermisVerso, setDocPermisVerso] = useLocalStorage('pw_doc_permis_verso', null)
+
   const [modeEdition, setModeEdition] = useState(!profil.nom)
   const [draft, setDraft] = useState(profil)
   const [installPrompt, setInstallPrompt] = useState(null)
@@ -53,11 +146,22 @@ export default function Profil({ ouvrirPresentation }) {
     if (outcome === 'accepted') { setInstalle(true); setInstallPrompt(null) }
   }
 
+  const docs = {
+    aipc: docAipc,
+    charte: docCharte,
+    attestation: docAttestation,
+    permisRecto: docPermisRecto,
+    permisVerso: docPermisVerso,
+  }
+
+  const nbDocs = Object.values(docs).filter(Boolean).length
+
   // Mode présentation plein écran fond blanc
   if (showPresentation) {
     return (
       <ModePresentation
         profil={profil} photo={photo} etats={etats} seances={seances}
+        docs={docs}
         onQuitter={() => setShowPresentation(false)}
       />
     )
@@ -76,7 +180,7 @@ export default function Profil({ ouvrirPresentation }) {
 
       {/* Bouton mode présentation */}
       <button onClick={() => setShowPresentation(true)}
-              className="w-full mb-4 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              className="w-full mb-3 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
               style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.4)', color: '#FFBE00' }}>
         🪪 Mode présentation — Contrôle / Examen
       </button>
@@ -84,7 +188,7 @@ export default function Profil({ ouvrirPresentation }) {
       {/* PWA install */}
       {installPrompt && !installe && (
         <button onClick={handleInstall}
-                className="w-full mb-4 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
+                className="w-full mb-3 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
                 style={{ background: 'rgba(255,190,0,0.1)', border: '1px solid rgba(255,190,0,0.3)', color: '#FFBE00' }}>
           📲 Installer le livret sur mon écran d'accueil
         </button>
@@ -193,13 +297,82 @@ export default function Profil({ ouvrirPresentation }) {
       {/* Modifier profil */}
       {!modeEdition && profilComplet && (
         <button onClick={() => { setDraft(profil); setModeEdition(true) }}
-                className="w-full mt-2 py-2.5 rounded-full text-xs font-bold transition-all"
+                className="w-full mb-5 py-2.5 rounded-full text-xs font-bold transition-all"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }}>
           ✏️ Modifier mon profil
         </button>
       )}
 
-      <p className="text-center text-[10px] text-white/25 mt-5 leading-relaxed">
+      {/* ── DOCUMENTS OBLIGATOIRES ─────────────────────────────── */}
+      <div className="rounded-2xl p-4 mb-4"
+           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: '#FFBE00' }}>
+            📂 Documents obligatoires
+          </p>
+          {nbDocs > 0 && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(29,158,117,0.2)', color: '#33cc66', border: '1px solid rgba(29,158,117,0.4)' }}>
+              {nbDocs}/5 ajouté{nbDocs > 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
+        <p className="text-[10px] text-white/45 mb-4 leading-relaxed">
+          À présenter aux forces de l'ordre en cas de contrôle et le jour de l'examen.
+          Visibles dans le Mode Présentation.
+        </p>
+
+        {/* Document candidat */}
+        <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-2">
+          📋 Document du candidat
+        </p>
+        <DocUpload
+          label="AIPC ou récépissé de dépôt de dossier"
+          icone="🪪"
+          valeur={docAipc}
+          onChange={setDocAipc}
+        />
+
+        {/* Documents accompagnateur */}
+        <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-2 mt-4">
+          👥 Documents de l'accompagnateur
+        </p>
+        <DocUpload
+          label="Charte de l'accompagnateur"
+          icone="📝"
+          valeur={docCharte}
+          onChange={setDocCharte}
+        />
+        <DocUpload
+          label="Attestation sur l'honneur (lien personnel/parenté)"
+          icone="📜"
+          valeur={docAttestation}
+          onChange={setDocAttestation}
+        />
+        <DocUpload
+          label="Photo recto du permis de l'accompagnateur"
+          icone="🪪"
+          valeur={docPermisRecto}
+          onChange={setDocPermisRecto}
+        />
+        <DocUpload
+          label="Photo verso du permis de l'accompagnateur"
+          icone="🔄"
+          valeur={docPermisVerso}
+          onChange={setDocPermisVerso}
+        />
+
+        {nbDocs < 5 && (
+          <div className="mt-3 px-3 py-2.5 rounded-xl"
+               style={{ background: 'rgba(255,190,0,0.06)', border: '1px solid rgba(255,190,0,0.15)' }}>
+            <p className="text-[10px] text-white/55 leading-relaxed">
+              💡 Ajoute tes documents dès maintenant pour les avoir toujours disponibles — même sans internet.
+            </p>
+          </div>
+        )}
+      </div>
+
+      <p className="text-center text-[10px] text-white/25 mt-2 leading-relaxed">
         Données conservées uniquement sur ton téléphone<br />
         Permis Webi © 2026 — Marion Falquerho
       </p>

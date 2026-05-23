@@ -1,15 +1,31 @@
 /**
- * Onglet Séances — V1.3
- * - Heure : input numérique natif (clavier du téléphone, comme les km)
- * - Accompagnateur : dropdown stylisé avec pré-sélection du dernier utilisé
- * - Étape 2 : vignettes de groupes → sous-compétences (sans préfixe)
- * - Liste des séances : toujours dépliée, compétences regroupées par groupe
+ * Onglet Séances — V1.4
+ * - Auto-advance HH → MM (focus automatique après 2 chiffres)
+ * - Note /10 + emoji pour "Comment tu t'es senti·e au volant ?"
+ * - Micro vocal (Web Speech API) sur les champs de débrief
+ * - "SÉLECTIONNER ou AJOUTER" sur le dropdown accompagnateur
+ * - Multi-villes avec tags (champ texte + bouton +)
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, ETATS_PW } from '../data/competences-pw'
 import SignatureCanvas from '../components/SignatureCanvas'
 import { CarreEtat } from './Competences'
+
+// ── Emojis et couleurs pour la note /10 ──────────────────────────────
+const NOTE_CONFIG = [
+  null,
+  { emoji: '😭', color: '#ef4444' },
+  { emoji: '😢', color: '#f87171' },
+  { emoji: '😟', color: '#f97316' },
+  { emoji: '😕', color: '#fb923c' },
+  { emoji: '😐', color: '#eab308' },
+  { emoji: '🙂', color: '#a3e635' },
+  { emoji: '😊', color: '#84cc16' },
+  { emoji: '😄', color: '#4ade80' },
+  { emoji: '😃', color: '#22c55e' },
+  { emoji: '🤩', color: '#10b981' },
+]
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -29,11 +45,13 @@ function newSeance() {
   return {
     id: Date.now(),
     date: new Date().toISOString().split('T')[0],
-    heureDebut: '', heureFin: '', km: '', lieu: '',
+    heureDebut: '', heureFin: '', km: '',
+    villes: [],           // multi-villes sous forme de tableau
     competencesEvaluees: {},
     accompagnateur: { nom: '', prenom: '', numeroPermis: '' },
     signature: null,
     notes: '',
+    noteVolant: 0,        // 0 = non renseigné, 1-10
     debriefRessenti: '', debriefTechnique: '', debriefSuite: '',
   }
 }
@@ -49,32 +67,72 @@ function validerPermis(num) {
   return true
 }
 
+// ── Hook micro vocal (Web Speech API) ────────────────────────────────
+function useMicro() {
+  const [ecoute, setEcoute] = useState(false)
+  const refReco = useRef(null)
+  const supporte = !!(window.SpeechRecognition || window.webkitSpeechRecognition)
+
+  const demarrer = (onResultat) => {
+    if (!supporte) {
+      alert('La commande vocale n\'est pas disponible sur ce navigateur. Essaie avec Chrome.')
+      return
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    const r = new SR()
+    refReco.current = r
+    r.lang = 'fr-FR'
+    r.continuous = false
+    r.interimResults = false
+    r.onresult = (e) => {
+      const texte = e.results[0][0].transcript
+      onResultat(texte)
+      setEcoute(false)
+    }
+    r.onerror = () => setEcoute(false)
+    r.onend = () => setEcoute(false)
+    r.start()
+    setEcoute(true)
+  }
+
+  const arreter = () => {
+    refReco.current?.stop()
+    setEcoute(false)
+  }
+
+  return { ecoute, supporte, demarrer, arreter }
+}
+
 /**
- * Saisie heure numérique — clavier du téléphone comme les km
- * Deux champs number côte à côte (HH et MM)
+ * Saisie heure numérique — clavier natif, auto-passage HH → MM
  */
 function SaisieHeure({ label, value, onChange }) {
   const parts = (value || '').split(':')
   const hVal = parts[0] || ''
   const mVal = parts[1] || ''
+  const refM = useRef(null)
 
   const updateH = (raw) => {
-    const n = parseInt(raw, 10)
     if (raw === '' || raw === null) {
       onChange(mVal ? `00:${mVal}` : '')
       return
     }
+    const n = parseInt(raw, 10)
     if (isNaN(n)) return
     const h = String(Math.min(23, Math.max(0, n))).padStart(2, '0')
     onChange(`${h}:${mVal || '00'}`)
+    // Auto-advance : 2 chiffres saisis OU premier chiffre > 2 (ex : 3,4…9)
+    if (raw.length >= 2 || (raw.length === 1 && n > 2)) {
+      setTimeout(() => refM.current?.focus(), 30)
+    }
   }
 
   const updateM = (raw) => {
-    const n = parseInt(raw, 10)
     if (raw === '' || raw === null) {
       onChange(hVal ? `${hVal}:00` : '')
       return
     }
+    const n = parseInt(raw, 10)
     if (isNaN(n)) return
     const m = String(Math.min(59, Math.max(0, n))).padStart(2, '0')
     onChange(`${hVal || '00'}:${m}`)
@@ -91,10 +149,7 @@ function SaisieHeure({ label, value, onChange }) {
       <label className="text-xs font-bold uppercase tracking-wide text-white/80 mb-1.5 block">{label}</label>
       <div className="flex gap-2 items-center">
         <input
-          type="number"
-          inputMode="numeric"
-          min="0" max="23"
-          placeholder="HH"
+          type="number" inputMode="numeric" min="0" max="23" placeholder="HH"
           value={hVal}
           onChange={e => updateH(e.target.value)}
           className="flex-1 px-2 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none text-center"
@@ -104,10 +159,8 @@ function SaisieHeure({ label, value, onChange }) {
         />
         <span className="text-white font-bold text-xl leading-none">:</span>
         <input
-          type="number"
-          inputMode="numeric"
-          min="0" max="59"
-          placeholder="MM"
+          ref={refM}
+          type="number" inputMode="numeric" min="0" max="59" placeholder="MM"
           value={mVal}
           onChange={e => updateM(e.target.value)}
           className="flex-1 px-2 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none text-center"
@@ -120,12 +173,72 @@ function SaisieHeure({ label, value, onChange }) {
   )
 }
 
+/**
+ * Saisie multi-villes avec tags
+ */
+function VillesTags({ villes = [], onChange }) {
+  const [input, setInput] = useState('')
+  const refInput = useRef(null)
+
+  const ajouter = () => {
+    const v = input.trim()
+    if (!v) return
+    if (!villes.includes(v)) onChange([...villes, v])
+    setInput('')
+    refInput.current?.focus()
+  }
+
+  const retirer = (i) => onChange(villes.filter((_, idx) => idx !== i))
+
+  return (
+    <div>
+      {villes.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {villes.map((v, i) => (
+            <span key={i} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                  style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.35)', color: '#FFBE00' }}>
+              📍 {v}
+              <button onClick={() => retirer(i)}
+                      className="ml-0.5 font-bold leading-none"
+                      style={{ color: 'rgba(255,190,0,0.7)' }}>
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input
+          ref={refInput}
+          type="text" placeholder="Paris 15e, Versailles…"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); ajouter() } }}
+          className="flex-1 px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+          onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+        />
+        <button
+          onClick={ajouter}
+          className="px-3 py-2.5 rounded-xl font-bold text-base tap-scale"
+          style={{ background: 'rgba(255,190,0,0.15)', border: '1px solid rgba(255,190,0,0.4)', color: '#FFBE00' }}
+        >
+          +
+        </button>
+      </div>
+      <p className="text-[9px] text-white/35 mt-1">Tape une ville puis appuie sur + pour en ajouter plusieurs</p>
+    </div>
+  )
+}
+
 export default function Seances({ ouvrirForm }) {
   const [seances, setSeances] = useLocalStorage('pw_seances', [])
   const [etatsGlobal, setEtatsGlobal] = useLocalStorage('pw_competences', {})
   const [vue, setVue] = useState(ouvrirForm ? 'form' : 'liste')
   const [etapeForm, setEtapeForm] = useState(1)
   const [groupeActifSeance, setGroupeActifSeance] = useState(null)
+  const micro = useMicro()
 
   /** Accompagnateurs uniques déjà utilisés (max 5, triés du plus récent) */
   const accompagnateursRecents = useMemo(() => {
@@ -197,6 +310,32 @@ export default function Seances({ ouvrirForm }) {
         setDraft(d => ({ ...d, accompagnateur: { ...accompagnateursRecents[idx] } }))
       }
     }
+  }
+
+  /** Bouton micro — ajoute le texte reconnu à la fin du champ */
+  const BoutonMicro = ({ champKey }) => {
+    const actif = micro.ecoute
+    if (!micro.supporte) return null
+    return (
+      <button
+        type="button"
+        onClick={() =>
+          actif
+            ? micro.arreter()
+            : micro.demarrer(texte =>
+                setDraft(d => ({ ...d, [champKey]: (d[champKey] ? d[champKey] + ' ' : '') + texte }))
+              )
+        }
+        className="absolute right-2 top-2 w-7 h-7 rounded-full flex items-center justify-center text-base transition-all tap-scale"
+        style={{
+          background: actif ? 'rgba(239,68,68,0.25)' : 'rgba(255,190,0,0.12)',
+          border: `1px solid ${actif ? 'rgba(239,68,68,0.6)' : 'rgba(255,190,0,0.35)'}`,
+        }}
+        title={actif ? 'Arrêter l\'écoute' : 'Dicter ce champ'}
+      >
+        {actif ? '⏹' : '🎤'}
+      </button>
+    )
   }
 
   const totalSeances = seances.length
@@ -317,6 +456,7 @@ export default function Seances({ ouvrirForm }) {
       {/* ── FORMULAIRE ──────────────────────────── */}
       {vue === 'form' && (
         <>
+          {/* Indicateur d'étapes */}
           <div className="flex gap-1.5 mb-5">
             {[1, 2, 3].map(e => (
               <div key={e} className="flex-1 h-1 rounded-full transition-all"
@@ -341,7 +481,7 @@ export default function Seances({ ouvrirForm }) {
                          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
                 </Champ>
 
-                {/* Heures numériques — clavier natif */}
+                {/* Heures — auto-advance HH → MM */}
                 <div className="grid grid-cols-2 gap-3">
                   <SaisieHeure label="Heure début" value={draft.heureDebut}
                                onChange={v => setDraft(d => ({ ...d, heureDebut: v }))} />
@@ -349,26 +489,23 @@ export default function Seances({ ouvrirForm }) {
                                onChange={v => setDraft(d => ({ ...d, heureFin: v }))} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <Champ label="Km parcourus">
-                    <input type="number" inputMode="numeric" placeholder="35"
-                           value={draft.km}
-                           onChange={e => setDraft(d => ({ ...d, km: e.target.value }))}
-                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-                  </Champ>
-                  <Champ label="Lieu (ville)">
-                    <input type="text" placeholder="Paris 15e"
-                           value={draft.lieu}
-                           onChange={e => setDraft(d => ({ ...d, lieu: e.target.value }))}
-                           className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-                           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                           onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-                  </Champ>
-                </div>
+                <Champ label="Km parcourus">
+                  <input type="number" inputMode="numeric" placeholder="35"
+                         value={draft.km}
+                         onChange={e => setDraft(d => ({ ...d, km: e.target.value }))}
+                         className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
+                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                         onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
+                         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                </Champ>
+
+                {/* Multi-villes avec tags */}
+                <Champ label="Ville(s) de conduite">
+                  <VillesTags
+                    villes={draft.villes || []}
+                    onChange={v => setDraft(d => ({ ...d, villes: v }))}
+                  />
+                </Champ>
               </div>
               <button onClick={() => setEtapeForm(2)}
                       className="w-full py-3 rounded-full font-extrabold text-sm tap-scale glow-yellow"
@@ -410,15 +547,16 @@ export default function Seances({ ouvrirForm }) {
           {/* ── Étape 3 — Accompagnateur + Débrief ── */}
           {etapeForm === 3 && (
             <div className="space-y-3">
+              {/* Accompagnateur */}
               <div className="rounded-2xl p-4"
                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
                 <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
                   👥 Accompagnateur·rice
                 </p>
 
-                {/* Dropdown de sélection rapide */}
+                {/* Dropdown — SÉLECTIONNER ou AJOUTER */}
                 {accompagnateursRecents.length > 0 && (
-                  <Champ label="Sélectionner">
+                  <Champ label="SÉLECTIONNER ou AJOUTER">
                     <select
                       value={accompSelectValue}
                       onChange={handleSelectAccomp}
@@ -435,7 +573,7 @@ export default function Seances({ ouvrirForm }) {
                           {a.prenom} {a.nom}{a.numeroPermis ? ` (${a.numeroPermis})` : ''}
                         </option>
                       ))}
-                      <option value="autre">+ Autre personne...</option>
+                      <option value="autre">+ Ajouter une nouvelle personne…</option>
                     </select>
                   </Champ>
                 )}
@@ -505,27 +643,69 @@ export default function Seances({ ouvrirForm }) {
               {/* Débrief */}
               <div className="rounded-2xl p-4"
                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-4" style={{ color: '#FFBE00' }}>
                   ✍️ Débrief de séance
                 </p>
+
+                {/* ── Note /10 avec emoji ── */}
+                <div className="mb-5">
+                  <label className="text-xs font-semibold text-white/80 mb-3 flex items-center gap-1.5">
+                    <span>🌡️</span> Comment tu t'es senti·e au volant ?
+                  </label>
+                  <div className="flex gap-1">
+                    {[1,2,3,4,5,6,7,8,9,10].map(n => {
+                      const cfg = NOTE_CONFIG[n]
+                      const isSelected = draft.noteVolant === n
+                      return (
+                        <button
+                          key={n}
+                          onClick={() => setDraft(d => ({ ...d, noteVolant: n }))}
+                          className="flex-1 aspect-square rounded-lg flex items-center justify-center font-extrabold transition-all tap-scale text-[11px]"
+                          style={{
+                            background: isSelected ? cfg.color : 'rgba(255,255,255,0.06)',
+                            border: `2px solid ${isSelected ? cfg.color : 'rgba(255,255,255,0.10)'}`,
+                            color: isSelected ? '#fff' : 'rgba(255,255,255,0.45)',
+                            fontSize: isSelected ? '18px' : '11px',
+                          }}
+                        >
+                          {isSelected ? cfg.emoji : n}
+                        </button>
+                      )
+                    })}
+                  </div>
+                  {draft.noteVolant > 0 && (
+                    <p className="text-xs text-center mt-2 font-bold"
+                       style={{ color: NOTE_CONFIG[draft.noteVolant].color }}>
+                      {NOTE_CONFIG[draft.noteVolant].emoji} Note : {draft.noteVolant}/10
+                    </p>
+                  )}
+                </div>
+
+                {/* Champs de débrief avec micro vocal */}
                 {[
-                  { key: 'debriefRessenti',  emoji: '🌡️', q: 'Comment tu t\'es senti·e au volant ?' },
                   { key: 'debriefTechnique', emoji: '🔧', q: 'Ce qui était difficile / ce qui s\'est bien passé ?' },
                   { key: 'debriefSuite',     emoji: '🎯', q: 'Sur quoi te concentrer à la prochaine séance ?' },
                 ].map(({ key, emoji, q }) => (
-                  <div key={key} className="mb-3">
+                  <div key={key} className="mb-3 relative">
                     <label className="text-xs font-semibold text-white/80 mb-1 flex items-center gap-1.5">
                       <span>{emoji}</span> {q}
                     </label>
-                    <textarea rows={2} placeholder="..."
-                              value={draft[key]}
-                              onChange={e => setDraft(d => ({ ...d, [key]: e.target.value }))}
-                              className="w-full px-3 py-2 rounded-xl text-xs text-white placeholder-white/30 outline-none resize-none"
-                              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-                              onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
-                              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'} />
+                    <div className="relative">
+                      <textarea
+                        rows={2}
+                        placeholder={micro.supporte ? 'Tape ou dicte avec le micro 🎤' : '...'}
+                        value={draft[key]}
+                        onChange={e => setDraft(d => ({ ...d, [key]: e.target.value }))}
+                        className="w-full px-3 py-2 pr-10 rounded-xl text-xs text-white placeholder-white/30 outline-none resize-none"
+                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
+                        onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
+                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'}
+                      />
+                      <BoutonMicro champKey={key} />
+                    </div>
                   </div>
                 ))}
+
                 <Champ label="Notes libres (optionnel)">
                   <textarea rows={2} placeholder="Consignes, points à retenir..."
                             value={draft.notes}
@@ -535,6 +715,12 @@ export default function Seances({ ouvrirForm }) {
                             onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
                             onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'} />
                 </Champ>
+
+                {micro.supporte && (
+                  <p className="text-[9px] text-white/35 -mt-1">
+                    🎤 Appuie sur le micro pour dicter — fonctionne sur Chrome
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-2">
@@ -577,6 +763,11 @@ export default function Seances({ ouvrirForm }) {
                     .map(sc => ({ ...sc, etat: s.competencesEvaluees[sc.id] }))
                 })).filter(g => g.scs.length > 0)
 
+                // Compatibilité : anciens enregistrements avec lieu (string)
+                const villesStr = s.villes?.length
+                  ? s.villes.join(' · ')
+                  : s.lieu || ''
+
                 return (
                   <div key={s.id} className="rounded-2xl overflow-hidden"
                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
@@ -591,16 +782,24 @@ export default function Seances({ ouvrirForm }) {
                         <p className="text-[10px] text-white/65">
                           {d ? `${d}` : ''}
                           {s.km ? ` · ${s.km} km` : ''}
-                          {s.lieu ? ` · ${s.lieu}` : ''}
+                          {villesStr ? ` · ${villesStr}` : ''}
                           {nbComp > 0 ? ` · ${nbComp} compétence${nbComp > 1 ? 's' : ''}` : ''}
                         </p>
                       </div>
-                      {s.signature && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0"
-                              style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
-                          ✓ Signé
-                        </span>
-                      )}
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        {s.signature && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
+                                style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
+                            ✓ Signé
+                          </span>
+                        )}
+                        {s.noteVolant > 0 && NOTE_CONFIG[s.noteVolant] && (
+                          <span className="text-base leading-none"
+                                title={`Ressenti : ${s.noteVolant}/10`}>
+                            {NOTE_CONFIG[s.noteVolant].emoji}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="px-4 pb-4 pt-3 mt-3 border-t border-white/[0.06] space-y-3">
@@ -657,11 +856,17 @@ export default function Seances({ ouvrirForm }) {
                         </div>
                       )}
 
-                      {(s.debriefRessenti || s.debriefTechnique || s.debriefSuite) && (
+                      {(s.noteVolant > 0 || s.debriefTechnique || s.debriefSuite || s.debriefRessenti) && (
                         <div>
                           <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1.5">Débrief</p>
                           <div className="space-y-1">
-                            {s.debriefRessenti  && <p className="text-xs text-white/80">🌡️ {s.debriefRessenti}</p>}
+                            {s.noteVolant > 0 && NOTE_CONFIG[s.noteVolant] && (
+                              <p className="text-xs text-white/80">
+                                {NOTE_CONFIG[s.noteVolant].emoji} Ressenti au volant : {s.noteVolant}/10
+                              </p>
+                            )}
+                            {/* Rétrocompat séances avec debriefRessenti texte */}
+                            {s.debriefRessenti && <p className="text-xs text-white/80">🌡️ {s.debriefRessenti}</p>}
                             {s.debriefTechnique && <p className="text-xs text-white/80">🔧 {s.debriefTechnique}</p>}
                             {s.debriefSuite     && <p className="text-xs text-white/80">🎯 {s.debriefSuite}</p>}
                           </div>
