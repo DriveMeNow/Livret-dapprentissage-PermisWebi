@@ -1,5 +1,6 @@
-// Données compétences — Version Permis Webi (langage candidat libre, pas jargon REMC)
-// Cible : adultes qui ont DÉJÀ conduit, qui repassent après suspension/annulation/invalidation
+// Données compétences — Référentiel REMC officiel (Arrêté du 29 juillet 2013)
+// Labels et intitulés conformes au Référentiel pour l'Éducation à une Mobilité Citoyenne
+// Cible : adultes candidats libres qui repassent après suspension/annulation/invalidation
 
 export const POIDS_GROUPES = { C1: 35, C2: 30, C3: 25, C4: 10 }
 
@@ -12,52 +13,52 @@ export const COMPETENCES_PW = [
     couleur: 'blue',
     emoji: '🚗',
     poids: 35,
-    description: "Tu as déjà fait tout ça. L'objectif ici n'est pas d'apprendre — c'est de vérifier que les automatismes sont toujours là, et de corriger les mauvaises habitudes qui ont pu s'installer. La plus fréquente : tenir le volant à une main. L'inspecteur retire des points systématiquement.",
+    description: "Tu as déjà conduit — l'objectif ici n'est pas d'apprendre de zéro, c'est de vérifier que les automatismes sont toujours là et de corriger les mauvaises habitudes qui ont pu s'installer. C'est dans ce groupe que les inspecteurs repèrent le plus vite si quelqu'un a vraiment la maîtrise ou s'il fait semblant.",
     sousCompetences: [
       {
         id: 'C1-1',
-        label: "S'installer au poste de conduite",
-        description: "Siège, volant, rétroviseurs, ceinture — dans le bon ordre, avant de démarrer. L'inspecteur observe ça dès le départ. Un siège mal réglé trahit d'emblée une mauvaise habitude.",
+        label: "Connaître les organes et commandes, effectuer les vérifications",
+        description: "Avant de prendre la route, tu dois pouvoir vérifier : niveau d'huile, liquide de refroidissement, pression des pneus, état des feux, niveau de carburant. L'inspecteur peut te demander d'ouvrir le capot et de montrer une vérification. Ce n'est pas une question piège — prépare-le.",
       },
       {
         id: 'C1-2',
-        label: "Démarrer et s'arrêter en souplesse",
-        description: "Gestion de l'embrayage, dosage de l'accélérateur. Pas de à-coups, pas de calage. Si tu cales au démarrage de l'examen, ce n'est pas éliminatoire — mais ça stresse et ça donne une mauvaise impression.",
+        label: "Entrer, s'installer au poste de conduite et en sortir",
+        description: "L'ordre compte : siège → volant → rétroviseurs → ceinture → avant de démarrer. L'inspecteur observe dès que tu t'assieds. Un siège mal réglé, des rétroviseurs non ajustés — ce sont des signaux qu'il note immédiatement.",
       },
       {
         id: 'C1-3',
-        label: "Démarrer en côte",
-        description: "Avec ou sans frein à main, sans reculer. Le démarrage en côte est systématiquement demandé à l'examen. Même sur une côte légère. Travaille-le jusqu'à ce que ce soit automatique.",
+        label: "Tenir, tourner le volant et maintenir la trajectoire",
+        description: "Deux mains, à 9h15 ou 10h10. Le retour semi-glissé (laisser le volant revenir seul après un virage) est autorisé. Ce qui ne l'est pas : conduire à une main, poser le bras sur la portière, tenir le volant par le bas. C'est le défaut le plus fréquent chez les conducteurs expérimentés.",
       },
       {
         id: 'C1-4',
-        label: "Tenir le volant correctement",
-        description: "Deux mains, à 9h15 ou 10h10. Le retour semi-glissé (laisser le volant revenir seul après un virage) est autorisé. Ce qui ne l'est pas : conduire à une main, poser le bras sur la portière, tenir le volant par le bas.",
+        label: "Démarrer et s'arrêter",
+        description: "Démarrage : embrayage progressif, accélérateur dosé, pas de calage. Arrêt : anticipation du freinage, immobilisation propre. Si tu cales au démarrage de l'examen, ce n'est pas éliminatoire — mais ça installe un stress qui peut peser sur la suite.",
       },
       {
         id: 'C1-5',
-        label: "Contrôler, clignoter, agir — dans le bon ordre",
-        description: "À chaque changement de direction : rétroviseur intérieur → rétroviseur latéral → clignotant → angle mort → action. Cet ordre est un point de contrôle systématique à l'examen.",
+        label: "Doser l'accélération et le freinage à diverses allures",
+        description: "Un bon dosage, c'est anticiper — pas réagir dans l'urgence. Freinage progressif (pas de coup de frein brusque), accélération adaptée à la situation. L'inspecteur ressent chaque à-coup. Une conduite souple rassure, une conduite saccadée inquiète.",
       },
       {
         id: 'C1-6',
-        label: "Passer les vitesses au bon régime",
-        description: "Diesel : montez le rapport avant 2 000 tr/min. Essence : avant 2 500 tr/min. Conduire en sur-régime ou en sous-régime (rater les rapports) est pénalisé comme défaut de maîtrise.",
+        label: "Utiliser la boîte de vitesses",
+        description: "Diesel : passer le rapport avant 2 000 tr/min. Essence : avant 2 500 tr/min. Conduire en sur-régime ou en sous-régime (garder trop longtemps un rapport inadapté) est pénalisé. Pour les boîtes automatiques : connaître les positions D, N, P et les modes spécifiques.",
       },
       {
         id: 'C1-7',
-        label: "Marche arrière en ligne droite",
-        description: "Vitesse lente, trajectoire contrôlée, regard porté vers l'arrière (pas sur les rétroviseurs uniquement). La tête qui tourne — pas juste les yeux.",
+        label: "Diriger la voiture en ligne droite et en courbe",
+        description: "Maintenir une trajectoire régulière sans zigzaguer. En courbe : réduire la vitesse avant (pas pendant), adapter la position dans la voie, ne pas couper la ligne centrale. L'inspecteur observe si tu gères la trajectoire ou si tu la subis.",
       },
       {
         id: 'C1-8',
-        label: "Marche arrière en courbe",
-        description: "La trajectoire suit la courbe sans mordre sur le trottoir ni s'éloigner excessivement. L'inspecteur peut demander d'effectuer un créneau ou une manœuvre de stationnement.",
+        label: "Regarder autour de soi et avertir",
+        description: "Le balayage du regard est permanent : rétroviseur intérieur toutes les 5 à 8 secondes, rétroviseurs latéraux avant tout changement de direction. Avertir = klaxon si nécessaire (passage étroit, angle mort d'un autre conducteur) — pas systématiquement. Un conducteur qui ne regarde pas assez est le signal le plus inquiétant pour un inspecteur.",
       },
       {
         id: 'C1-9',
-        label: "Demi-tour en sécurité",
-        description: "3, 5 ou 7 temps selon la largeur de la rue. Toujours s'assurer que la route est dégagée avant de commencer. Ne jamais bloquer la circulation sans raison — si ce n'est pas faisable, passer son chemin.",
+        label: "Effectuer une marche arrière et un demi-tour en sécurité",
+        description: "Marche arrière : vitesse lente, regard porté vers l'arrière (tête tournée, pas seulement les yeux sur les rétroviseurs). Demi-tour : 3, 5 ou 7 temps selon la largeur. Toujours s'assurer que la voie est libre avant de commencer. Ce point est systématiquement demandé à l'examen.",
       },
     ]
   },
@@ -65,56 +66,46 @@ export const COMPETENCES_PW = [
     id: 'C2',
     numero: 2,
     titre: 'Appréhender la route',
-    sousTitre: 'Circulation normale',
+    sousTitre: 'Conditions normales',
     couleur: 'purple',
     emoji: '🛣️',
     poids: 30,
-    description: "C'est la compétence la plus riche en règles et en pièges. Beaucoup de candidats libres se plantent ici — pas parce qu'ils conduisent mal, mais parce qu'ils ont oublié des règles précises. La priorité à droite, les giratoires, les intersections : révise ces points en priorité.",
+    description: "C'est la compétence la plus riche en règles précises. Beaucoup de candidats libres se font piéger ici — pas parce qu'ils conduisent mal, mais parce qu'ils ont oublié des points de code. La priorité à droite, les giratoires, le stationnement : révise ces points en priorité avant l'examen.",
     sousCompetences: [
       {
         id: 'C2-1',
         label: "Rechercher la signalisation et les indices utiles",
-        description: "Méthode PADA : Percevoir / Analyser / Décider / Agir. L'inspecteur observe si tu anticipes ou si tu réagis dans l'urgence. Anticiper = voir loin devant, pas juste le capot.",
+        description: "Méthode PADA : Percevoir → Analyser → Décider → Agir. L'inspecteur observe si tu anticipes ou si tu réagis dans l'urgence. Regarder loin devant (pas juste le capot), identifier les panneaux avant de les passer — pas après. Un conducteur qui se retrouve toujours en réaction subit la route au lieu de la lire.",
       },
       {
         id: 'C2-2',
-        label: "Se positionner correctement sur la chaussée",
-        description: "File de droite par défaut hors dépassement. Ne pas mordre sur les lignes. Positionnement centré dans la voie. Sur route étroite : se déporter légèrement à droite pour laisser de la place.",
+        label: "Positionner le véhicule et choisir la voie de circulation",
+        description: "File de droite par défaut hors dépassement. Ne pas mordre sur les lignes. Positionnement centré dans la voie. Sur route étroite : se déporter légèrement à droite pour laisser de la place aux véhicules venant en face. En ville, anticiper la file correcte bien avant la prochaine intersection.",
       },
       {
         id: 'C2-3',
-        label: "Tourner à droite en sécurité",
-        description: "Serrer à droite, vitesse réduite, priorité aux piétons sur le passage piétons. Ne jamais déboîter à droite depuis la file de gauche sauf indication.",
+        label: "Adapter l'allure aux situations",
+        description: "Les limitations de vitesse sont des plafonds, pas des consignes. 11 situations imposent une réduction (école, marché, chantier, brouillard, pluie, nuit...). L'inspecteur pénalise autant celui qui roule trop vite que celui qui crée des bouchons en roulant trop lentement sans raison.",
       },
       {
         id: 'C2-4',
-        label: "Tourner à gauche en sécurité",
-        description: "Angle mort gauche obligatoire. Attendre que la voie soit dégagée dans les deux sens. Ne pas couper la trajectoire des véhicules venant en face. Piétons prioritaires sur le passage.",
+        label: "Détecter et franchir les intersections selon le régime de priorité",
+        description: "En l'absence de signalisation, tout véhicule venant de ta droite est prioritaire — dans toutes les rues sans panneau, y compris les petites. C'est le point éliminatoire le plus fréquent à l'examen. Un panneau Stop = arrêt complet obligatoire même si la route est libre. Cédez le passage = ralentis et cède si nécessaire.",
       },
       {
         id: 'C2-5',
-        label: "Franchir un carrefour à sens giratoire",
-        description: "Cédez le passage = tu t'arrêtes si nécessaire et tu laisses passer les véhicules déjà engagés. Les véhicules dans le giratoire sont prioritaires. Tu n'es prioritaire que quand tu es dans le rond-point.",
+        label: "Tourner à droite et à gauche en agglomération",
+        description: "À droite : serrer à droite, vitesse réduite, priorité aux piétons sur le passage piétons. À gauche : angle mort gauche obligatoire, attendre que les deux sens soient dégagés, ne pas couper la trajectoire des véhicules en face, piétons prioritaires. Le clignotant s'active avant, pas pendant la manœuvre.",
       },
       {
         id: 'C2-6',
-        label: "Franchir un carrefour avec priorité à droite",
-        description: "En l'absence de signalisation, tout véhicule venant de ta droite est prioritaire. C'est le point éliminatoire le plus fréquent. Il s'applique dans toutes les rues sans panneau — y compris les petites.",
+        label: "Franchir les ronds-points et carrefours à sens giratoire",
+        description: "Cédez le passage à l'entrée = tu laisses passer les véhicules déjà engagés dans le giratoire. Tu n'es prioritaire que quand tu es à l'intérieur du rond-point. Clignotant droit avant de sortir — pas obligatoire légalement, mais fortement attendu à l'examen. Adapter sa vitesse à la taille du giratoire.",
       },
       {
         id: 'C2-7',
-        label: "Adapter son allure à la situation",
-        description: "11 situations réglementaires existent (école, marché, brouillard, pluie...). La vitesse maximale autorisée est un plafond, pas une consigne. Tu peux et dois rouler moins vite quand la situation l'impose.",
-      },
-      {
-        id: 'C2-8',
-        label: "Appliquer les règles aux feux tricolores",
-        description: "Orange = freiner si tu peux le faire en sécurité, pas accélérer. Vert clignotant (rare en France, fréquent à l'étranger). Feu orange clignotant = priorité à droite en vigueur.",
-      },
-      {
-        id: 'C2-9',
-        label: "Maintenir les distances de sécurité",
-        description: "Règle des 2 secondes : choisir un repère fixe, laisser passer 2 secondes après le véhicule devant. Sur autoroute et par mauvais temps : multiplier par 2. Les marques au sol (losanges) indiquent les distances à respecter.",
+        label: "S'arrêter et stationner en épi, en bataille et en créneau",
+        description: "Créneau : la manœuvre la plus demandée. Repères à connaître par rapport à l'espace et aux véhicules encadrants. Épi et bataille : manœuvre en marche avant ou arrière selon les marquages. Dans tous les cas : signaler, vérifier les angles morts, ne pas gêner la circulation. Le stationnement sur trottoir est interdit — toujours.",
       },
     ]
   },
@@ -126,52 +117,42 @@ export const COMPETENCES_PW = [
     couleur: 'orange',
     emoji: '⚠️',
     poids: 25,
-    description: "Ces situations te paraissent peut-être évidentes parce que tu as déjà conduit. Mais l'examen teste ta maîtrise dans des conditions variées — pas juste sur une route dégagée et ensoleillée. La voie rapide, la nuit, la pluie, la densité de circulation : chacune a ses règles propres.",
+    description: "Ces situations paraissent évidentes parce que tu as déjà conduit. Mais l'examen teste ta maîtrise dans des conditions variées — autoroute, nuit, pluie, trafic dense. Chacune a ses règles propres. Et les autres usagers (piétons, vélos, motos) sont souvent le point faible des conducteurs qui ont longtemps conduit seuls.",
     sousCompetences: [
       {
         id: 'C3-1',
-        label: "Dépasser en sécurité",
-        description: "Observation (angle mort + rétroviseurs) / Écart latéral suffisant (1,50 m en agglomération) / Rabattement progressif une fois le véhicule doublé visible dans le rétroviseur intérieur. Ne jamais dépasser à l'approche d'un virage ou d'une crête.",
+        label: "Évaluer et maintenir les distances de sécurité",
+        description: "Règle des 2 secondes : choisir un repère fixe, laisser passer 2 secondes après le véhicule devant. Sur autoroute et par mauvais temps : multiplier par 2. Les losanges jaunes au sol indiquent les distances de sécurité recommandées. En cas de freinage d'urgence, c'est cet espace qui sauve.",
       },
       {
         id: 'C3-2',
-        label: "Croiser correctement",
-        description: "Serrer à droite pour laisser de la place. Sur route étroite, le premier arrivé n'est pas toujours prioritaire — c'est celui qui a la place qui passe. Ne jamais forcer le passage.",
+        label: "Croiser, dépasser, être dépassé",
+        description: "Dépasser : observation (angle mort + rétroviseurs) → écart latéral suffisant (1,50 m minimum en agglomération) → rabattement progressif une fois le véhicule doublé visible dans le rétroviseur intérieur. Ne jamais dépasser à l'approche d'un virage ou d'une crête. Être dépassé : maintenir son allure, ne pas accélérer.",
       },
       {
         id: 'C3-3',
-        label: "Gérer les virages et les déclivités",
-        description: "Réduire la vitesse avant le virage (pas pendant). En descente : moteur frein + freinage progressif. En montée : ne pas changer de vitesse au milieu d'une rampe raide. Rester à droite dans les virages serrés.",
+        label: "Passer des virages et conduire en déclivité",
+        description: "Réduire la vitesse avant le virage, pas pendant. En descente : moteur frein + freinage progressif, ne pas laisser la voiture s'emballer. En montée : ne pas changer de vitesse au milieu d'une rampe raide. Rester à droite dans les virages serrés pour laisser de la place aux véhicules croiseurs.",
       },
       {
         id: 'C3-4',
-        label: "S'insérer sur voie rapide",
-        description: "Accélération sur la bretelle d'accès jusqu'à la vitesse de la circulation. Angle mort obligatoire. Clignotant maintenu jusqu'à l'insertion effective. Ne pas s'arrêter sur la voie d'accélération sauf urgence absolue.",
+        label: "Se comporter avec respect envers les autres usagers",
+        description: "Piétons : toujours prioritaires sur les passages piétons, même si le feu est vert pour toi. Cyclistes : 1,50 m d'écart en agglomération, 1 m hors agglomération — et ne jamais les coincer contre le trottoir. Deux-roues motorisés : angle mort fréquent, regarder deux fois avant tout changement de voie. Respect = sécurité.",
       },
       {
         id: 'C3-5',
-        label: "Sortir de voie rapide",
-        description: "Se rabattre à droite avant la sortie, pas au dernier moment. Freinage sur la bretelle de décélération uniquement — pas sur la voie principale. Réadapter son allure à la signalisation de sortie.",
+        label: "S'insérer, circuler et sortir d'une voie rapide",
+        description: "Insertion : accélérer sur la bretelle d'accès jusqu'à la vitesse de la circulation, angle mort obligatoire, clignotant maintenu jusqu'à l'insertion. Ne pas s'arrêter sur la voie d'accélération. Sortie : se rabattre à droite avant la sortie, freiner sur la bretelle — pas sur la voie principale. Réadapter l'allure à la signalisation.",
       },
       {
         id: 'C3-6',
-        label: "Circuler en trafic dense",
-        description: "Maintenir une distance de sécurité même au ralenti. Ne pas se laisser aspirer par le flot. Anticiper les freinages. En ville, surveiller les deux-roues qui remontent les files entre les voitures.",
+        label: "Conduire dans une file de véhicules et en circulation dense",
+        description: "Maintenir une distance de sécurité même au ralenti. Ne pas se laisser aspirer par le flot — un camion qui freine brusquement peut te surprendre. Anticiper les ralentissements. En ville, surveiller les deux-roues qui remontent les files. Ne jamais occuper le carrefour quand tu ne peux pas le dégager complètement.",
       },
       {
         id: 'C3-7',
-        label: "Conduire par mauvais temps ou de nuit",
-        description: "Pluie : vitesse réduite, distances doublées, feux allumés si visibilité réduite. Nuit : feux de croisement en agglomération, feux de route hors agglomération (dès qu'on ne gêne pas). Brouillard : antibrouillard AR autorisé si visibilité < 50 m.",
-      },
-      {
-        id: 'C3-8',
-        label: "Connaître et respecter les autres usagers",
-        description: "Piétons : toujours prioritaires sur les passages piétons, même si le feu est vert. Cyclistes : 1,50 m d'écart en agglomération, 1 m hors agglomération. Deux-roues motorisés : angle mort fréquent — regarder deux fois avant de changer de voie.",
-      },
-      {
-        id: 'C3-9',
-        label: "Gérer les situations d'urgence",
-        description: "Pneu crevé : ne pas freiner brusquement, tenir le volant des deux mains, ralentir progressivement. Aquaplaning : relâcher l'accélérateur, ne pas freiner, laisser le véhicule reprendre contact. Réflexes à connaître, pas à improviser.",
+        label: "Conduire quand l'adhérence et la visibilité sont réduites",
+        description: "Pluie : vitesse réduite, distances doublées, feux de croisement si visibilité réduite. Aquaplaning : relâcher l'accélérateur, ne pas freiner, laisser la voiture reprendre contact. Nuit : feux de croisement en agglomération, feux de route hors agglomération (dès qu'on ne gêne pas). Brouillard : antibrouillard AR autorisé si visibilité < 50 m.",
       },
     ]
   },
@@ -183,47 +164,42 @@ export const COMPETENCES_PW = [
     couleur: 'green',
     emoji: '🌿',
     poids: 10,
-    description: "La conduite autonome, c'est conduire comme si l'inspecteur n'était pas là. L'examen teste si tu sais prendre des décisions seul·e — choisir ta voie, gérer une erreur d'itinéraire, lire la route sans être guidé·e à chaque seconde. C'est souvent là que les candidats libres se démarquent positivement.",
+    description: "La conduite autonome, c'est conduire comme si l'inspecteur n'était pas là. L'examen teste si tu sais prendre des décisions seul·e — choisir ta voie, gérer une erreur d'itinéraire, préparer un trajet. C'est souvent là que les candidats libres se démarquent positivement, car ils ont l'expérience de la route.",
     sousCompetences: [
       {
         id: 'C4-1',
-        label: "Suivre un itinéraire de façon autonome",
-        description: "L'inspecteur te donne un point de destination, tu te débrouilles. Ne te fie pas uniquement au GPS — il peut être faux ou coupé. Lire les panneaux, anticiper, demander confirmation si doute réel.",
+        label: "Suivre un itinéraire de manière autonome",
+        description: "L'inspecteur te donne un point de destination — tu te débrouilles. Ne te fie pas uniquement au GPS : il peut être faux, décalé ou coupé. Lire les panneaux, anticiper les embranchements, demander confirmation si le doute est réel. Se tromper de chemin ne pénalise pas — paniquer ou freiner brusquement à cause d'une hésitation, oui.",
       },
       {
         id: 'C4-2',
-        label: "Gérer une erreur d'itinéraire sans danger",
-        description: "Se tromper de chemin ne pénalise pas à l'examen — gérer le stress ou freiner brusquement à cause d'une hésitation, oui. Calme, signalez, trouvez une solution sûre. Ne jamais faire de marche arrière sur route.",
+        label: "Préparer et effectuer un voyage longue distance",
+        description: "Avant un long trajet : vérifications du véhicule (pneus, niveaux, plein de carburant), préparation de l'itinéraire, estimation du temps de conduite. Pauses recommandées toutes les 2 heures. Connaître les aires de repos, les péages, les règles autoroutières. La fatigue est la première cause d'accident longue distance.",
       },
       {
         id: 'C4-3',
-        label: "Respecter le marquage et la signalisation en autonomie",
-        description: "Sans co-pilote qui guide, c'est toi qui gères. Marquage au sol, panneaux, priorités : tout doit être respecté même quand personne ne te dit quoi faire.",
+        label: "Connaître les facteurs de risque et les recommandations",
+        description: "Alcool : dès 0,2 g/L pour les permis probatoires (3 ans), 0,5 g/L ensuite. Fatigue : 3 secondes d'endormissement à 130 km/h = 110 m parcourus les yeux fermés. Téléphone en main : temps de réaction multiplié par 3. Médicaments : lire l'étiquette, les niveaux 2 et 3 interdisent de conduire. Ces chiffres, tu dois pouvoir les citer.",
       },
       {
         id: 'C4-4',
-        label: "Prendre ses informations — Quand, Comment, Pourquoi",
-        description: "Observer avant d'agir. Savoir QUAND regarder (avant de freiner, avant de tourner), COMMENT (balayage des yeux, pas fixation), POURQUOI (anticiper, pas réagir). L'auto-évaluation de ce point est difficile — demande à ton accompagnateur·rice d'observer.",
+        label: "Adopter les bons comportements en cas d'accident",
+        description: "Méthode PAS : Protéger → Alerter → Secourir. Protéger d'abord (triangle à 30 m minimum, gilet jaune, feux de détresse). Alerter ensuite (15 SAMU, 18 Pompiers, 17 Police ou 112). Secourir enfin : ne pas déplacer un blessé sauf danger immédiat, position latérale de sécurité si inconscient mais qui respire.",
       },
       {
         id: 'C4-5',
-        label: "Connaître les facteurs de risque",
-        description: "Alcool : dès 0,2 g/L pour les permis probatoires. Fatigue : 3 secondes d'endormissement à 130 km/h = 110 m parcourus. Téléphone en main : multiplication du temps de réaction par 3. Ces chiffres, tu dois pouvoir les citer.",
+        label: "Faire l'expérience des aides à la conduite embarquées",
+        description: "ABS (antiblocage) : ne jamais pomper la pédale, maintenir la pression. ESP (contrôle de trajectoire) : ne compense pas la vitesse excessive. Régulateur de vitesse : à désactiver par mauvais temps. Aide au freinage d'urgence : appuyer franchement sur la pédale. Ces systèmes aident — ils ne remplacent pas l'anticipation.",
       },
       {
         id: 'C4-6',
-        label: "Réagir face à un accident (PAS)",
-        description: "Protéger / Alerter / Secourir — dans cet ordre. Protéger d'abord (triangle, gilet). Alerter ensuite (15, 18 ou 112). Secourir enfin (position latérale de sécurité si inconscient et respire).",
+        label: "Avoir des notions d'entretien, de dépannage et d'urgence",
+        description: "Pneu crevé : ne pas freiner brusquement, tenir le volant à deux mains, ralentir progressivement, se garer à droite, triangle + gilet. Batterie à plat : câbles de démarrage ou assistance. Surchauffe moteur : arrêter, ne pas ouvrir le bouchon du radiateur à chaud. Ces réflexes s'apprennent — pas le jour de la panne.",
       },
       {
         id: 'C4-7',
-        label: "Connaître les aides à la conduite embarquées",
-        description: "ABS (antiblocage), ESP (contrôle de trajectoire), régulateur de vitesse, aide au freinage d'urgence. Ces systèmes aident — ils ne remplacent pas l'anticipation. L'inspecteur peut en parler.",
-      },
-      {
-        id: 'C4-8',
         label: "Pratiquer l'écoconduite",
-        description: "Anticipation des décélérations (relâcher l'accélérateur tôt), montée en vitesse progressive, vitesse stabilisée. En plus d'économiser du carburant, l'écoconduite réduit le stress — moins d'à-coups = moins de fatigue.",
+        description: "Anticipation des décélérations (relâcher l'accélérateur tôt), montée en vitesse progressive, vitesse stabilisée. Pneus gonflés correctement = 0,5 L/100 km économisés. Climatisation = +1 L/100 km. En plus d'économiser du carburant, l'écoconduite réduit le stress et l'usure du véhicule — et c'est valorisé à l'examen.",
       },
     ]
   }
@@ -240,10 +216,10 @@ export const COULEURS = {
 
 // États de compétence — 4 niveaux
 export const ETATS_PW = {
-  0: { label: 'Non abordé',          symbol: '',  couleur: 'rgba(255,255,255,0.2)',  bg: 'transparent',            border: 'rgba(255,255,255,0.2)' },
-  1: { label: 'Abordé',              symbol: '/',  couleur: '#fb923c',               bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.5)' },
-  2: { label: 'Traité (9 séances/10)', symbol: 'X', couleur: '#FFBE00',              bg: 'rgba(255,190,0,0.15)',   border: 'rgba(255,190,0,0.6)' },
-  3: { label: 'Maîtrisé',            symbol: '■',  couleur: '#34d399',               bg: 'rgba(29,158,117,0.2)',   border: 'rgba(29,158,117,0.6)' },
+  0: { label: 'Non abordé',             symbol: '',  couleur: 'rgba(255,255,255,0.2)',  bg: 'transparent',            border: 'rgba(255,255,255,0.2)' },
+  1: { label: 'Abordé',                 symbol: '/', couleur: '#fb923c',               bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.5)' },
+  2: { label: 'Traité (9 séances/10)',  symbol: 'X', couleur: '#FFBE00',               bg: 'rgba(255,190,0,0.15)',   border: 'rgba(255,190,0,0.6)' },
+  3: { label: 'Maîtrisé',              symbol: '■', couleur: '#34d399',               bg: 'rgba(29,158,117,0.2)',   border: 'rgba(29,158,117,0.6)' },
 }
 
 // Calcul de la progression d'un groupe (0-100)
