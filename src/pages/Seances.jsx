@@ -239,6 +239,7 @@ export default function Seances({ ouvrirForm }) {
   const [vue, setVue] = useState(ouvrirForm ? 'form' : 'liste')
   const [etapeForm, setEtapeForm] = useState(1)
   const [groupeActifSeance, setGroupeActifSeance] = useState(null)
+  const [modeSeance, setModeSeance] = useState('normal') // 'normal' | 'cepc'
   const [cepcOuvert, setCepcOuvert] = useState(false)
   const micro = useMicro()
 
@@ -283,6 +284,7 @@ export default function Seances({ ouvrirForm }) {
     setDraft(newSeance())
     setEtapeForm(1)
     setGroupeActifSeance(null)
+    setModeSeance('normal')
     setVue('liste')
   }
 
@@ -490,7 +492,7 @@ export default function Seances({ ouvrirForm }) {
             + Séance
           </button>
         ) : (
-          <button onClick={() => { setVue('liste'); setEtapeForm(1); setGroupeActifSeance(null) }}
+          <button onClick={() => { setVue('liste'); setEtapeForm(1); setGroupeActifSeance(null); setModeSeance('normal') }}
                   className="text-xs text-white/75 hover:text-white transition-colors">
             Annuler
           </button>
@@ -559,19 +561,111 @@ export default function Seances({ ouvrirForm }) {
             </div>
           )}
 
-          {/* ── Étape 2 — Compétences ─────────── */}
+          {/* ── Étape 2 — Mode séance ─────────── */}
           {etapeForm === 2 && (
             <div>
+
+              {/* Sélecteur de mode */}
+              <div className="flex gap-2 mb-3">
+                {[
+                  { id: 'normal', label: '🎯 Entraînement', desc: 'Évaluer les compétences' },
+                  { id: 'cepc',   label: '📋 Examen blanc', desc: 'Grille CEPC officielle' },
+                ].map(m => (
+                  <button key={m.id}
+                    onClick={() => { setModeSeance(m.id); setGroupeActifSeance(null) }}
+                    className="flex-1 py-2.5 px-2 rounded-xl text-center tap-scale transition-all"
+                    style={{
+                      background: modeSeance === m.id ? '#FFBE00' : 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${modeSeance === m.id ? '#FFBE00' : 'rgba(255,255,255,0.12)'}`,
+                      color: modeSeance === m.id ? '#07111f' : 'rgba(255,255,255,0.55)',
+                    }}>
+                    <p className="text-[11px] font-extrabold leading-tight">{m.label}</p>
+                    <p className="text-[9px] mt-0.5 font-medium opacity-75">{m.desc}</p>
+                  </button>
+                ))}
+              </div>
+
               <div className="rounded-2xl p-4 mb-3"
                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
-                  📋 Compétences travaillées
-                </p>
-                {renderEtape2()}
+
+                {modeSeance === 'normal' ? (
+                  <>
+                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                      🎯 Compétences travaillées
+                    </p>
+                    {renderEtape2()}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                      📋 Grille d'évaluation CEPC
+                    </p>
+
+                    {draft.cepc ? (
+                      /* Résultat déjà enregistré */
+                      <div>
+                        <div className="flex items-center gap-3 p-3 rounded-xl mb-2"
+                             style={{
+                               background: draft.cepc.bilan === 'Favorable'
+                                 ? 'rgba(0,204,68,0.10)' : 'rgba(254,0,50,0.10)',
+                               border: `1px solid ${draft.cepc.bilan === 'Favorable'
+                                 ? 'rgba(0,204,68,0.35)' : 'rgba(254,0,50,0.35)'}`,
+                             }}>
+                          <span className="text-2xl shrink-0">
+                            {draft.cepc.bilan === 'Favorable' ? '✅' : '❌'}
+                          </span>
+                          <div>
+                            <p className="text-sm font-extrabold text-white">{draft.cepc.total}</p>
+                            <p className="text-xs font-bold"
+                               style={{ color: draft.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
+                              {draft.cepc.bilan}
+                            </p>
+                            {draft.cepc.obs && (
+                              <p className="text-[10px] text-white/55 mt-0.5 line-clamp-2">{draft.cepc.obs}</p>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setCepcOuvert(true)}
+                          className="text-xs font-semibold tap-scale"
+                          style={{ color: 'rgba(255,190,0,0.65)' }}
+                        >
+                          ✏️ Modifier la grille →
+                        </button>
+                      </div>
+                    ) : (
+                      /* Pas encore rempli */
+                      <>
+                        <p className="text-xs text-white/60 leading-relaxed mb-3">
+                          L'accompagnateur remplit la grille officielle pendant la conduite.
+                          La séance dure environ 30 minutes.
+                        </p>
+                        <button
+                          onClick={() => setCepcOuvert(true)}
+                          className="w-full py-3.5 rounded-xl font-bold text-sm tap-scale"
+                          style={{
+                            background: 'rgba(255,190,0,0.10)',
+                            border: '1px solid rgba(255,190,0,0.35)',
+                            color: '#FFBE00',
+                          }}
+                        >
+                          📋 Ouvrir la grille d'évaluation
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
+
               <div className="flex gap-2">
                 <button
-                  onClick={() => groupeActifSeance ? setGroupeActifSeance(null) : setEtapeForm(1)}
+                  onClick={() => {
+                    if (modeSeance === 'normal' && groupeActifSeance) {
+                      setGroupeActifSeance(null)
+                    } else {
+                      setEtapeForm(1)
+                    }
+                  }}
                   className="py-3 px-5 rounded-full text-sm font-bold"
                   style={{ background: 'rgba(255,255,255,0.07)', color: '#ffffff' }}
                 >
@@ -764,61 +858,6 @@ export default function Seances({ ouvrirForm }) {
                   <p className="text-[9px] text-white/35 -mt-1">
                     🎤 Appuie sur le micro pour dicter — fonctionne sur Chrome
                   </p>
-                )}
-              </div>
-
-              {/* ── Examen blanc CEPC (optionnel) ── */}
-              <div className="rounded-2xl p-4"
-                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
-                  📋 Examen blanc (optionnel)
-                </p>
-
-                {draft.cepc ? (
-                  /* Résultat déjà enregistré */
-                  <div>
-                    <div className="flex items-center gap-3 p-3 rounded-xl mb-2"
-                         style={{
-                           background: draft.cepc.bilan === 'Favorable'
-                             ? 'rgba(0,204,68,0.10)' : 'rgba(254,0,50,0.10)',
-                           border: `1px solid ${draft.cepc.bilan === 'Favorable'
-                             ? 'rgba(0,204,68,0.35)' : 'rgba(254,0,50,0.35)'}`,
-                         }}>
-                      <span className="text-2xl shrink-0">
-                        {draft.cepc.bilan === 'Favorable' ? '✅' : '❌'}
-                      </span>
-                      <div>
-                        <p className="text-sm font-extrabold text-white">{draft.cepc.total}</p>
-                        <p className="text-xs font-bold"
-                           style={{ color: draft.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
-                          {draft.cepc.bilan}
-                        </p>
-                        {draft.cepc.obs && (
-                          <p className="text-[10px] text-white/55 mt-0.5 line-clamp-2">{draft.cepc.obs}</p>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setCepcOuvert(true)}
-                      className="text-xs font-semibold tap-scale"
-                      style={{ color: 'rgba(255,190,0,0.65)' }}
-                    >
-                      ✏️ Modifier la grille →
-                    </button>
-                  </div>
-                ) : (
-                  /* Pas encore rempli */
-                  <button
-                    onClick={() => setCepcOuvert(true)}
-                    className="w-full py-3 rounded-xl font-bold text-sm tap-scale"
-                    style={{
-                      background: 'rgba(255,190,0,0.08)',
-                      border: '1px solid rgba(255,190,0,0.30)',
-                      color: '#FFBE00',
-                    }}
-                  >
-                    📋 Ouvrir la grille d'évaluation
-                  </button>
                 )}
               </div>
 
