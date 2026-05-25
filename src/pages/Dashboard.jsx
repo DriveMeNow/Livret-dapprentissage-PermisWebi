@@ -2,7 +2,6 @@
  * Dashboard — Tableau de bord V1.3
  * Badges REMC officiels (C1-C4) + contraste textes + anneau SVG
  */
-import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, progressGroupe, progressGlobal } from '../data/competences-pw'
 
@@ -55,8 +54,6 @@ export default function Dashboard({ onNavigate }) {
   const [profil] = useLocalStorage('pw_profil', {})
   const [etats] = useLocalStorage('pw_competences', {})
   const [seances] = useLocalStorage('pw_seances', [])
-  const [cepcOuvert, setCepcOuvert] = useState(false)
-
   const pctGlobal = progressGlobal(etats)
   const dernSeances = [...seances].slice(0, 3)
   const nephAffiche = profil.neph ? `****${profil.neph.slice(-4)}` : null
@@ -64,34 +61,6 @@ export default function Dashboard({ onNavigate }) {
   const nom = profil.nom ? profil.nom.toUpperCase() : ''
 
   return (
-    <>
-    {/* ── Modale CEPC plein écran (accès rapide depuis Accueil) ── */}
-    {cepcOuvert && (
-      <div className="fixed inset-0 z-[300] flex flex-col" style={{ background: '#f4f4f4' }}>
-        <div className="flex items-center justify-between px-4 py-3 shrink-0"
-             style={{ background: '#07111f', borderBottom: '3px solid #FFBE00' }}>
-          <div>
-            <p className="text-sm font-extrabold text-white">📋 Grille d'évaluation CEPC</p>
-            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,190,0,0.75)' }}>
-              Remplis la grille · clique 💾 Enregistrer · puis ferme
-            </p>
-          </div>
-          <button
-            onClick={() => setCepcOuvert(false)}
-            className="px-4 py-2 rounded-full text-xs font-extrabold tap-scale ml-3 shrink-0"
-            style={{ background: '#FFBE00', color: '#07111f' }}
-          >
-            ✓ Fermer
-          </button>
-        </div>
-        <iframe
-          src="/cepc.html"
-          className="flex-1 w-full border-none"
-          title="Grille CEPC — Examen blanc"
-        />
-      </div>
-    )}
-
     <div className="h-full overflow-y-auto scrollbar-thin px-4 pt-6 pb-6">
 
       {/* ── Hero — anneau + identité ───────────────── */}
@@ -163,37 +132,24 @@ export default function Dashboard({ onNavigate }) {
       </div>
 
       {/* ── Boutons d'action ─────────────────────────── */}
-      <div className="space-y-2 mb-5 animate-fadeIn anim-delay-4">
-        <div className="flex gap-2.5">
-          <button
-            onClick={() => onNavigate('seances', 'new')}
-            className="flex-1 py-3.5 rounded-full text-sm font-extrabold tap-scale glow-yellow"
-            style={{ background: '#FFBE00', color: '#07111f' }}
-          >
-            ▶ Nouvelle séance
-          </button>
-          <button
-            onClick={() => onNavigate('profil', 'presentation')}
-            className="py-3.5 px-5 rounded-full text-sm font-bold tap-scale"
-            style={{
-              background: 'rgba(255,255,255,0.09)',
-              border: '1px solid rgba(255,255,255,0.20)',
-              color: '#ffffff',
-            }}
-          >
-            🪪 Contrôle
-          </button>
-        </div>
+      <div className="flex gap-2.5 mb-5 animate-fadeIn anim-delay-4">
         <button
-          onClick={() => setCepcOuvert(true)}
-          className="w-full py-3 rounded-full text-sm font-bold tap-scale"
+          onClick={() => onNavigate('seances', 'new')}
+          className="flex-1 py-3.5 rounded-full text-sm font-extrabold tap-scale glow-yellow"
+          style={{ background: '#FFBE00', color: '#07111f' }}
+        >
+          ▶ Nouvelle séance
+        </button>
+        <button
+          onClick={() => onNavigate('profil', 'presentation')}
+          className="py-3.5 px-5 rounded-full text-sm font-bold tap-scale"
           style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,190,0,0.30)',
-            color: '#FFBE00',
+            background: 'rgba(255,255,255,0.09)',
+            border: '1px solid rgba(255,255,255,0.20)',
+            color: '#ffffff',
           }}
         >
-          📋 Lancer un examen blanc
+          🪪 Contrôle
         </button>
       </div>
 
@@ -269,6 +225,5 @@ export default function Dashboard({ onNavigate }) {
         Permis Webi © 2026 — Marion Falquerho — SIREN 992 387 894
       </p>
     </div>
-    </>
   )
 }
