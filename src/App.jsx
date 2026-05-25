@@ -11,9 +11,13 @@ import Competences from './pages/Competences'
 import Seances from './pages/Seances'
 import Profil from './pages/Profil'
 
+/** Onglet de démarrage — Profil si premier lancement, Dashboard sinon */
+const getInitialTab = () =>
+  localStorage.getItem('pw_preambule_alerte_vue') ? 'dashboard' : 'profil'
+
 /** Contenu principal — séparé pour bénéficier de l'ErrorBoundary parent */
 function AppInner() {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState(getInitialTab)
   const [tabParam, setTabParam] = useState(null)
   const consent = useConsent()
   const [showConsent, setShowConsent] = useState(!consent)
