@@ -53,6 +53,7 @@ function newSeance() {
     notes: '',
     noteVolant: 0,        // 0 = non renseigné, 1-10
     debriefRessenti: '', debriefTechnique: '', debriefSuite: '',
+    cepc: null,           // résultat examen blanc { date, bilan, total, obs, ts }
   }
 }
 
@@ -238,6 +239,7 @@ export default function Seances({ ouvrirForm }) {
   const [vue, setVue] = useState(ouvrirForm ? 'form' : 'liste')
   const [etapeForm, setEtapeForm] = useState(1)
   const [groupeActifSeance, setGroupeActifSeance] = useState(null)
+  const [cepcOuvert, setCepcOuvert] = useState(false)
   const micro = useMicro()
 
   /** Accompagnateurs uniques déjà utilisés (max 5, triés du plus récent) */
@@ -422,7 +424,49 @@ export default function Seances({ ouvrirForm }) {
     )
   }
 
+  /** Ferme la modale CEPC et récupère le résultat depuis localStorage */
+  const fermerCepc = () => {
+    const raw = localStorage.getItem('cepc_dernier')
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw)
+        setDraft(d => ({ ...d, cepc: parsed }))
+      } catch (e) { /* ignore */ }
+    }
+    setCepcOuvert(false)
+  }
+
   return (
+    <>
+    {/* ── Modale CEPC plein écran ─────────────────────────────────── */}
+    {cepcOuvert && (
+      <div className="fixed inset-0 z-[300] flex flex-col" style={{ background: '#f4f4f4' }}>
+        {/* Barre de contrôle */}
+        <div className="flex items-center justify-between px-4 py-3 shrink-0"
+             style={{ background: '#07111f', borderBottom: '3px solid #FFBE00' }}>
+          <div>
+            <p className="text-sm font-extrabold text-white">📋 Grille d'évaluation CEPC</p>
+            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,190,0,0.75)' }}>
+              Remplis la grille · clique 💾 Enregistrer · puis ferme
+            </p>
+          </div>
+          <button
+            onClick={fermerCepc}
+            className="px-4 py-2 rounded-full text-xs font-extrabold tap-scale ml-3 shrink-0"
+            style={{ background: '#FFBE00', color: '#07111f' }}
+          >
+            ✓ Fermer
+          </button>
+        </div>
+        {/* Iframe — fichier CEPC intact */}
+        <iframe
+          src="/cepc.html"
+          className="flex-1 w-full border-none"
+          title="Grille CEPC — Examen blanc"
+        />
+      </div>
+    )}
+
     <div className="h-full overflow-y-auto scrollbar-thin px-4 py-5 pb-6">
 
       {/* ── En-tête ─────────────────────────────── */}
@@ -723,6 +767,61 @@ export default function Seances({ ouvrirForm }) {
                 )}
               </div>
 
+              {/* ── Examen blanc CEPC (optionnel) ── */}
+              <div className="rounded-2xl p-4"
+                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                  📋 Examen blanc (optionnel)
+                </p>
+
+                {draft.cepc ? (
+                  /* Résultat déjà enregistré */
+                  <div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl mb-2"
+                         style={{
+                           background: draft.cepc.bilan === 'Favorable'
+                             ? 'rgba(0,204,68,0.10)' : 'rgba(254,0,50,0.10)',
+                           border: `1px solid ${draft.cepc.bilan === 'Favorable'
+                             ? 'rgba(0,204,68,0.35)' : 'rgba(254,0,50,0.35)'}`,
+                         }}>
+                      <span className="text-2xl shrink-0">
+                        {draft.cepc.bilan === 'Favorable' ? '✅' : '❌'}
+                      </span>
+                      <div>
+                        <p className="text-sm font-extrabold text-white">{draft.cepc.total}</p>
+                        <p className="text-xs font-bold"
+                           style={{ color: draft.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
+                          {draft.cepc.bilan}
+                        </p>
+                        {draft.cepc.obs && (
+                          <p className="text-[10px] text-white/55 mt-0.5 line-clamp-2">{draft.cepc.obs}</p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setCepcOuvert(true)}
+                      className="text-xs font-semibold tap-scale"
+                      style={{ color: 'rgba(255,190,0,0.65)' }}
+                    >
+                      ✏️ Modifier la grille →
+                    </button>
+                  </div>
+                ) : (
+                  /* Pas encore rempli */
+                  <button
+                    onClick={() => setCepcOuvert(true)}
+                    className="w-full py-3 rounded-xl font-bold text-sm tap-scale"
+                    style={{
+                      background: 'rgba(255,190,0,0.08)',
+                      border: '1px solid rgba(255,190,0,0.30)',
+                      color: '#FFBE00',
+                    }}
+                  >
+                    📋 Ouvrir la grille d'évaluation
+                  </button>
+                )}
+              </div>
+
               <div className="flex gap-2">
                 <button onClick={() => setEtapeForm(2)}
                         className="py-3 px-5 rounded-full text-sm font-bold"
@@ -787,6 +886,18 @@ export default function Seances({ ouvrirForm }) {
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
+                        {s.cepc && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
+                                style={{
+                                  background: s.cepc.bilan === 'Favorable'
+                                    ? 'rgba(0,153,51,0.2)' : 'rgba(254,0,50,0.15)',
+                                  color: s.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680',
+                                  border: `1px solid ${s.cepc.bilan === 'Favorable'
+                                    ? 'rgba(0,153,51,0.4)' : 'rgba(254,0,50,0.35)'}`,
+                                }}>
+                            📋 {s.cepc.total}
+                          </span>
+                        )}
                         {s.signature && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
                                 style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
@@ -856,6 +967,35 @@ export default function Seances({ ouvrirForm }) {
                         </div>
                       )}
 
+                      {s.cepc && (
+                        <div>
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1.5">
+                            Examen blanc CEPC
+                          </p>
+                          <div className="flex items-start gap-3 px-3 py-2.5 rounded-xl"
+                               style={{
+                                 background: s.cepc.bilan === 'Favorable'
+                                   ? 'rgba(0,204,68,0.08)' : 'rgba(254,0,50,0.08)',
+                                 border: `1px solid ${s.cepc.bilan === 'Favorable'
+                                   ? 'rgba(0,204,68,0.28)' : 'rgba(254,0,50,0.28)'}`,
+                               }}>
+                            <span className="text-2xl shrink-0 mt-0.5">
+                              {s.cepc.bilan === 'Favorable' ? '✅' : '❌'}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="text-sm font-extrabold text-white">{s.cepc.total}</p>
+                              <p className="text-xs font-bold"
+                                 style={{ color: s.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
+                                {s.cepc.bilan} · {s.cepc.date}
+                              </p>
+                              {s.cepc.obs && (
+                                <p className="text-xs text-white/60 mt-1 leading-relaxed">{s.cepc.obs}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       {(s.noteVolant > 0 || s.debriefTechnique || s.debriefSuite || s.debriefRessenti) && (
                         <div>
                           <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1.5">Débrief</p>
@@ -898,6 +1038,7 @@ export default function Seances({ ouvrirForm }) {
         </>
       )}
     </div>
+    </>
   )
 }
 
