@@ -129,8 +129,62 @@ export default function Competences({ groupeInitial }) {
                   </button>
                 </div>
                 {isOpen && (
-                  <div className="px-3 pb-3 border-t border-white/[0.06] pt-2">
-                    <p className="text-xs text-white/70 leading-relaxed">{sc.description}</p>
+                  <div className="px-3 pb-4 border-t border-white/[0.06] pt-3 space-y-4">
+                    {/* CE QUE L'INSPECTEUR ATTEND */}
+                    {sc.contenu?.inspecteur && (
+                      <div>
+                        <p className="text-[9px] font-extrabold uppercase tracking-widest mb-1.5" style={{ color: c.text }}>
+                          Ce que l'inspecteur attend
+                        </p>
+                        <p className="text-xs text-white/70 leading-relaxed" style={{ whiteSpace: 'pre-line' }}>
+                          {sc.contenu.inspecteur}
+                        </p>
+                      </div>
+                    )}
+                    {/* EXERCICE AVEC TON ACCOMPAGNATEUR */}
+                    {sc.contenu?.exercice && (
+                      <div>
+                        <p className="text-[9px] font-extrabold uppercase tracking-widest mb-1.5" style={{ color: '#4ade80' }}>
+                          Exercice avec ton accompagnateur
+                        </p>
+                        <p className="text-xs text-white/70 leading-relaxed" style={{ whiteSpace: 'pre-line' }}>
+                          {sc.contenu.exercice}
+                        </p>
+                      </div>
+                    )}
+                    {/* MAUVAISES HABITUDES À PERDRE */}
+                    {sc.contenu?.habitudes?.length > 0 && (
+                      <div>
+                        <p className="text-[9px] font-extrabold uppercase tracking-widest mb-1.5" style={{ color: '#fb923c' }}>
+                          Mauvaises habitudes à perdre
+                        </p>
+                        <ul className="space-y-1">
+                          {sc.contenu.habitudes.map((h, i) => (
+                            <li key={i} className="flex gap-2 text-xs text-white/70 leading-relaxed">
+                              <span className="shrink-0 mt-0.5" style={{ color: '#fb923c' }}>•</span>
+                              <span>{h}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {/* BOUTON QUESTIONS DE VÉRIFICATION (C1-1 uniquement) */}
+                    {sc.contenu?.boutonQuestions && (
+                      <a
+                        href="https://www.permiswebi.fr/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold tap-scale"
+                        style={{
+                          background: 'rgba(255,190,0,0.10)',
+                          border: '1px solid rgba(255,190,0,0.30)',
+                          color: '#FFBE00',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        📚 Voir toutes les questions de vérification et de premiers secours →
+                      </a>
+                    )}
                   </div>
                 )}
               </div>
