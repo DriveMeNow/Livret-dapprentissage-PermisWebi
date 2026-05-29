@@ -10,12 +10,12 @@ const IconProfil = () => (
   </svg>
 )
 
-// Contour permanent (inactif) : null = aucun, string = couleur CSS border
+// iconBorder : contour autour de l'icône uniquement (null = aucun)
 const TABS = [
-  { id: 'dashboard',   label: 'Accueil',  icon: '🧭', Icon: null,       borderInactif: null },
-  { id: 'competences', label: 'Livret',   icon: '📋', Icon: null,       borderInactif: null },
-  { id: 'seances',     label: 'Séances',  icon: '▶',  Icon: null,       borderInactif: 'rgba(160,82,45,0.55)' },
-  { id: 'profil',      label: 'Profil',   icon: null, Icon: IconProfil, borderInactif: 'rgba(255,190,0,0.45)' },
+  { id: 'dashboard',   label: 'Accueil',  icon: '🧭', Icon: null,       iconBorder: null },
+  { id: 'competences', label: 'Livret',   icon: '📋', Icon: null,       iconBorder: null },
+  { id: 'seances',     label: 'Séances',  icon: '▶',  Icon: null,       iconBorder: 'rgba(160,82,45,0.85)' },
+  { id: 'profil',      label: 'Profil',   icon: null, Icon: IconProfil, iconBorder: 'rgba(255,190,0,0.80)' },
 ]
 
 export default function NavBar({ activeTab, onTabChange }) {
@@ -44,18 +44,6 @@ export default function NavBar({ activeTab, onTabChange }) {
                 transition: 'color 0.2s ease',
               }}
             >
-              {/* Contour permanent quand inactif (Séances = marron, Profil = jaune) */}
-              {!isActive && tab.borderInactif && (
-                <span
-                  className="absolute inset-x-3 rounded-2xl"
-                  style={{
-                    top: '6px',
-                    bottom: '10px',
-                    border: `1px solid ${tab.borderInactif}`,
-                  }}
-                />
-              )}
-
               {/* Fond pill quand actif */}
               {isActive && (
                 <span
@@ -69,13 +57,18 @@ export default function NavBar({ activeTab, onTabChange }) {
                 />
               )}
 
-              {/* Icône */}
+              {/* Icône — contour autour de l'icône pour Séances et Profil quand inactif */}
               <span
                 className="relative z-10 leading-none flex items-center justify-center"
                 style={{
                   fontSize: '18px',
                   transform: isActive ? 'scale(1.18)' : 'scale(1)',
                   transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+                  ...(tab.iconBorder && !isActive ? {
+                    border: `1.5px solid ${tab.iconBorder}`,
+                    borderRadius: '10px',
+                    padding: '5px',
+                  } : {}),
                 }}
               >
                 {tab.Icon ? <tab.Icon /> : tab.icon}
