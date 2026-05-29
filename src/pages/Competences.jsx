@@ -278,27 +278,21 @@ export default function Competences({ groupeInitial }) {
               className={`w-full rounded-2xl p-4 text-left card-hover tap-scale animate-fadeIn anim-delay-${Math.min(i + 1, 4)}`}
               style={{ background: c.bg, border: `1px solid ${c.border}` }}
             >
-              {/* Ligne titre avec badge REMC */}
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-                     style={{ background: 'rgba(0,0,0,0.18)' }}>
-                  {g.emoji}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2 min-w-0">
-                      <span className="px-2 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0 mt-0.5"
-                            style={{ background: c.solid }}>
-                        {g.id}
-                      </span>
-                      <p className="text-base font-extrabold text-white leading-snug">{g.titre}</p>
-                    </div>
-                    <span className="text-base font-extrabold shrink-0 mt-0.5" style={{ color: c.text }}>{pct}%</span>
+              {/* Ligne titre avec badge REMC — sans emoji */}
+              <div className="mb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold text-white shrink-0"
+                          style={{ background: c.solid }}>
+                      {g.id}
+                    </span>
+                    <p className="text-base font-extrabold text-white leading-snug">{g.titre}</p>
                   </div>
-                  <p className="text-[10px] mt-0.5 text-white/65">
-                    {g.sousTitre}
-                  </p>
+                  <span className="text-base font-extrabold shrink-0 mt-0.5" style={{ color: c.text }}>{pct}%</span>
                 </div>
+                <p className="text-[10px] mt-1 text-white/65 pl-0.5">
+                  {g.sousTitre}
+                </p>
               </div>
 
               {/* Barre de progression */}
