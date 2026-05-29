@@ -1,13 +1,18 @@
 {
-  "name": "Permis Webi",
+  "id": "/",
+  "name": "Permis Webi — Livret d'apprentissage",
   "short_name": "Permis Webi",
-  "description": "Livret d'apprentissage numérique pour candidats libres au permis de conduire",
+  "description": "Livret d'apprentissage numérique officiel pour candidats libres au permis de conduire — conforme REMC",
+  "lang": "fr",
   "theme_color": "#FFBE00",
   "background_color": "#07111f",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "start_url": "/",
   "scope": "/",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "categories": ["education", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantcl%C3%A9.png",
@@ -19,7 +24,7 @@
       "src": "https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantcl%C3%A9.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }

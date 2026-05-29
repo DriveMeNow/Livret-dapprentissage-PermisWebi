@@ -285,10 +285,20 @@ function DocUpload({ label, icone = '📎', valeur, onChange }) {
 
 /**
  * Accordéon réutilisable — style dark app, chevron animé, un seul ouvert à la fois
+ * ScrollIntoView automatique à l'ouverture (titre visible en haut)
  */
 function Accordeon({ titre, ouvert, onToggle, children }) {
+  const ref = useRef()
+  useEffect(() => {
+    if (!ouvert || !ref.current) return
+    const timer = setTimeout(() => {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+    return () => clearTimeout(timer)
+  }, [ouvert])
+
   return (
-    <div className="rounded-xl overflow-hidden mb-2"
+    <div ref={ref} className="rounded-xl overflow-hidden mb-2"
          style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${ouvert ? 'rgba(255,190,0,0.30)' : 'rgba(255,255,255,0.08)'}`, transition: 'border-color 0.2s' }}>
       <button
         className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left tap-scale"
@@ -695,21 +705,21 @@ export default function Profil({ ouvrirPresentation }) {
             Ta formation au permis B s'organise autour de 4 compétences et 30 sous-compétences, définies par le REMC — le Référentiel pour l'Éducation à une Mobilité Citoyenne, mis en place par l'arrêté du 13 mai 2013 en remplacement de l'ancien Programme National de Formation (PNF).
           </p>
           {[
-            { id: 'C1', titre: 'Maîtriser le véhicule', detail: 'trafic faible ou nul — 9 sous-compétences', texte: "Prise en main, commandes, vérifications, trajectoires, manœuvres de base. Pour la grande majorité des candidats libres qui ont déjà conduit, les automatismes sont là. Ce livret te permet de le confirmer rapidement et de passer à l'essentiel.", color: '#4dabff', bg: 'rgba(0,102,204,0.12)' },
-            { id: 'C2', titre: 'Appréhender la route', detail: 'circulation normale — 7 sous-compétences', texte: "Signalisation, positionnement, intersections, priorités, stationnement. C'est souvent ici que se nichent les erreurs les plus fréquentes à l'examen — des règles précises que l'habitude a parfois déformées.", color: '#ff77cc', bg: 'rgba(230,0,126,0.12)' },
-            { id: 'C3', titre: 'Conditions difficiles', detail: 'partage de la route — 7 sous-compétences', texte: "Voie rapide, visibilité réduite, trafic dense, autres usagers. Les situations que l'on croit maîtriser parce qu'on les a vécues — et qui méritent pourtant d'être retravaillées avec un regard neuf.", color: '#ffbb55', bg: 'rgba(255,153,0,0.12)' },
-            { id: 'C4', titre: 'Conduite autonome', detail: 'sûre et économique — 7 sous-compétences', texte: "Itinéraire en autonomie, facteurs de risque, conduite à tenir face à un accident (protéger / alerter / secourir), aides embarquées, écoconduite. Une compétence souvent sous-estimée, qui fait la différence le jour J.", color: '#33cc66', bg: 'rgba(0,153,51,0.12)' },
+            { id: 'C1', titre: 'Maîtriser le maniement du véhicule',          detail: 'Trafic faible ou nul — 9 sous-compétences',                       texte: "Prise en main, commandes, vérifications, trajectoires, manœuvres de base. Pour la grande majorité des candidats libres qui ont déjà conduit, les automatismes sont là. Ce livret te permet de le confirmer rapidement et de passer à l'essentiel.",                                           color: '#4dabff', solid: '#0066cc', bg: 'rgba(0,102,204,0.14)' },
+            { id: 'C2', titre: 'Appréhender la route',                         detail: 'Circuler dans des conditions normales — 7 sous-compétences',        texte: "Signalisation, positionnement, intersections, priorités, stationnement. C'est souvent ici que se nichent les erreurs les plus fréquentes à l'examen — des règles précises que l'habitude a parfois déformées.",                                                                                color: '#ff77cc', solid: '#e6007e', bg: 'rgba(230,0,126,0.14)' },
+            { id: 'C3', titre: 'Circuler dans des conditions difficiles',       detail: 'Partager la route avec les autres usagers — 7 sous-compétences',   texte: "Voie rapide, visibilité réduite, trafic dense, autres usagers. Les situations que l'on croit maîtriser parce qu'on les a vécues — et qui méritent pourtant d'être retravaillées avec un regard neuf.",                                                                                            color: '#ffbb55', solid: '#ff9900', bg: 'rgba(255,153,0,0.14)' },
+            { id: 'C4', titre: 'Conduite autonome, sûre et écocitoyenne',      detail: 'Économique et écologique — 7 sous-compétences',                     texte: "Itinéraire en autonomie, facteurs de risque, conduite à tenir face à un accident (protéger / alerter / secourir), aides embarquées, écoconduite. Une compétence souvent sous-estimée, qui fait la différence le jour J.",                                                                      color: '#33cc66', solid: '#009933', bg: 'rgba(0,153,51,0.14)' },
           ].map(g => (
             <div key={g.id} className="rounded-xl p-3"
-                 style={{ background: g.bg, border: `1px solid ${g.color}30` }}>
+                 style={{ background: g.bg, border: `1px solid ${g.solid}55` }}>
               <div className="flex items-center gap-2 mb-1">
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white"
-                      style={{ background: g.color.replace('ff', '99') }}>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+                      style={{ background: g.solid }}>
                   {g.id}
                 </span>
-                <p className="text-xs font-extrabold text-white">{g.titre}</p>
+                <p className="text-xs font-extrabold text-white leading-snug">{g.titre}</p>
               </div>
-              <p className="text-[10px] mb-1.5" style={{ color: g.color }}>{g.detail}</p>
+              <p className="text-[10px] mb-1.5 font-semibold" style={{ color: g.color }}>{g.detail}</p>
               <p className="text-[10px] text-white/70 leading-relaxed">{g.texte}</p>
             </div>
           ))}
