@@ -4,6 +4,37 @@ import { useLocalStorage } from '../hooks/useLocalStorage'
 import ModePresentation from './ModePresentation'
 
 /**
+ * Compresse une image via un canvas avant stockage en localStorage.
+ * Une photo 50 MP (40-50 Mo) devient ~200-500 Ko — transparent pour l'utilisateur.
+ * Les PDF ne passent pas ici (non pris en charge par canvas).
+ * @param {File} file  - fichier image
+ * @param {number} maxWidth  - largeur max en px (défaut 1600)
+ * @param {number} quality   - qualité JPEG 0-1 (défaut 0.82)
+ */
+function compressImage(file, maxWidth = 1600, quality = 0.82) {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const img = new Image()
+      img.onload = () => {
+        let { width, height } = img
+        if (width > maxWidth) {
+          height = Math.round(height * maxWidth / width)
+          width = maxWidth
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', quality))
+      }
+      img.src = ev.target.result
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+/**
  * Détecte la plateforme et l'état d'installation de la PWA.
  * Renvoie un guide d'installation adapté :
  *  - Si déjà en mode standalone (installée) → rien
@@ -167,11 +198,18 @@ const CHAMPS = [
 function DocUpload({ label, icone = '📎', valeur, onChange }) {
   const refFile = useRef()
 
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 3 * 1024 * 1024) {
-      alert('Ce fichier est trop lourd (max 3 Mo). Prends une photo directement ou compresse le document.')
+    // Images : compression automatique (50 MP → ~400 Ko, invisible pour l'utilisateur)
+    if (file.type.startsWith('image/')) {
+      const compressed = await compressImage(file, 1600, 0.82)
+      onChange(compressed)
+      return
+    }
+    // PDF : limite à 5 Mo (les PDF sont déjà compressés)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ce fichier PDF est trop lourd (max 5 Mo). Essaie de le compresser avant de l\'importer.')
       return
     }
     const reader = new FileReader()
@@ -295,12 +333,12 @@ export default function Profil({ ouvrirPresentation }) {
     if (ouvrirPresentation) setShowPresentation(true)
   }, [ouvrirPresentation])
 
-  const handlePhoto = (e) => {
+  const handlePhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = (ev) => setPhoto(ev.target.result)
-    reader.readAsDataURL(file)
+    // Compression forte pour la photo de profil (affichée en petit)
+    const compressed = await compressImage(file, 800, 0.85)
+    setPhoto(compressed)
   }
 
   const handleSave = () => { setProfil(draft); setModeEdition(false) }
