@@ -10,7 +10,7 @@ export const COMPETENCES_PW = [
   {
     id: 'C1',
     numero: 1,
-    titre: 'Maîtriser le véhicule',
+    titre: 'Maîtriser le maniement du véhicule',
     sousTitre: 'Trafic faible ou nul',
     couleur: 'blue',
     emoji: '🚗',
@@ -269,7 +269,7 @@ export const COMPETENCES_PW = [
   {
     id: 'C3',
     numero: 3,
-    titre: 'Conditions difficiles',
+    titre: 'Circuler dans des conditions difficiles',
     sousTitre: 'Partager la route avec les autres usagers',
     couleur: 'orange',
     emoji: '⚠️',

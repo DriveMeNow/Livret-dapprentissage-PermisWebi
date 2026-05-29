@@ -3,7 +3,7 @@
  * Navigation : groupeInitial fourni → ouvre directement le groupe (depuis Dashboard)
  *              groupeInitial null → vue groupes (depuis NavBar)
  */
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, ETATS_PW, progressGroupe } from '../data/competences-pw'
 
@@ -12,6 +12,19 @@ export default function Competences({ groupeInitial }) {
   const [vueDetail, setVueDetail] = useState(groupeInitial || null)
   const [scOuverte, setScOuverte] = useState(null)
   const [confirmLevel3, setConfirmLevel3] = useState(null)
+  const scRefs = useRef({})
+
+  // Ouvre/ferme un volet et repositionne le titre en haut du scroll
+  const toggleSc = (id, isCurrentlyOpen) => {
+    if (isCurrentlyOpen) {
+      setScOuverte(null)
+    } else {
+      setScOuverte(id)
+      requestAnimationFrame(() => {
+        scRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+  }
 
   const handleChangeEtat = (id, etatActuel) => {
     const next = (etatActuel + 1) % 4
@@ -74,7 +87,7 @@ export default function Competences({ groupeInitial }) {
                 <span className="text-sm font-extrabold shrink-0" style={{ color: c.text }}>{pct}%</span>
               </div>
               <p className="text-[10px] mt-0.5 text-white/70">
-                {groupe.sousTitre} · {groupe.poids}% du score total
+                {groupe.sousTitre}
               </p>
               <div className="w-full h-1.5 rounded-full mt-2 overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                 <div className="h-full rounded-full transition-all duration-500 progress-bar-fill"
@@ -101,7 +114,9 @@ export default function Competences({ groupeInitial }) {
             const etatActuel = etats[sc.id] || 0
             const isOpen = scOuverte === sc.id
             return (
-              <div key={sc.id} className="rounded-xl overflow-hidden"
+              <div key={sc.id}
+                   ref={el => { scRefs.current[sc.id] = el }}
+                   className="rounded-xl overflow-hidden"
                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="flex items-center gap-3 px-3 py-3">
                   {/* Carré état cliquable */}
@@ -114,14 +129,14 @@ export default function Competences({ groupeInitial }) {
                   {/* Label (sans préfixe C1-1, C1-2…) */}
                   <button
                     className="flex-1 text-left min-w-0"
-                    onClick={() => setScOuverte(isOpen ? null : sc.id)}
+                    onClick={() => toggleSc(sc.id, isOpen)}
                   >
                     <p className="text-xs font-semibold text-white/90 leading-snug">{sc.label}</p>
                     <p className="text-[10px] text-white/50 mt-0.5">{ETATS_PW[etatActuel].label}</p>
                   </button>
                   {/* Chevron description */}
                   <button
-                    onClick={() => setScOuverte(isOpen ? null : sc.id)}
+                    onClick={() => toggleSc(sc.id, isOpen)}
                     className="text-xs transition-transform duration-200 shrink-0"
                     style={{ color: 'rgba(255,255,255,0.40)', transform: isOpen ? 'rotate(180deg)' : 'none' }}
                   >
@@ -279,7 +294,7 @@ export default function Competences({ groupeInitial }) {
                     <span className="text-base font-extrabold shrink-0" style={{ color: c.text }}>{pct}%</span>
                   </div>
                   <p className="text-[10px] mt-0.5 text-white/65">
-                    {g.sousTitre} · {g.poids}% du score
+                    {g.sousTitre}
                   </p>
                 </div>
               </div>
