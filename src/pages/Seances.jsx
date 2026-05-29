@@ -6,7 +6,7 @@
  * - "SÉLECTIONNER ou AJOUTER" sur le dropdown accompagnateur
  * - Multi-villes avec tags (champ texte + bouton +)
  */
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, ETATS_PW } from '../data/competences-pw'
 import SignatureCanvas from '../components/SignatureCanvas'
@@ -430,13 +430,24 @@ export default function Seances({ ouvrirForm }) {
   const fermerCepc = () => {
     const raw = localStorage.getItem('cepc_dernier')
     if (raw) {
-      try {
-        const parsed = JSON.parse(raw)
+      try {        const parsed = JSON.parse(raw)
         setDraft(d => ({ ...d, cepc: parsed }))
       } catch (e) { /* ignore */ }
     }
     setCepcOuvert(false)
   }
+
+  // Écoute le postMessage du CEPC (enregistrer → ferme automatiquement)
+  const fermerCepcRef = useRef(fermerCepc)
+  fermerCepcRef.current = fermerCepc
+  useEffect(() => {
+    if (!cepcOuvert) return
+    const onMsg = (e) => {
+      if (e.data?.type === 'cepc_saved') fermerCepcRef.current()
+    }
+    window.addEventListener('message', onMsg)
+    return () => window.removeEventListener('message', onMsg)
+  }, [cepcOuvert])
 
   return (
     <>

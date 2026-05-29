@@ -244,92 +244,108 @@ col.c-auto { width:52px; }
   </details>
 
   <!-- ══════════════════════════════════════════
-       2. CE QUE L'INSPECTEUR OBSERVE
+       2. CE QUE L'INSPECTEUR OBSERVE — volet dépliant
        ══════════════════════════════════════════ -->
-  <h3>Ce que l'inspecteur observe</h3>
-  <div class="comp-detail">
-    <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
-      <div class="col-hdr">Maîtriser le véhicule</div>
-      <strong>Installation :</strong> siège bien réglé, rétroviseurs orientés, ceinture bouclée, volant ajusté.<br>
-      <strong>Sécurité à bord :</strong> vérifier que les passagers sont ceinturés, que toutes les portières et le coffre sont bien fermés (voyant rouge éteint).<br>
-      <strong>Vérifications :</strong> effectuer une vérification intérieure OU extérieure (niveaux, pneus, feux…) et répondre à une question de sécurité routière ou de premiers secours.<br>
-      <strong>Commandes :</strong> utiliser le volant avec la bonne technique (position fixe, tiré-glissé ou chevauchement), doser correctement accélérateur/frein/embrayage, passer les vitesses sans regarder le levier, activer les bons accessoires selon la situation (ex : pluie → feux de croisement + essuie-glaces).
+  <details style="margin-bottom:10px; background:#f0f4ff; border:1.5px solid #7878c0; border-radius:8px; overflow:hidden;">
+    <summary style="cursor:pointer; padding:10px 14px; font-size:11px; font-weight:700; color:#5555aa; list-style:none; display:flex; align-items:center; gap:8px; user-select:none;">
+      <span style="font-size:14px;">👁️</span> CE QUE L'INSPECTEUR OBSERVE
+      <span style="margin-left:auto; font-size:10px; color:#aaa; font-weight:400;">▼ Afficher</span>
+    </summary>
+    <div style="padding:0 14px 12px 14px;">
+      <div class="comp-detail">
+        <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
+          <div class="col-hdr">Maîtriser le véhicule</div>
+          <strong>Installation :</strong> siège bien réglé, rétroviseurs orientés, ceinture bouclée, volant ajusté.<br>
+          <strong>Sécurité à bord :</strong> vérifier que les passagers sont ceinturés, que toutes les portières et le coffre sont bien fermés (voyant rouge éteint).<br>
+          <strong>Vérifications :</strong> effectuer une vérification intérieure OU extérieure (niveaux, pneus, feux…) et répondre à une question de sécurité routière ou de premiers secours.<br>
+          <strong>Commandes :</strong> utiliser le volant avec la bonne technique (position fixe, tiré-glissé ou chevauchement), doser correctement accélérateur/frein/embrayage, passer les vitesses sans regarder le levier, activer les bons accessoires selon la situation (ex : pluie → feux de croisement + essuie-glaces).
+        </div>
+        <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
+          <div class="col-hdr">Appréhender la route</div>
+          <strong>Regard :</strong> regarder loin, large et vite ; balayer l'horizon, pas fixer devant le capot.<br>
+          <strong>Rétroviseurs :</strong> les consulter avant de s'arrêter, s'insérer, ralentir, accélérer ou changer de direction. Contrôler les angles morts avant tout changement de voie.<br>
+          <strong>Allure :</strong> adapter sa vitesse à la configuration (intersection, virage, rue étroite), à la météo (pluie, brouillard) et à la situation (piéton proche, dépassement…). Ni trop vite, ni trop lentement.<br>
+          <strong>Réglementation :</strong> respecter les limitations (50 agglo / 80 hors agglo / 100 voie rapide / 110 autoroute pour jeune conducteur), les feux, panneaux, marquages, priorités et règles de circulation.
+        </div>
+        <div class="comp-col" style="background:#eefff0;border:1px solid #88cc88;">
+          <div class="col-hdr">Partager la route</div>
+          <strong>Communication :</strong> clignotants posés au bon moment (pas au dernier moment), utiliser si besoin feux de détresse, klaxon, appel lumineux, gestuelle. Comprendre les signaux des autres.<br>
+          <strong>Placement :</strong> choisir la bonne voie quand il y en a plusieurs ; bien se positionner dans sa voie ; respecter les voies réservées (bus, vélo…) ; bien se ranger lors d'une manœuvre.<br>
+          <strong>Espaces de sécurité :</strong> 2 secondes de distance devant, 1m latéral en agglomération / 1,5m hors agglomération lors d'un dépassement. Anticiper, ne pas coller.
+        </div>
+      </div>
     </div>
-    <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
-      <div class="col-hdr">Appréhender la route</div>
-      <strong>Regard :</strong> regarder loin, large et vite ; balayer l'horizon, pas fixer devant le capot.<br>
-      <strong>Rétroviseurs :</strong> les consulter avant de s'arrêter, s'insérer, ralentir, accélérer ou changer de direction. Contrôler les angles morts avant tout changement de voie.<br>
-      <strong>Allure :</strong> adapter sa vitesse à la configuration (intersection, virage, rue étroite), à la météo (pluie, brouillard) et à la situation (piéton proche, dépassement…). Ni trop vite, ni trop lentement.<br>
-      <strong>Réglementation :</strong> respecter les limitations (50 agglo / 80 hors agglo / 100 voie rapide / 110 autoroute pour jeune conducteur), les feux, panneaux, marquages, priorités et règles de circulation.
-    </div>
-    <div class="comp-col" style="background:#eefff0;border:1px solid #88cc88;">
-      <div class="col-hdr">Partager la route</div>
-      <strong>Communication :</strong> clignotants posés au bon moment (pas au dernier moment), utiliser si besoin feux de détresse, klaxon, appel lumineux, gestuelle. Comprendre les signaux des autres.<br>
-      <strong>Placement :</strong> choisir la bonne voie quand il y en a plusieurs ; bien se positionner dans sa voie ; respecter les voies réservées (bus, vélo…) ; bien se ranger lors d'une manœuvre.<br>
-      <strong>Espaces de sécurité :</strong> 2 secondes de distance devant, 1m latéral en agglomération / 1,5m hors agglomération lors d'un dépassement. Anticiper, ne pas coller.
-    </div>
-  </div>
+  </details>
 
   <!-- ══════════════════════════════════════════
-       3. COMPRENDRE LA NOTATION
+       3. COMPRENDRE LA NOTATION — volet dépliant
+       (contient : notation + autonomie + bonus)
        ══════════════════════════════════════════ -->
-  <h3 style="margin-top:12px;">Comprendre la notation</h3>
-  <div class="legende-grid">
-    <div class="legende-row"><div class="leg-badge" style="background:#9a9b9e;color:#fff;font-size:10px;">—</div><div class="leg-desc"><strong>Case grisée</strong>Cette note n'est pas applicable. Ne pas cocher.</div></div>
-    <div class="legende-row"><div class="leg-badge" style="background:#fe0032;color:#fff;">E</div><div class="leg-desc"><strong>Faute éliminatoire</strong>Sécurité non assurée ou code enfreint. Examen perdu quelle que soit la note.</div></div>
-    <div class="legende-row"><div class="leg-badge" style="background:#ff6424;color:#fff;">0</div><div class="leg-desc"><strong>Non acquis</strong>Compétence non maîtrisée, ne peut pas être restituée.</div></div>
-    <div class="legende-row"><div class="leg-badge" style="background:#ff9b5f;color:#fff;">1</div><div class="leg-desc"><strong>Moyennement acquis</strong>En cours d'acquisition, maîtrise insuffisante.</div></div>
-    <div class="legende-row"><div class="leg-badge" style="background:#fff82d;color:#111;">2</div><div class="leg-desc"><strong>Bien acquis</strong>Compétence acquise, mise en œuvre variable selon les situations.</div></div>
-    <div class="legende-row"><div class="leg-badge" style="background:#00ff01;color:#111;">3</div><div class="leg-desc"><strong>Parfaitement maîtrisé</strong>Restitué systématiquement et de façon autonome.</div></div>
-  </div>
+  <details style="margin-bottom:10px; background:#fff8e8; border:1.5px solid #FFBE00; border-radius:8px; overflow:hidden;">
+    <summary style="cursor:pointer; padding:10px 14px; font-size:11px; font-weight:700; color:#cc8800; list-style:none; display:flex; align-items:center; gap:8px; user-select:none;">
+      <span style="font-size:14px;">📊</span> COMPRENDRE LA NOTATION
+      <span style="margin-left:auto; font-size:10px; color:#aaa; font-weight:400;">▼ Afficher</span>
+    </summary>
+    <div style="padding:0 14px 12px 14px;">
 
-  <!-- Autonomie conscience du risque -->
-  <h3 style="margin-top:10px;">Autonomie conscience du risque</h3>
-  <p style="font-size:8.5px;color:#555;margin-bottom:8px;font-style:italic;">Ces 3 colonnes évaluent si le candidat comprend ce qui se passe autour de lui et conduit de façon indépendante. C'est une note globale sur l'ensemble du parcours.</p>
-  <div class="comp-detail">
-    <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
-      <div class="col-hdr">Analyse des situations</div>
-      <div class="auto-rows">
-        <div class="auto-row"><span class="lbl">0 pt</span><span>: ne voit pas les dangers, ne comprend pas ce qui se passe</span></div>
-        <div class="auto-row"><span class="lbl">0,5 pt</span><span>: comprend la situation mais avec un temps de retard ou avec ton aide</span></div>
-        <div class="auto-row"><span class="lbl">1 pt</span><span>: repère seul(e) les dangers AVANT qu'ils arrivent et anticipe</span></div>
+      <h3 style="margin-top:10px; margin-bottom:8px;">Les niveaux d'appréciation</h3>
+      <div class="legende-grid">
+        <div class="legende-row"><div class="leg-badge" style="background:#9a9b9e;color:#fff;font-size:10px;">—</div><div class="leg-desc"><strong>Case grisée</strong>Cette note n'est pas applicable. Ne pas cocher.</div></div>
+        <div class="legende-row"><div class="leg-badge" style="background:#fe0032;color:#fff;">E</div><div class="leg-desc"><strong>Faute éliminatoire</strong>Sécurité non assurée ou code enfreint. Examen perdu quelle que soit la note.</div></div>
+        <div class="legende-row"><div class="leg-badge" style="background:#ff6424;color:#fff;">0</div><div class="leg-desc"><strong>Non acquis</strong>Compétence non maîtrisée, ne peut pas être restituée.</div></div>
+        <div class="legende-row"><div class="leg-badge" style="background:#ff9b5f;color:#fff;">1</div><div class="leg-desc"><strong>Moyennement acquis</strong>En cours d'acquisition, maîtrise insuffisante.</div></div>
+        <div class="legende-row"><div class="leg-badge" style="background:#fff82d;color:#111;">2</div><div class="leg-desc"><strong>Bien acquis</strong>Compétence acquise, mise en œuvre variable selon les situations.</div></div>
+        <div class="legende-row"><div class="leg-badge" style="background:#00ff01;color:#111;">3</div><div class="leg-desc"><strong>Parfaitement maîtrisé</strong>Restitué systématiquement et de façon autonome.</div></div>
       </div>
-      <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">Ex 0,5 pt : ralentit devant un dos-d'âne seulement quand tu le signales. Ex 1 pt : ralentit spontanément en voyant des enfants sur le trottoir.</div>
-    </div>
-    <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
-      <div class="col-hdr">Adaptation aux situations</div>
-      <div class="auto-rows">
-        <div class="auto-row"><span class="lbl">0 pt</span><span>: ne modifie pas sa conduite même face au danger</span></div>
-        <div class="auto-row"><span class="lbl">0,5 pt</span><span>: s'adapte mais seulement après ton intervention ou avec hésitation</span></div>
-        <div class="auto-row"><span class="lbl">1 pt</span><span>: ajuste seul(e) sa conduite au bon moment, de façon fluide et naturelle</span></div>
-      </div>
-      <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">Ex 0,5 pt : freine en urgence parce qu'il n'a pas anticipé. Ex 1 pt : ralentit progressivement en voyant le feu passer à l'orange.</div>
-    </div>
-    <div class="comp-col" style="background:#eefff0;border:1px solid #88cc88;">
-      <div class="col-hdr">Conduite autonome</div>
-      <div class="auto-rows">
-        <div class="auto-row"><span class="lbl">0 pt</span><span>: a besoin d'être guidé en permanence pour trouver son chemin</span></div>
-        <div class="auto-row"><span class="lbl">0,5 pt</span><span>: suit l'itinéraire mais hésite, demande de l'aide ou prend des mauvaises directions</span></div>
-        <div class="auto-row"><span class="lbl">1 pt</span><span>: suit seul(e) l'itinéraire indiqué pendant ~5 min, sans se perdre ni demander d'aide</span></div>
-      </div>
-      <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">L'inspecteur donne une direction au début (ex : "Suivez la direction Centre-ville") puis observe si le candidat se débrouille seul.</div>
-    </div>
-  </div>
 
-  <!-- Bonus : Conduite éco + Courtoisie -->
-  <h3 style="margin-top:10px;">Points bonus</h3>
-  <div class="comp-detail" style="grid-template-columns:1fr 1fr;">
-    <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
-      <div class="col-hdr">🌿 Conduite économique et respectueuse de l'environnement &nbsp;<span style="background:#7878c0;color:#fff;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;">+1 pt</span></div>
-      Le candidat démontre une conduite fluide et anticipée : démarrage progressif sans à-coups, accélérations et freinages doux, passage des vitesses au bon moment pour éviter le sous-régime ou le sur-régime, anticipation suffisante pour ne jamais réagir au dernier moment. S'il conduit de cette façon tout au long du parcours sans que tu aies à le signaler, coche le +1.
-    </div>
-    <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
-      <div class="col-hdr">🤝 Courtoisie &nbsp;<span style="background:#7878c0;color:#fff;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;">+1 pt</span></div>
-      Le candidat facilite la circulation des autres usagers, fait particulièrement attention aux plus vulnérables (piétons, cyclistes, enfants, personnes âgées), garde son calme si un usager lui met la pression, et remercie si quelqu'un le laisse passer. <strong>Attention aux cadeaux empoisonnés :</strong> il ne doit pas inciter un piéton à traverser s'il a le feu vert. Si la courtoisie est naturelle et constante, coche le +1.
-    </div>
-  </div>
+      <h3 style="margin-top:12px; margin-bottom:6px;">Autonomie &amp; conscience du risque</h3>
+      <p style="font-size:8.5px;color:#555;margin-bottom:8px;font-style:italic;">Ces 3 colonnes évaluent si le candidat comprend ce qui se passe autour de lui et conduit de façon indépendante. C'est une note globale sur l'ensemble du parcours.</p>
+      <div class="comp-detail">
+        <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
+          <div class="col-hdr">Analyse des situations</div>
+          <div class="auto-rows">
+            <div class="auto-row"><span class="lbl">0 pt</span><span>: ne voit pas les dangers, ne comprend pas ce qui se passe</span></div>
+            <div class="auto-row"><span class="lbl">0,5 pt</span><span>: comprend la situation mais avec un temps de retard ou avec ton aide</span></div>
+            <div class="auto-row"><span class="lbl">1 pt</span><span>: repère seul(e) les dangers AVANT qu'ils arrivent et anticipe</span></div>
+          </div>
+          <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">Ex 0,5 pt : ralentit devant un dos-d'âne seulement quand tu le signales. Ex 1 pt : ralentit spontanément en voyant des enfants sur le trottoir.</div>
+        </div>
+        <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
+          <div class="col-hdr">Adaptation aux situations</div>
+          <div class="auto-rows">
+            <div class="auto-row"><span class="lbl">0 pt</span><span>: ne modifie pas sa conduite même face au danger</span></div>
+            <div class="auto-row"><span class="lbl">0,5 pt</span><span>: s'adapte mais seulement après ton intervention ou avec hésitation</span></div>
+            <div class="auto-row"><span class="lbl">1 pt</span><span>: ajuste seul(e) sa conduite au bon moment, de façon fluide et naturelle</span></div>
+          </div>
+          <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">Ex 0,5 pt : freine en urgence parce qu'il n'a pas anticipé. Ex 1 pt : ralentit progressivement en voyant le feu passer à l'orange.</div>
+        </div>
+        <div class="comp-col" style="background:#eefff0;border:1px solid #88cc88;">
+          <div class="col-hdr">Conduite autonome</div>
+          <div class="auto-rows">
+            <div class="auto-row"><span class="lbl">0 pt</span><span>: a besoin d'être guidé en permanence pour trouver son chemin</span></div>
+            <div class="auto-row"><span class="lbl">0,5 pt</span><span>: suit l'itinéraire mais hésite, demande de l'aide ou prend des mauvaises directions</span></div>
+            <div class="auto-row"><span class="lbl">1 pt</span><span>: suit seul(e) l'itinéraire indiqué pendant ~5 min, sans se perdre ni demander d'aide</span></div>
+          </div>
+          <div style="font-size:8px;color:#777;margin-top:4px;font-style:italic;">L'inspecteur donne une direction au début (ex : "Suivez la direction Centre-ville") puis observe si le candidat se débrouille seul.</div>
+        </div>
+      </div>
 
-  <!-- Notes de bas de guide -->
+      <h3 style="margin-top:12px; margin-bottom:6px;">Points bonus</h3>
+      <div class="comp-detail" style="grid-template-columns:1fr 1fr;">
+        <div class="comp-col" style="background:#f0eeff;border:1px solid #c0b8e8;">
+          <div class="col-hdr">🌿 Conduite éco &nbsp;<span style="background:#7878c0;color:#fff;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;">+1 pt</span></div>
+          Conduite fluide et anticipée tout au long du parcours : démarrage sans à-coups, accélérations et freinages doux, vitesses passées au bon moment, jamais en réaction. Si c'est le cas sans que tu le signales, coche le +1.
+        </div>
+        <div class="comp-col" style="background:#fff5e8;border:1px solid #e8c888;">
+          <div class="col-hdr">🤝 Courtoisie &nbsp;<span style="background:#7878c0;color:#fff;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;">+1 pt</span></div>
+          Facilite la circulation, protège les usagers vulnérables, garde son calme, remercie. <strong>Attention :</strong> ne doit pas inciter un piéton à traverser s'il a le feu vert. Si c'est naturel et constant, coche le +1.
+        </div>
+      </div>
+
+    </div>
+  </details>
+
+  <!-- TOUJOURS VISIBLE : seuil de réussite + Module 4 -->
   <div class="guide-note">
     <p>⚠️ Coche une seule case par ligne. <strong>Seuil de réussite : 20 points sur 31, sans aucune faute éliminatoire.</strong></p>
     <p>ℹ️ (1) Un test de vue est réalisé — ex : lire une plaque ou un panneau à ~10 mètres.</p>
@@ -478,11 +494,11 @@ col.c-auto { width:52px; }
     <!-- BONUS : label | case E cochable | cellule blanche fusionnée colspan=4 | 3 auto blancs -->
     <tr class="tr-bonus">
       <td class="td-bonus-lbl">Conduite économique et respectueuse de l'environnement</td>
-      <td class="td-bonus-E"><label class="rd-lbl"><input type="checkbox" id="rb1" onchange="onBonus(this)"><span class="rond-a"></span>+1</label></td>
+      <td class="td-bonus-E"><label class="rd-lbl"><input type="checkbox" id="rb1" onchange="onBonus(this)"><span class="rond-a"></span>1</label></td>
     </tr>
     <tr class="tr-bonus">
       <td class="td-bonus-lbl">Courtoisie</td>
-      <td class="td-bonus-E"><label class="rd-lbl"><input type="checkbox" id="rb2" onchange="onBonus(this)"><span class="rond-a"></span>+1</label></td>
+      <td class="td-bonus-E"><label class="rd-lbl"><input type="checkbox" id="rb2" onchange="onBonus(this)"><span class="rond-a"></span>1</label></td>
     </tr>
 
     <!-- TOTAL GÉNÉRAL : label colspan=6 | score colspan=3 aligné colonnes autonomie -->
@@ -686,6 +702,8 @@ function sauvegarder() {
     total:document.getElementById('tot').textContent,
     obs:document.getElementById('obs').value, ts:Date.now()
   }));
+  // Signale au parent React de fermer l'iframe automatiquement
+  try { window.parent.postMessage({ type: 'cepc_saved' }, '*') } catch(e) {}
   showToast('✅ Résultat enregistré !');
 }
 
