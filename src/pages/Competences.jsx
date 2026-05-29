@@ -3,7 +3,7 @@
  * Navigation : groupeInitial fourni → ouvre directement le groupe (depuis Dashboard)
  *              groupeInitial null → vue groupes (depuis NavBar)
  */
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { COMPETENCES_PW, COULEURS, ETATS_PW, progressGroupe } from '../data/competences-pw'
 
@@ -14,16 +14,18 @@ export default function Competences({ groupeInitial }) {
   const [confirmLevel3, setConfirmLevel3] = useState(null)
   const scRefs = useRef({})
 
-  // Ouvre/ferme un volet et repositionne le titre en haut du scroll
+  // Scroll vers le volet ouvert — useEffect garantit que le DOM est à jour
+  // (fermeture de l'ancien volet + ouverture du nouveau traités avant le scroll)
+  useEffect(() => {
+    if (!scOuverte) return
+    const timer = setTimeout(() => {
+      scRefs.current[scOuverte]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+    return () => clearTimeout(timer)
+  }, [scOuverte])
+
   const toggleSc = (id, isCurrentlyOpen) => {
-    if (isCurrentlyOpen) {
-      setScOuverte(null)
-    } else {
-      setScOuverte(id)
-      requestAnimationFrame(() => {
-        scRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
-    }
+    setScOuverte(isCurrentlyOpen ? null : id)
   }
 
   const handleChangeEtat = (id, etatActuel) => {
@@ -76,15 +78,15 @@ export default function Competences({ groupeInitial }) {
           <div className="flex items-start gap-3">
             <span className="text-2xl leading-none mt-0.5">{groupe.emoji}</span>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="px-2 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2 min-w-0">
+                  <span className="px-2 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0 mt-0.5"
                         style={{ background: c.solid }}>
                     {groupe.id}
                   </span>
-                  <p className="text-sm font-extrabold text-white truncate">{groupe.titre}</p>
+                  <p className="text-sm font-extrabold text-white leading-snug">{groupe.titre}</p>
                 </div>
-                <span className="text-sm font-extrabold shrink-0" style={{ color: c.text }}>{pct}%</span>
+                <span className="text-sm font-extrabold shrink-0 mt-0.5" style={{ color: c.text }}>{pct}%</span>
               </div>
               <p className="text-[10px] mt-0.5 text-white/70">
                 {groupe.sousTitre}
@@ -283,15 +285,15 @@ export default function Competences({ groupeInitial }) {
                   {g.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="px-2 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2 min-w-0">
+                      <span className="px-2 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0 mt-0.5"
                             style={{ background: c.solid }}>
                         {g.id}
                       </span>
-                      <p className="text-base font-extrabold text-white truncate">{g.titre}</p>
+                      <p className="text-base font-extrabold text-white leading-snug">{g.titre}</p>
                     </div>
-                    <span className="text-base font-extrabold shrink-0" style={{ color: c.text }}>{pct}%</span>
+                    <span className="text-base font-extrabold shrink-0 mt-0.5" style={{ color: c.text }}>{pct}%</span>
                   </div>
                   <p className="text-[10px] mt-0.5 text-white/65">
                     {g.sousTitre}

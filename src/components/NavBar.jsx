@@ -1,13 +1,38 @@
 /**
  * NavBar — Barre de navigation fixe premium
  * Glassmorphisme + pill indicator + safe-area iPhone
+ * Icônes SVG (respectent la couleur CSS, pas d'emoji incontrôlable)
  */
 
+const IconAccueil = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+  </svg>
+)
+
+const IconLivret = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V6h5v2z"/>
+  </svg>
+)
+
+const IconSeances = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+  </svg>
+)
+
+const IconProfil = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+  </svg>
+)
+
 const TABS = [
-  { id: 'dashboard',   label: 'Accueil',  icon: '🧭' },
-  { id: 'competences', label: 'Livret',   icon: '📋' },
-  { id: 'seances',     label: 'Séances',  icon: '▶' },
-  { id: 'profil',      label: 'Profil',   icon: '👤' },
+  { id: 'dashboard',   label: 'Accueil',  Icon: IconAccueil  },
+  { id: 'competences', label: 'Livret',   Icon: IconLivret   },
+  { id: 'seances',     label: 'Séances',  Icon: IconSeances  },
+  { id: 'profil',      label: 'Profil',   Icon: IconProfil   },
 ]
 
 export default function NavBar({ activeTab, onTabChange }) {
@@ -49,16 +74,15 @@ export default function NavBar({ activeTab, onTabChange }) {
                 />
               )}
 
-              {/* Icône */}
+              {/* Icône SVG */}
               <span
-                className="relative z-10 leading-none"
+                className="relative z-10 leading-none flex items-center justify-center"
                 style={{
-                  fontSize: '18px',
                   transform: isActive ? 'scale(1.18)' : 'scale(1)',
                   transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
                 }}
               >
-                {tab.icon}
+                <tab.Icon />
               </span>
 
               {/* Label */}
