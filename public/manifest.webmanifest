@@ -1,7 +1,7 @@
-{
+﻿{
   "id": "/",
-  "name": "Permis Webi — Livret d'apprentissage",
-  "short_name": "Permis Webi",
+  "name": "Mon Livret",
+  "short_name": "Mon Livret",
   "description": "Livret d'apprentissage numérique officiel pour candidats libres au permis de conduire — conforme REMC",
   "lang": "fr",
   "theme_color": "#FFBE00",
