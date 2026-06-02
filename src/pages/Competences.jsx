@@ -188,7 +188,7 @@ export default function Competences({ groupeInitial }) {
                     {/* BOUTON QUESTIONS DE VÉRIFICATION (C1-1 uniquement) */}
                     {sc.contenu?.boutonQuestions && (
                       <a
-                        href="https://www.permiswebi.fr/"
+                        href="/questions-verification-permiswebi-2026.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold tap-scale"
