@@ -121,7 +121,12 @@ col.c-auto { width:52px; }
 
 #obs-section { margin-top:14px; }
 #obs-section > label { font-size:10px; font-weight:700; display:block; margin-bottom:5px; }
-#obs-section textarea { width:100%; min-height:80px; border:1.5px solid #bbb; border-radius:6px; padding:8px; font-size:9.5px; font-family:Arial,sans-serif; resize:vertical; }
+.obs-wrap { position:relative; }
+#obs-section textarea { width:100%; min-height:80px; border:1.5px solid #bbb; border-radius:6px; padding:8px 38px 8px 8px; font-size:9.5px; font-family:Arial,sans-serif; resize:vertical; }
+#btn-mic-obs { position:absolute; right:6px; top:6px; width:28px; height:28px; border-radius:50%; border:1px solid rgba(181,134,60,0.35); background:rgba(181,134,60,0.12); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; padding:0; transition:transform .12s, background .15s, border-color .15s; }
+#btn-mic-obs:hover { transform:translateY(-1px); }
+#btn-mic-obs.recording { background:rgba(239,68,68,0.25); border-color:rgba(239,68,68,0.6); }
+#btn-mic-obs.hidden { display:none; }
 #btn-wrap { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
 .btn { padding:9px 22px; border:none; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s,transform .1s; }
 .btn:hover { opacity:.88; transform:translateY(-1px); }
@@ -521,7 +526,10 @@ col.c-auto { width:52px; }
 
 <div id="obs-section">
   <label>📝 Observations</label>
-  <textarea id="obs" placeholder="Points forts · Axes de travail · Erreurs éliminatoires · Situations à retravailler…"></textarea>
+  <div class="obs-wrap">
+    <textarea id="obs" placeholder="Points forts · Axes de travail · Erreurs éliminatoires · Situations à retravailler…"></textarea>
+    <button type="button" id="btn-mic-obs" class="hidden" title="Dicter ce champ">🎤</button>
+  </div>
 </div>
 
 <div id="btn-wrap">
@@ -727,6 +735,43 @@ function showToast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
+
+// ── Micro vocal sur le champ Observations (Web Speech API) ──
+(function initMicObs() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = document.getElementById('btn-mic-obs');
+  const obs = document.getElementById('obs');
+  if (!SR || !btn || !obs) return; // navigateur sans Web Speech API
+  btn.classList.remove('hidden');
+  let reco = null;
+  let recording = false;
+
+  function start() {
+    reco = new SR();
+    reco.lang = 'fr-FR';
+    reco.continuous = false;
+    reco.interimResults = false;
+    reco.onresult = (e) => {
+      const txt = e.results[0][0].transcript;
+      obs.value = (obs.value && obs.value.trim() ? obs.value.trim() + ' ' : '') + txt;
+      stop();
+    };
+    reco.onerror = stop;
+    reco.onend = stop;
+    try { reco.start(); recording = true; btn.classList.add('recording'); btn.textContent = '⏹'; btn.title = "Arrêter l'écoute"; }
+    catch(e) { stop(); }
+  }
+
+  function stop() {
+    if (reco) { try { reco.stop(); } catch(e) {} }
+    recording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    btn.title = 'Dicter ce champ';
+  }
+
+  btn.addEventListener('click', () => recording ? stop() : start());
+})();
 </script>
 </body>
 </html>

@@ -1,7 +1,44 @@
 // Onglet 5 — Débrief post-séance
 // TON : Permis Webi — chaleureux, tutoiement, 3 questions guidées
 
+import { useState, useRef } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+
+// ── Hook micro vocal (Web Speech API) — identique à Seances.jsx ──────
+function useMicro() {
+  const [ecoute, setEcoute] = useState(false)
+  const refReco = useRef(null)
+  const supporte = !!(typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition))
+
+  const demarrer = (onResultat) => {
+    if (!supporte) {
+      alert('La commande vocale n\'est pas disponible sur ce navigateur. Essaie avec Chrome.')
+      return
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    const r = new SR()
+    refReco.current = r
+    r.lang = 'fr-FR'
+    r.continuous = false
+    r.interimResults = false
+    r.onresult = (e) => {
+      const texte = e.results[0][0].transcript
+      onResultat(texte)
+      setEcoute(false)
+    }
+    r.onerror = () => setEcoute(false)
+    r.onend = () => setEcoute(false)
+    r.start()
+    setEcoute(true)
+  }
+
+  const arreter = () => {
+    refReco.current?.stop()
+    setEcoute(false)
+  }
+
+  return { ecoute, supporte, demarrer, arreter }
+}
 
 const QUESTIONS = [
   {
@@ -29,9 +66,36 @@ const QUESTIONS = [
 
 export default function Debrief() {
   const [notes, setNotes] = useLocalStorage('pw_debrief', {})
+  const micro = useMicro()
 
   const handleChange = (id, value) => {
     setNotes(prev => ({ ...prev, [id]: value }))
+  }
+
+  /** Bouton micro — ajoute le texte reconnu à la fin du champ */
+  const BoutonMicro = ({ champKey }) => {
+    const actif = micro.ecoute
+    if (!micro.supporte) return null
+    return (
+      <button
+        type="button"
+        onClick={() =>
+          actif
+            ? micro.arreter()
+            : micro.demarrer(texte =>
+                setNotes(prev => ({ ...prev, [champKey]: (prev[champKey] ? prev[champKey] + ' ' : '') + texte }))
+              )
+        }
+        className="absolute right-2 top-2 w-7 h-7 rounded-full flex items-center justify-center text-base transition-all tap-scale"
+        style={{
+          background: actif ? 'rgba(239,68,68,0.25)' : 'rgba(181,134,60,0.12)',
+          border: `1px solid ${actif ? 'rgba(239,68,68,0.6)' : 'rgba(181,134,60,0.35)'}`,
+        }}
+        title={actif ? 'Arrêter l\'écoute' : 'Dicter ce champ'}
+      >
+        {actif ? '⏹' : '🎤'}
+      </button>
+    )
   }
 
   const rempli = QUESTIONS.filter(q => notes[q.id]?.trim()).length
@@ -76,16 +140,19 @@ export default function Debrief() {
           </div>
 
           {/* Zone de saisie */}
-          <textarea
-            rows={4}
-            placeholder={q.placeholder}
-            value={notes[q.id] || ''}
-            onChange={e => handleChange(q.id, e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
-            style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
-            onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
-          />
+          <div className="relative">
+            <textarea
+              rows={4}
+              placeholder={micro.supporte ? q.placeholder + ' (ou dicte avec le micro 🎤)' : q.placeholder}
+              value={notes[q.id] || ''}
+              onChange={e => handleChange(q.id, e.target.value)}
+              className="w-full px-3 py-2.5 pr-10 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
+              style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+              onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
+            />
+            <BoutonMicro champKey={q.id} />
+          </div>
         </div>
       ))}
 
@@ -102,16 +169,19 @@ export default function Debrief() {
             <p className="text-sm font-semibold text-pw-ink leading-snug">Tout ce que tu veux noter en plus</p>
           </div>
         </div>
-        <textarea
-          rows={4}
-          placeholder="Consignes de l'accompagnateur, choses à retenir, liens utiles…"
-          value={notes['libre'] || ''}
-          onChange={e => handleChange('libre', e.target.value)}
-          className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
-          style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
-          onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
-        />
+        <div className="relative">
+          <textarea
+            rows={4}
+            placeholder={micro.supporte ? 'Consignes de l\'accompagnateur, choses à retenir, liens utiles… (ou dicte avec le micro 🎤)' : 'Consignes de l\'accompagnateur, choses à retenir, liens utiles…'}
+            value={notes['libre'] || ''}
+            onChange={e => handleChange('libre', e.target.value)}
+            className="w-full px-3 py-2.5 pr-10 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
+            style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+            onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
+          />
+          <BoutonMicro champKey="libre" />
+        </div>
       </div>
 
       {/* Message d'encouragement */}

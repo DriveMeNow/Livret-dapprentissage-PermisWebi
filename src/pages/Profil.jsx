@@ -184,7 +184,7 @@ const CHAMPS = [
   { id: 'nom',           label: 'Nom',                     type: 'text',  placeholder: 'Dupont' },
   { id: 'prenom',        label: 'Prénom',                   type: 'text',  placeholder: 'Karim' },
   { id: 'dateNaissance', label: 'Date de naissance',        type: 'date',  placeholder: '' },
-  { id: 'neph',          label: 'Numéro NEPH',             type: 'text',  placeholder: '123456789012', maxLength: 12 },
+  { id: 'neph',          label: 'Numéro NEPH',             type: 'text',  placeholder: '123456789012', maxLength: 12, inputMode: 'numeric', pattern: '[0-9]*' },
   { id: 'dateANTS',      label: 'Dossier ANTS validé le',  type: 'date',  placeholder: '', optionnel: true },
   { id: 'adresse',       label: 'Adresse complète',         type: 'text',  placeholder: '12 rue de la Paix, 75001 Paris' },
   { id: 'telephone',     label: 'Téléphone',                type: 'tel',   placeholder: '06 12 34 56 78' },
@@ -471,6 +471,7 @@ export default function Profil({ ouvrirPresentation }) {
               <input type={c.type} value={draft[c.id] || ''}
                      onChange={e => setDraft(d => ({ ...d, [c.id]: e.target.value }))}
                      placeholder={c.placeholder} maxLength={c.maxLength}
+                     inputMode={c.inputMode} pattern={c.pattern}
                      className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/25 outline-none transition-all"
                      style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)', colorScheme: c.type === 'date' ? 'dark' : undefined }}
                      onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}

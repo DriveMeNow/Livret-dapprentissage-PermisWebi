@@ -755,6 +755,7 @@ export default function Seances({ ouvrirForm }) {
                              value={draft.accompagnateur.numeroPermis}
                              onChange={e => setAccomp('numeroPermis', e.target.value.toUpperCase())}
                              maxLength={15}
+                             inputMode="numeric"
                              className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none uppercase"
                              style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
                              onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
@@ -856,13 +857,16 @@ export default function Seances({ ouvrirForm }) {
                 ))}
 
                 <Champ label="Notes libres (optionnel)">
-                  <textarea rows={2} placeholder="Consignes, points à retenir..."
-                            value={draft.notes}
-                            onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl text-xs text-pw-ink placeholder-pw-ink-soft/30 outline-none resize-none"
-                            style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
-                            onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
-                            onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'} />
+                  <div className="relative">
+                    <textarea rows={2} placeholder={micro.supporte ? 'Tape ou dicte avec le micro 🎤' : 'Consignes, points à retenir...'}
+                              value={draft.notes}
+                              onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))}
+                              className="w-full px-3 py-2 pr-10 rounded-xl text-xs text-pw-ink placeholder-pw-ink-soft/30 outline-none resize-none"
+                              style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+                              onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+                              onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'} />
+                    <BoutonMicro champKey="notes" />
+                  </div>
                 </Champ>
 
                 {micro.supporte && (
