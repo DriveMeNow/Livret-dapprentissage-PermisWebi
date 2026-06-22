@@ -15,12 +15,8 @@ function ProgressRing({ pct }) {
   const radius = 38
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (pct / 100) * circumference
-  const color = pct >= 80 ? '#009933' : pct >= 40 ? '#B5863C' : '#fb923c'
-  const glowColor = pct >= 80
-    ? 'rgba(0,153,51,0.35)'
-    : pct >= 40
-    ? 'rgba(181,134,60,0.35)'
-    : 'rgba(251,146,60,0.35)'
+  const color = '#B5863C'
+  const glowColor = 'rgba(181,134,60,0.22)'
 
   return (
     <div className="relative w-32 h-32 mx-auto mb-3">
@@ -42,7 +38,7 @@ function ProgressRing({ pct }) {
           className="w-9 h-9 rounded-full animate-float"
           style={{ boxShadow: `0 0 12px ${glowColor}` }}
         />
-        <span className="text-sm font-extrabold tabular-nums leading-none mt-0.5" style={{ color }}>
+        <span className="text-base font-serif tabular-nums leading-none mt-0.5" style={{ color: '#937025' }}>
           {pct}%
         </span>
       </div>
@@ -194,7 +190,7 @@ export default function Dashboard({ onNavigate }) {
                 )}
                 {!s.cepc && s.signature && (
                   <span className="text-[10px] px-2 py-0.5 rounded-full shrink-0 font-bold"
-                        style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
+                        style={{ background: '#f8f2e5', color: '#937025', border: '1px solid #B5863C' }}>
                     ✓ Signé
                   </span>
                 )}

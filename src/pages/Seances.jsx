@@ -950,7 +950,7 @@ export default function Seances({ ouvrirForm }) {
                         )}
                         {s.signature && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
-                                style={{ background: 'rgba(0,153,51,0.2)', color: '#33cc66', border: '1px solid rgba(0,153,51,0.4)' }}>
+                                style={{ background: '#f8f2e5', color: '#937025', border: '1px solid #B5863C' }}>
                             ✓ Signé
                           </span>
                         )}
