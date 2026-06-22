@@ -15,18 +15,18 @@ function ProgressRing({ pct }) {
   const radius = 38
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (pct / 100) * circumference
-  const color = pct >= 80 ? '#009933' : pct >= 40 ? '#FFBE00' : '#fb923c'
+  const color = pct >= 80 ? '#009933' : pct >= 40 ? '#B5863C' : '#fb923c'
   const glowColor = pct >= 80
     ? 'rgba(0,153,51,0.35)'
     : pct >= 40
-    ? 'rgba(255,190,0,0.35)'
+    ? 'rgba(181,134,60,0.35)'
     : 'rgba(251,146,60,0.35)'
 
   return (
     <div className="relative w-32 h-32 mx-auto mb-3">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         <circle cx="50" cy="50" r={radius} fill="none"
-          stroke="rgba(255,255,255,0.07)" strokeWidth="5" />
+          stroke="rgba(33,28,22,0.07)" strokeWidth="5" />
         <circle cx="50" cy="50" r={radius} fill="none"
           stroke={color} strokeWidth="5" strokeLinecap="round"
           strokeDasharray={circumference} strokeDashoffset={offset}
@@ -68,22 +68,22 @@ export default function Dashboard({ onNavigate }) {
         <ProgressRing pct={pctGlobal} />
         {profil.nom ? (
           <div>
-            <h1 className="text-base font-extrabold text-white leading-tight">
-              {prenom}{prenom && nom ? ' ' : ''}<span style={{ color: '#FFBE00' }}>{nom}</span>
+            <h1 className="text-base font-extrabold text-pw-ink leading-tight">
+              {prenom}{prenom && nom ? ' ' : ''}<span style={{ color: '#B5863C' }}>{nom}</span>
             </h1>
             {nephAffiche && (
-              <p className="text-[10px] text-white/60 mt-0.5 font-mono tracking-wider">
+              <p className="text-[10px] text-pw-ink mt-0.5 font-mono tracking-wider">
                 NEPH {nephAffiche}
               </p>
             )}
           </div>
         ) : (
           <button onClick={() => onNavigate('profil')}
-                  className="text-sm font-bold text-white/80">
+                  className="text-sm font-bold text-pw-ink">
             👤 Complète ton profil →
           </button>
         )}
-        <p className="text-[10px] text-white/55 mt-1.5 font-medium">
+        <p className="text-[10px] text-pw-ink mt-1.5 font-medium">
           {seances.length > 0
             ? `${seances.length} séance${seances.length > 1 ? 's' : ''} enregistrée${seances.length > 1 ? 's' : ''}`
             : 'Aucune séance pour l\'instant'}
@@ -106,7 +106,7 @@ export default function Dashboard({ onNavigate }) {
               {/* Badge REMC + emoji + % */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-pw-cream shrink-0"
                         style={{ background: c.solid }}>
                     {g.id}
                   </span>
@@ -116,10 +116,10 @@ export default function Dashboard({ onNavigate }) {
                   {pct}%
                 </span>
               </div>
-              <p className="text-[11px] font-bold text-white leading-tight mb-2.5">
+              <p className="text-[11px] font-bold text-pw-ink leading-tight mb-2.5">
                 {g.titre}
               </p>
-              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.09)' }}>
+              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(33,28,22,0.09)' }}>
                 <div className="h-full rounded-full progress-bar-fill"
                      style={{ width: `${pct}%`, background: c.bar }} />
               </div>
@@ -136,7 +136,7 @@ export default function Dashboard({ onNavigate }) {
         <button
           onClick={() => onNavigate('seances', 'new')}
           className="flex-1 py-3.5 rounded-full text-sm font-extrabold tap-scale glow-yellow"
-          style={{ background: '#FFBE00', color: '#07111f' }}
+          style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}
         >
           ▶ Nouvelle séance
         </button>
@@ -144,9 +144,9 @@ export default function Dashboard({ onNavigate }) {
           onClick={() => onNavigate('profil', 'presentation')}
           className="py-3.5 px-5 rounded-full text-sm font-bold tap-scale"
           style={{
-            background: 'rgba(255,255,255,0.09)',
-            border: '1px solid rgba(255,255,255,0.20)',
-            color: '#ffffff',
+            background: '#FFFDF9',
+            border: '1px solid #E8DFD0',
+            color: '#211C16',
           }}
         >
           🪪 Contrôle
@@ -157,11 +157,11 @@ export default function Dashboard({ onNavigate }) {
       {dernSeances.length > 0 && (
         <div className="animate-fadeIn">
           <div className="flex items-center justify-between mb-2.5">
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-white/70">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-pw-ink">
               Dernières séances
             </p>
             <button onClick={() => onNavigate('seances')}
-                    className="text-[10px] font-bold" style={{ color: '#FFBE00' }}>
+                    className="text-[10px] font-bold" style={{ color: '#B5863C' }}>
               Voir tout →
             </button>
           </div>
@@ -169,14 +169,14 @@ export default function Dashboard({ onNavigate }) {
           <div className="space-y-2">
             {dernSeances.map(s => (
               <div key={s.id} className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
-                   style={{ background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                   style={{ background: 'rgba(33,28,22,0.035)', border: '1px solid rgba(33,28,22,0.08)' }}>
                 <div className="w-8 h-8 min-w-[32px] rounded-lg flex items-center justify-center text-base"
-                     style={{ background: 'rgba(255,190,0,0.1)' }}>
+                     style={{ background: 'rgba(181,134,60,0.1)' }}>
                   🚗
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-white">{formatDate(s.date)}</p>
-                  <p className="text-[10px] text-white/60 truncate mt-0.5">
+                  <p className="text-xs font-bold text-pw-ink">{formatDate(s.date)}</p>
+                  <p className="text-[10px] text-pw-ink truncate mt-0.5">
                     {s.km ? `${s.km} km` : ''}
                     {s.km && s.accompagnateur?.nom ? ' · ' : ''}
                     {s.accompagnateur?.nom ? `Avec ${s.accompagnateur.nom}` : ''}
@@ -207,11 +207,11 @@ export default function Dashboard({ onNavigate }) {
       {/* ── Alerte profil incomplet ───────────────── */}
       {!profil.nom && dernSeances.length === 0 && (
         <div className="mt-2 px-4 py-3.5 rounded-2xl text-center"
-             style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.18)' }}>
-          <p className="text-xs text-white/80 leading-relaxed">
+             style={{ background: 'rgba(181,134,60,0.07)', border: '1px solid rgba(181,134,60,0.18)' }}>
+          <p className="text-xs text-pw-ink leading-relaxed">
             Commence par{' '}
             <button onClick={() => onNavigate('profil')}
-                    className="font-extrabold underline" style={{ color: '#FFBE00' }}>
+                    className="font-extrabold underline" style={{ color: '#B5863C' }}>
               compléter ton profil
             </button>
             {' '}pour accéder au mode présentation accompagnateur.
@@ -220,7 +220,7 @@ export default function Dashboard({ onNavigate }) {
       )}
 
       {/* ── Pied de page légal ─────────────────────── */}
-      <p className="text-center text-[9px] text-white/40 mt-6 pb-1 leading-relaxed">
+      <p className="text-center text-[9px] text-pw-ink-soft/40 mt-6 pb-1 leading-relaxed">
         Livret conforme au REMC — Arrêté du 29 juillet 2013<br />
         Permis Webi © 2026 — Marion Falquerho — SIREN 992 387 894
       </p>

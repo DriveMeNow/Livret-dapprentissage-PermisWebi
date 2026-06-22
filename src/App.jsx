@@ -62,29 +62,29 @@ function AppInner() {
       {/* ── Modal alerte préambule — première sortie de l'onglet Profil ── */}
       {confirmNav && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-5"
-             style={{ background: 'rgba(7,17,31,0.96)' }}>
+             style={{ background: 'rgba(33,28,22,0.45)' }}>
           <div className="w-full max-w-sm rounded-2xl p-6 animate-scaleIn"
-               style={{ background: 'linear-gradient(135deg, #0d1b3e, #07111f)', border: '1px solid rgba(255,190,0,0.35)' }}>
+               style={{ background: '#FFFDF9', border: '1px solid #E8DFD0', boxShadow: '0 12px 32px rgba(33,28,22,0.16)' }}>
             <div className="text-3xl text-center mb-3">📖</div>
-            <p className="text-base font-extrabold text-white mb-2 text-center">
+            <p className="text-base font-extrabold text-pw-ink mb-2 text-center">
               Tu n'as pas encore lu le préambule
             </p>
-            <p className="text-sm text-white/70 leading-relaxed mb-5 text-center">
+            <p className="text-sm text-pw-ink leading-relaxed mb-5 text-center">
               Le préambule explique comment fonctionne ce livret, comment sont évalués tes progrès
               et comment se déroule l'examen. C'est important de le lire au moins une fois.
             </p>
             <div className="flex flex-col gap-2.5">
               <button
                 onClick={() => setConfirmNav(null)}
-                className="w-full py-3 rounded-full text-sm font-extrabold tap-scale glow-yellow"
-                style={{ background: '#FFBE00', color: '#07111f' }}
+                className="w-full py-3 rounded-full text-sm font-extrabold tap-scale"
+                style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}
               >
                 📖 Lire le préambule maintenant
               </button>
               <button
                 onClick={validerNavigation}
                 className="w-full py-2.5 rounded-full text-sm font-bold"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.65)' }}
+                style={{ background: 'transparent', border: '1px solid #E8DFD0', color: '#6E665A' }}
               >
                 Continuer sans lire
               </button>

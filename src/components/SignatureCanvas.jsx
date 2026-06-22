@@ -57,7 +57,7 @@ export default function SignatureCanvas({ onChange, value }) {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     const pos = getPos(e)
-    ctx.strokeStyle = '#FFBE00'
+    ctx.strokeStyle = '#211C16'
     ctx.lineWidth = 2.5
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -88,18 +88,18 @@ export default function SignatureCanvas({ onChange, value }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <label className="text-xs font-bold uppercase tracking-wide text-white/60">
+        <label className="text-xs font-bold uppercase tracking-wide text-pw-ink">
           Signature de l'accompagnateur·rice
         </label>
         {!isEmpty && (
           <button onClick={clear}
-                  className="text-[10px] text-white/35 hover:text-white/60 transition-colors">
+                  className="text-[10px] text-pw-ink-soft/35 hover:text-pw-ink transition-colors">
             Effacer
           </button>
         )}
       </div>
       <div className="relative rounded-xl overflow-hidden"
-           style={{ border: `1px solid ${isEmpty ? 'rgba(255,255,255,0.12)' : 'rgba(255,190,0,0.4)'}`, background: 'rgba(255,255,255,0.03)', transition: 'border-color 0.2s' }}>
+           style={{ border: `1px solid ${isEmpty ? 'rgba(33,28,22,0.12)' : 'rgba(181,134,60,0.4)'}`, background: 'rgba(33,28,22,0.03)', transition: 'border-color 0.2s' }}>
         <canvas
           ref={canvasRef}
           width={600}
@@ -116,11 +116,11 @@ export default function SignatureCanvas({ onChange, value }) {
         />
         {isEmpty && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p className="text-xs text-white/25">✍️ L'accompagnateur·rice signe ici avec son doigt</p>
+            <p className="text-xs text-pw-ink-soft/25">✍️ L'accompagnateur·rice signe ici avec son doigt</p>
           </div>
         )}
       </div>
-      <p className="text-[10px] text-white/30 mt-1">
+      <p className="text-[10px] text-pw-ink-soft/30 mt-1">
         La signature est enregistrée et ne peut pas être modifiée après validation
       </p>
     </div>

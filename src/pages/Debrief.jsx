@@ -41,17 +41,17 @@ export default function Debrief() {
 
       {/* En-tête */}
       <div className="text-center mb-5">
-        <h1 className="text-xl font-extrabold text-white">Mon débrief</h1>
-        <p className="text-xs text-white/50 mt-1">3 questions pour progresser à chaque séance</p>
+        <h1 className="text-xl font-extrabold text-pw-ink">Mon débrief</h1>
+        <p className="text-xs text-pw-ink mt-1">3 questions pour progresser à chaque séance</p>
       </div>
 
       {/* Indicateur de complétion */}
       {rempli > 0 && (
         <div className="mb-4 px-4 py-2.5 rounded-xl flex items-center gap-3"
-             style={{ background: 'rgba(255,190,0,0.08)', border: '1px solid rgba(255,190,0,0.2)' }}>
+             style={{ background: 'rgba(181,134,60,0.08)', border: '1px solid rgba(181,134,60,0.2)' }}>
           <span className="text-lg">✍️</span>
-          <p className="text-xs text-white/60">
-            <span className="font-bold" style={{ color: '#FFBE00' }}>{rempli}/3</span> question{rempli > 1 ? 's' : ''} remplie{rempli > 1 ? 's' : ''}
+          <p className="text-xs text-pw-ink">
+            <span className="font-bold" style={{ color: '#B5863C' }}>{rempli}/3</span> question{rempli > 1 ? 's' : ''} remplie{rempli > 1 ? 's' : ''}
           </p>
         </div>
       )}
@@ -59,19 +59,19 @@ export default function Debrief() {
       {/* Questions guidées */}
       {QUESTIONS.map((q, i) => (
         <div key={q.id} className="rounded-2xl p-4 mb-4"
-             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+             style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
 
           {/* Header question */}
           <div className="flex items-start gap-3 mb-3">
             <div className="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center text-base"
-                 style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.25)' }}>
+                 style={{ background: 'rgba(181,134,60,0.12)', border: '1px solid rgba(181,134,60,0.25)' }}>
               {q.emoji}
             </div>
             <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-widest mb-0.5" style={{ color: '#FFBE00' }}>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest mb-0.5" style={{ color: '#B5863C' }}>
                 Question {i + 1} — {q.titre}
               </p>
-              <p className="text-sm font-semibold text-white leading-snug">{q.question}</p>
+              <p className="text-sm font-semibold text-pw-ink leading-snug">{q.question}</p>
             </div>
           </div>
 
@@ -81,25 +81,25 @@ export default function Debrief() {
             placeholder={q.placeholder}
             value={notes[q.id] || ''}
             onChange={e => handleChange(q.id, e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/20 outline-none resize-none leading-relaxed"
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-            onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'}
+            className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
+            style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+            onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
           />
         </div>
       ))}
 
       {/* Note libre */}
       <div className="rounded-2xl p-4 mb-4"
-           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+           style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
         <div className="flex items-start gap-3 mb-3">
           <div className="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center text-base"
-               style={{ background: 'rgba(255,255,255,0.06)' }}>
+               style={{ background: 'rgba(33,28,22,0.06)' }}>
             📋
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-widest mb-0.5 text-white/50">Notes libres</p>
-            <p className="text-sm font-semibold text-white leading-snug">Tout ce que tu veux noter en plus</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest mb-0.5 text-pw-ink">Notes libres</p>
+            <p className="text-sm font-semibold text-pw-ink leading-snug">Tout ce que tu veux noter en plus</p>
           </div>
         </div>
         <textarea
@@ -107,23 +107,23 @@ export default function Debrief() {
           placeholder="Consignes de l'accompagnateur, choses à retenir, liens utiles…"
           value={notes['libre'] || ''}
           onChange={e => handleChange('libre', e.target.value)}
-          className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/20 outline-none resize-none leading-relaxed"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-          onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'}
+          className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/20 outline-none resize-none leading-relaxed"
+          style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+          onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
         />
       </div>
 
       {/* Message d'encouragement */}
       <div className="text-center py-3 px-4 rounded-xl mb-2"
-           style={{ background: 'rgba(255,190,0,0.06)', border: '1px solid rgba(255,190,0,0.15)' }}>
-        <p className="text-xs text-white/50 leading-relaxed">
-          💡 <span className="text-white/70 font-semibold">Astuce :</span> Remplis ce débrief juste après la séance, pendant que tout est encore frais. C'est ce qui fait vraiment progresser vite.
+           style={{ background: 'rgba(181,134,60,0.06)', border: '1px solid rgba(181,134,60,0.15)' }}>
+        <p className="text-xs text-pw-ink leading-relaxed">
+          💡 <span className="text-pw-ink font-semibold">Astuce :</span> Remplis ce débrief juste après la séance, pendant que tout est encore frais. C'est ce qui fait vraiment progresser vite.
         </p>
       </div>
 
       {/* Note de sauvegarde */}
-      <p className="text-center text-[10px] text-white/25 mt-3 pb-2">
+      <p className="text-center text-[10px] text-pw-ink-soft/25 mt-3 pb-2">
         Sauvegardé automatiquement sur ton téléphone
       </p>
     </div>

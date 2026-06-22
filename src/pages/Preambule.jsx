@@ -8,14 +8,14 @@ export default function Preambule() {
       {/* En-tête */}
       <div className="text-center mb-6">
         <div className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest mb-3"
-             style={{ background: 'rgba(255,190,0,0.15)', border: '1px solid rgba(255,190,0,0.4)', color: '#FFBE00' }}>
+             style={{ background: 'rgba(181,134,60,0.15)', border: '1px solid rgba(181,134,60,0.4)', color: '#B5863C' }}>
           Préambule réglementaire
         </div>
-        <h1 className="text-xl font-extrabold text-white leading-tight">
+        <h1 className="text-xl font-extrabold text-pw-ink leading-tight">
           Livret d'apprentissage<br />
-          <span style={{ color: '#FFBE00' }}>Permis B</span>
+          <span style={{ color: '#B5863C' }}>Permis B</span>
         </h1>
-        <p className="text-xs text-white/50 mt-2">
+        <p className="text-xs text-pw-ink mt-2">
           Référentiel pour l'Éducation à une Mobilité Citoyenne (REMC)<br />
           Arrêté du 13 mai 2013 — Ministère de l'Intérieur
         </p>
@@ -37,14 +37,14 @@ export default function Preambule() {
 
       {/* Bloc 2 — Conditions légales */}
       <Section titre="Conditions légales de la conduite accompagnée en candidat libre" emoji="⚖️">
-        <p className="font-semibold text-white/90 mb-2">Véhicule :</p>
+        <p className="font-semibold text-pw-ink mb-2">Véhicule :</p>
         <p>
           Le véhicule utilisé pour les séances d'entraînement doit être homologué et équipé
           d'une double commande de frein et d'embrayage. Il doit être assuré pour la conduite
           accompagnée ou la conduite supervisée.
         </p>
 
-        <p className="font-semibold text-white/90 mt-3 mb-2">Accompagnateur :</p>
+        <p className="font-semibold text-pw-ink mt-3 mb-2">Accompagnateur :</p>
         <p>
           L'accompagnateur doit être titulaire du permis de conduire de la catégorie B depuis
           au moins cinq ans sans interruption au jour de la séance de conduite.
@@ -52,12 +52,12 @@ export default function Preambule() {
           ou d'une suspension en cours de validité.
         </p>
 
-        <p className="font-semibold text-white/90 mt-3 mb-2">Documents obligatoires à bord :</p>
-        <ul className="list-none space-y-1 text-white/75">
-          <li className="flex items-start gap-2"><span style={{ color: '#FFBE00' }}>—</span>Ce livret d'apprentissage</li>
-          <li className="flex items-start gap-2"><span style={{ color: '#FFBE00' }}>—</span>Le permis de conduire de l'accompagnateur</li>
-          <li className="flex items-start gap-2"><span style={{ color: '#FFBE00' }}>—</span>La pièce d'identité du candidat</li>
-          <li className="flex items-start gap-2"><span style={{ color: '#FFBE00' }}>—</span>L'attestation d'assurance du véhicule couvrant la conduite accompagnée</li>
+        <p className="font-semibold text-pw-ink mt-3 mb-2">Documents obligatoires à bord :</p>
+        <ul className="list-none space-y-1 text-pw-ink">
+          <li className="flex items-start gap-2"><span style={{ color: '#B5863C' }}>—</span>Ce livret d'apprentissage</li>
+          <li className="flex items-start gap-2"><span style={{ color: '#B5863C' }}>—</span>Le permis de conduire de l'accompagnateur</li>
+          <li className="flex items-start gap-2"><span style={{ color: '#B5863C' }}>—</span>La pièce d'identité du candidat</li>
+          <li className="flex items-start gap-2"><span style={{ color: '#B5863C' }}>—</span>L'attestation d'assurance du véhicule couvrant la conduite accompagnée</li>
         </ul>
       </Section>
 
@@ -72,7 +72,7 @@ export default function Preambule() {
           Sa présentation est recommandée en cas de contrôle par les forces de l'ordre
           pendant les séances d'apprentissage.
         </p>
-        <p className="mt-2 text-white/60 text-xs italic">
+        <p className="mt-2 text-pw-ink text-xs italic">
           La loi n'impose pas de quota minimal de séances ni de format obligatoire
           pour chaque entrée du livret. Son utilisation rigoureuse témoigne du
           sérieux de la démarche du candidat.
@@ -81,7 +81,7 @@ export default function Preambule() {
 
       {/* Bloc 4 — Les 4 groupes REMC */}
       <Section titre="Programme REMC — 4 groupes de compétences" emoji="🎯">
-        <p className="mb-3 text-white/70 text-xs">
+        <p className="mb-3 text-pw-ink text-xs">
           La formation au permis B s'articule autour de 4 groupes de compétences progressives,
           définis par le REMC, comportant 29 objectifs au total.
         </p>
@@ -91,21 +91,21 @@ export default function Preambule() {
           { num: 'G3', label: 'Circuler dans des conditions difficiles et partager la route avec les autres usagers', count: 7 },
           { num: 'G4', label: 'Pratiquer une conduite autonome, sûre et économique', count: 6 },
         ].map(g => (
-          <div key={g.num} className="flex items-start gap-3 py-2.5 border-b border-white/[0.06] last:border-0">
-            <div className="w-8 h-8 min-w-[32px] rounded-full flex items-center justify-center text-xs font-extrabold text-[#07111f]"
-                 style={{ background: '#FFBE00' }}>
+          <div key={g.num} className="flex items-start gap-3 py-2.5 border-b border-pw-line/[0.06] last:border-0">
+            <div className="w-8 h-8 min-w-[32px] rounded-full flex items-center justify-center text-xs font-extrabold text-[#f8f2e5]"
+                 style={{ background: '#B5863C' }}>
               {g.num.replace('G', '')}
             </div>
             <div>
-              <p className="text-sm font-semibold text-white leading-tight">{g.label}</p>
-              <p className="text-xs text-white/50 mt-0.5">{g.count} objectifs</p>
+              <p className="text-sm font-semibold text-pw-ink leading-tight">{g.label}</p>
+              <p className="text-xs text-pw-ink mt-0.5">{g.count} objectifs</p>
             </div>
           </div>
         ))}
       </Section>
 
       {/* Bas de page */}
-      <p className="text-center text-[10px] text-white/30 mt-4 pb-2">
+      <p className="text-center text-[10px] text-pw-ink-soft/30 mt-4 pb-2">
         Permis Webi © 2026 — Marion Falquerho<br />
         SIREN 992 387 894 — permiswebi.fr
       </p>
@@ -118,13 +118,13 @@ export default function Preambule() {
 function Section({ titre, emoji, children }) {
   return (
     <div className="rounded-2xl mb-4 p-4"
-         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+         style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
       <h2 className="text-xs font-extrabold uppercase tracking-wider mb-3 flex items-center gap-2"
-          style={{ color: '#FFBE00' }}>
+          style={{ color: '#B5863C' }}>
         <span>{emoji}</span>
         {titre}
       </h2>
-      <div className="text-sm text-white/75 leading-relaxed">
+      <div className="text-sm text-pw-ink leading-relaxed">
         {children}
       </div>
     </div>

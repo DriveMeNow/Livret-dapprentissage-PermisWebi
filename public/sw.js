@@ -1,7 +1,7 @@
 // Service Worker — Livret Permis Webi
 // Cache-first pour les assets statiques, network-first pour le reste
 
-const CACHE_NAME = 'livret-pw-v2'
+const CACHE_NAME = 'livret-pw-v3'
 
 const STATIC_ASSETS = [
   '/',

@@ -511,7 +511,7 @@ export const COULEURS = {
 
 // États de compétence — 4 niveaux
 export const ETATS_PW = {
-  0: { label: 'Non abordé',             symbol: '',  couleur: 'rgba(255,255,255,0.2)',  bg: 'transparent',            border: 'rgba(255,255,255,0.2)' },
+  0: { label: 'Non abordé',             symbol: '',  couleur: 'rgba(33,28,22,0.2)',  bg: 'transparent',            border: 'rgba(33,28,22,0.2)' },
   1: { label: 'Abordé',                 symbol: '/', couleur: '#fb923c',               bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.5)' },
   2: { label: 'Traité (9 séances/10)',  symbol: 'X', couleur: '#FFBE00',               bg: 'rgba(255,190,0,0.15)',   border: 'rgba(255,190,0,0.6)' },
   3: { label: 'Maîtrisé',              symbol: '■', couleur: '#34d399',               bg: 'rgba(29,158,117,0.2)',   border: 'rgba(29,158,117,0.6)' },

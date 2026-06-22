@@ -77,7 +77,7 @@ export const COULEURS_GROUPE = {
 
 // États de validation
 export const ETATS = {
-  null:      { label: 'Non commencé', symbol: '',  couleur: 'text-white/30' },
+  null:      { label: 'Non commencé', symbol: '',  couleur: 'text-pw-ink-soft/30' },
   aborde:    { label: 'Abordé',       symbol: '/', couleur: 'text-orange-400', bg: 'bg-orange-500', btnBg: 'bg-orange-500/20 border-orange-400/50 hover:bg-orange-500/40' },
   maitrise:  { label: 'Maîtrisé',     symbol: 'X', couleur: 'text-blue-400',  bg: 'bg-blue-500',   btnBg: 'bg-blue-500/20 border-blue-400/50 hover:bg-blue-500/40' },
   confirme:  { label: 'Confirmé',     symbol: '■', couleur: 'text-emerald-400',bg: 'bg-emerald-500',btnBg: 'bg-emerald-500/20 border-emerald-400/50 hover:bg-emerald-500/40' },

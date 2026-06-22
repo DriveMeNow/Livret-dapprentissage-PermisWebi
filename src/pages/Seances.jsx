@@ -140,34 +140,34 @@ function SaisieHeure({ label, value, onChange }) {
   }
 
   const iStyle = {
-    background: 'rgba(255,255,255,0.07)',
-    border: '1px solid rgba(255,255,255,0.12)',
+    background: 'rgba(33,28,22,0.07)',
+    border: '1px solid rgba(33,28,22,0.12)',
     colorScheme: 'dark',
   }
 
   return (
     <div className="mb-3">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/80 mb-1.5 block">{label}</label>
+      <label className="text-xs font-bold uppercase tracking-wide text-pw-ink mb-1.5 block">{label}</label>
       <div className="flex gap-2 items-center">
         <input
           type="number" inputMode="numeric" min="0" max="23" placeholder="HH"
           value={hVal}
           onChange={e => updateH(e.target.value)}
-          className="flex-1 px-2 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none text-center"
+          className="flex-1 px-2 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none text-center"
           style={iStyle}
-          onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+          onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'}
         />
-        <span className="text-white font-bold text-xl leading-none">:</span>
+        <span className="text-pw-ink font-bold text-xl leading-none">:</span>
         <input
           ref={refM}
           type="number" inputMode="numeric" min="0" max="59" placeholder="MM"
           value={mVal}
           onChange={e => updateM(e.target.value)}
-          className="flex-1 px-2 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none text-center"
+          className="flex-1 px-2 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none text-center"
           style={iStyle}
-          onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+          onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'}
         />
       </div>
     </div>
@@ -197,11 +197,11 @@ function VillesTags({ villes = [], onChange }) {
         <div className="flex flex-wrap gap-1.5 mb-2">
           {villes.map((v, i) => (
             <span key={i} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                  style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.35)', color: '#FFBE00' }}>
+                  style={{ background: 'rgba(181,134,60,0.12)', border: '1px solid rgba(181,134,60,0.35)', color: '#B5863C' }}>
               📍 {v}
               <button onClick={() => retirer(i)}
                       className="ml-0.5 font-bold leading-none"
-                      style={{ color: 'rgba(255,190,0,0.7)' }}>
+                      style={{ color: 'rgba(181,134,60,0.7)' }}>
                 ×
               </button>
             </span>
@@ -215,20 +215,20 @@ function VillesTags({ villes = [], onChange }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); ajouter() } }}
-          className="flex-1 px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-          onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+          className="flex-1 px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none"
+          style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
+          onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+          onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'}
         />
         <button
           onClick={ajouter}
           className="px-3 py-2.5 rounded-xl font-bold text-base tap-scale"
-          style={{ background: 'rgba(255,190,0,0.15)', border: '1px solid rgba(255,190,0,0.4)', color: '#FFBE00' }}
+          style={{ background: 'rgba(181,134,60,0.15)', border: '1px solid rgba(181,134,60,0.4)', color: '#B5863C' }}
         >
           +
         </button>
       </div>
-      <p className="text-[9px] text-white/35 mt-1">Tape une ville puis appuie sur + pour en ajouter plusieurs</p>
+      <p className="text-[9px] text-pw-ink-soft/35 mt-1">Tape une ville puis appuie sur + pour en ajouter plusieurs</p>
     </div>
   )
 }
@@ -332,8 +332,8 @@ export default function Seances({ ouvrirForm }) {
         }
         className="absolute right-2 top-2 w-7 h-7 rounded-full flex items-center justify-center text-base transition-all tap-scale"
         style={{
-          background: actif ? 'rgba(239,68,68,0.25)' : 'rgba(255,190,0,0.12)',
-          border: `1px solid ${actif ? 'rgba(239,68,68,0.6)' : 'rgba(255,190,0,0.35)'}`,
+          background: actif ? 'rgba(239,68,68,0.25)' : 'rgba(181,134,60,0.12)',
+          border: `1px solid ${actif ? 'rgba(239,68,68,0.6)' : 'rgba(181,134,60,0.35)'}`,
         }}
         title={actif ? 'Arrêter l\'écoute' : 'Dicter ce champ'}
       >
@@ -354,21 +354,21 @@ export default function Seances({ ouvrirForm }) {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <button onClick={() => setGroupeActifSeance(null)}
-                    className="text-sm font-semibold shrink-0" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                    className="text-sm font-semibold shrink-0" style={{ color: '#211C16' }}>
               ← Retour
             </button>
             <div className="flex items-center gap-2">
-              <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white"
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-pw-cream"
                     style={{ background: c.solid }}>{groupe.id}</span>
               <span className="text-base">{groupe.emoji}</span>
-              <p className="text-sm font-extrabold text-white">{groupe.titre}</p>
+              <p className="text-sm font-extrabold text-pw-ink">{groupe.titre}</p>
             </div>
           </div>
           <div className="flex gap-3 mb-3 flex-wrap">
             {Object.entries(ETATS_PW).filter(([k]) => k !== '0').map(([niveau, e]) => (
               <div key={niveau} className="flex items-center gap-1.5">
                 <CarreEtat etat={parseInt(niveau)} size="sm" />
-                <span className="text-[10px] text-white/75">{e.label}</span>
+                <span className="text-[10px] text-pw-ink">{e.label}</span>
               </div>
             ))}
           </div>
@@ -377,12 +377,12 @@ export default function Seances({ ouvrirForm }) {
               const etatSeance = draft.competencesEvaluees[sc.id] ?? 0
               return (
                 <div key={sc.id} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
-                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                     style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.07)' }}>
                   <button onClick={() => setEtatSc(sc.id, (etatSeance + 1) % 4)}
                           className="shrink-0 transition-all active:scale-90">
                     <CarreEtat etat={etatSeance} size="md" />
                   </button>
-                  <span className="text-xs text-white/88">{sc.label}</span>
+                  <span className="text-xs text-pw-ink">{sc.label}</span>
                 </div>
               )
             })}
@@ -393,7 +393,7 @@ export default function Seances({ ouvrirForm }) {
 
     return (
       <div className="space-y-2.5">
-        <p className="text-[10px] text-white/65 mb-2">
+        <p className="text-[10px] text-pw-ink mb-2">
           Sélectionne un groupe pour évaluer les compétences travaillées.
         </p>
         {COMPETENCES_PW.map(g => {
@@ -404,11 +404,11 @@ export default function Seances({ ouvrirForm }) {
                     className="w-full rounded-2xl p-3.5 text-left tap-scale"
                     style={{ background: c.bg, border: `1px solid ${c.border}` }}>
               <div className="flex items-center gap-3">
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-white shrink-0"
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold text-pw-cream shrink-0"
                       style={{ background: c.solid }}>{g.id}</span>
                 <span className="text-xl">{g.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white">{g.titre}</p>
+                  <p className="text-sm font-bold text-pw-ink">{g.titre}</p>
                   <p className="text-[10px] mt-0.5" style={{ color: c.text }}>
                     {nbEvalues > 0
                       ? `${nbEvalues} compétence${nbEvalues > 1 ? 's' : ''} évaluée${nbEvalues > 1 ? 's' : ''}`
@@ -456,17 +456,17 @@ export default function Seances({ ouvrirForm }) {
       <div className="fixed inset-0 z-[300] flex flex-col" style={{ background: '#f4f4f4' }}>
         {/* Barre de contrôle */}
         <div className="flex items-center justify-between px-4 py-3 shrink-0"
-             style={{ background: '#07111f', borderBottom: '3px solid #FFBE00' }}>
+             style={{ background: '#f8f2e5', borderBottom: '3px solid #B5863C' }}>
           <div>
-            <p className="text-sm font-extrabold text-white">📋 Grille d'évaluation CEPC</p>
-            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,190,0,0.75)' }}>
+            <p className="text-sm font-extrabold text-pw-ink">📋 Grille d'évaluation CEPC</p>
+            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(181,134,60,0.75)' }}>
               Remplis la grille · clique 💾 Enregistrer · puis ferme
             </p>
           </div>
           <button
             onClick={fermerCepc}
             className="px-4 py-2 rounded-full text-xs font-extrabold tap-scale ml-3 shrink-0"
-            style={{ background: '#FFBE00', color: '#07111f' }}
+            style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}
           >
             ✓ Fermer
           </button>
@@ -485,11 +485,11 @@ export default function Seances({ ouvrirForm }) {
       {/* ── En-tête ─────────────────────────────── */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-xl font-extrabold text-white">
+          <h1 className="text-xl font-extrabold text-pw-ink">
             {vue === 'form' ? 'Nouvelle séance' : 'Mes séances'}
           </h1>
           {vue === 'liste' && (
-            <p className="text-xs text-white/65 mt-0.5">
+            <p className="text-xs text-pw-ink mt-0.5">
               {totalSeances} séance{totalSeances !== 1 ? 's' : ''} · {totalKm} km
             </p>
           )}
@@ -498,13 +498,13 @@ export default function Seances({ ouvrirForm }) {
           <button
             onClick={() => { setDraft(initSeance()); setEtapeForm(1); setGroupeActifSeance(null); setVue('form') }}
             className="px-4 py-2 rounded-full text-xs font-extrabold tap-scale"
-            style={{ background: '#FFBE00', color: '#07111f' }}
+            style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}
           >
             + Séance
           </button>
         ) : (
           <button onClick={() => { setVue('liste'); setEtapeForm(1); setGroupeActifSeance(null); setModeSeance('normal') }}
-                  className="text-xs text-white/75 hover:text-white transition-colors">
+                  className="text-xs text-pw-ink hover:text-pw-ink transition-colors">
             Annuler
           </button>
         )}
@@ -517,7 +517,7 @@ export default function Seances({ ouvrirForm }) {
           <div className="flex gap-1.5 mb-5">
             {[1, 2, 3].map(e => (
               <div key={e} className="flex-1 h-1 rounded-full transition-all"
-                   style={{ background: e <= etapeForm ? '#FFBE00' : 'rgba(255,255,255,0.12)' }} />
+                   style={{ background: e <= etapeForm ? '#B5863C' : 'rgba(33,28,22,0.12)' }} />
             ))}
           </div>
 
@@ -525,17 +525,17 @@ export default function Seances({ ouvrirForm }) {
           {etapeForm === 1 && (
             <div className="space-y-3">
               <div className="rounded-2xl p-4"
-                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                   style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#B5863C' }}>
                   📅 Informations de la séance
                 </p>
                 <Champ label="Date">
                   <input type="date" value={draft.date}
                          onChange={e => setDraft(d => ({ ...d, date: e.target.value }))}
-                         className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
-                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', colorScheme: 'dark' }}
-                         onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                         className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink outline-none"
+                         style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)', colorScheme: 'dark' }}
+                         onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+                         onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'} />
                 </Champ>
 
                 {/* Heures — auto-advance HH → MM */}
@@ -550,10 +550,10 @@ export default function Seances({ ouvrirForm }) {
                   <input type="number" inputMode="numeric" placeholder="35"
                          value={draft.km}
                          onChange={e => setDraft(d => ({ ...d, km: e.target.value }))}
-                         className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                         onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                         className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none"
+                         style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
+                         onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+                         onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'} />
                 </Champ>
 
                 {/* Multi-villes avec tags */}
@@ -566,7 +566,7 @@ export default function Seances({ ouvrirForm }) {
               </div>
               <button onClick={() => setEtapeForm(2)}
                       className="w-full py-3 rounded-full font-extrabold text-sm tap-scale glow-yellow"
-                      style={{ background: '#FFBE00', color: '#07111f' }}>
+                      style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}>
                 Suivant — Évaluer les compétences →
               </button>
             </div>
@@ -586,9 +586,9 @@ export default function Seances({ ouvrirForm }) {
                     onClick={() => { setModeSeance(m.id); setGroupeActifSeance(null) }}
                     className="flex-1 py-2.5 px-2 rounded-xl text-center tap-scale transition-all"
                     style={{
-                      background: modeSeance === m.id ? '#FFBE00' : 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${modeSeance === m.id ? '#FFBE00' : 'rgba(255,255,255,0.12)'}`,
-                      color: modeSeance === m.id ? '#07111f' : 'rgba(255,255,255,0.55)',
+                      background: modeSeance === m.id ? '#B5863C' : 'rgba(33,28,22,0.05)',
+                      border: `1px solid ${modeSeance === m.id ? '#B5863C' : 'rgba(33,28,22,0.12)'}`,
+                      color: modeSeance === m.id ? '#f8f2e5' : 'rgba(33,28,22,0.55)',
                     }}>
                     <p className="text-[11px] font-extrabold leading-tight">{m.label}</p>
                     <p className="text-[9px] mt-0.5 font-medium opacity-75">{m.desc}</p>
@@ -597,18 +597,18 @@ export default function Seances({ ouvrirForm }) {
               </div>
 
               <div className="rounded-2xl p-4 mb-3"
-                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                   style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
 
                 {modeSeance === 'normal' ? (
                   <>
-                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#B5863C' }}>
                       🎯 Compétences travaillées
                     </p>
                     {renderEtape2()}
                   </>
                 ) : (
                   <>
-                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                    <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#B5863C' }}>
                       📋 Grille d'évaluation CEPC
                     </p>
 
@@ -626,20 +626,20 @@ export default function Seances({ ouvrirForm }) {
                             {draft.cepc.bilan === 'Favorable' ? '✅' : '❌'}
                           </span>
                           <div>
-                            <p className="text-sm font-extrabold text-white">{draft.cepc.total}</p>
+                            <p className="text-sm font-extrabold text-pw-ink">{draft.cepc.total}</p>
                             <p className="text-xs font-bold"
                                style={{ color: draft.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
                               {draft.cepc.bilan}
                             </p>
                             {draft.cepc.obs && (
-                              <p className="text-[10px] text-white/55 mt-0.5 line-clamp-2">{draft.cepc.obs}</p>
+                              <p className="text-[10px] text-pw-ink mt-0.5 line-clamp-2">{draft.cepc.obs}</p>
                             )}
                           </div>
                         </div>
                         <button
                           onClick={() => setCepcOuvert(true)}
                           className="text-xs font-semibold tap-scale"
-                          style={{ color: 'rgba(255,190,0,0.65)' }}
+                          style={{ color: 'rgba(181,134,60,0.65)' }}
                         >
                           ✏️ Modifier la grille →
                         </button>
@@ -647,7 +647,7 @@ export default function Seances({ ouvrirForm }) {
                     ) : (
                       /* Pas encore rempli */
                       <>
-                        <p className="text-xs text-white/60 leading-relaxed mb-3">
+                        <p className="text-xs text-pw-ink leading-relaxed mb-3">
                           L'accompagnateur remplit la grille officielle pendant la conduite.
                           La séance dure environ 30 minutes.
                         </p>
@@ -655,9 +655,9 @@ export default function Seances({ ouvrirForm }) {
                           onClick={() => setCepcOuvert(true)}
                           className="w-full py-3.5 rounded-xl font-bold text-sm tap-scale"
                           style={{
-                            background: 'rgba(255,190,0,0.10)',
-                            border: '1px solid rgba(255,190,0,0.35)',
-                            color: '#FFBE00',
+                            background: 'rgba(181,134,60,0.10)',
+                            border: '1px solid rgba(181,134,60,0.35)',
+                            color: '#B5863C',
                           }}
                         >
                           📋 Ouvrir la grille d'évaluation
@@ -678,14 +678,14 @@ export default function Seances({ ouvrirForm }) {
                     }
                   }}
                   className="py-3 px-5 rounded-full text-sm font-bold"
-                  style={{ background: 'rgba(255,255,255,0.07)', color: '#ffffff' }}
+                  style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid #E8DFD0', color: '#211C16' }}
                 >
                   ← Retour
                 </button>
                 <button
                   onClick={() => { setGroupeActifSeance(null); setEtapeForm(3) }}
                   className="flex-1 py-3 rounded-full font-extrabold text-sm tap-scale"
-                  style={{ background: '#FFBE00', color: '#07111f' }}
+                  style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}
                 >
                   Suivant — Signature →
                 </button>
@@ -698,8 +698,8 @@ export default function Seances({ ouvrirForm }) {
             <div className="space-y-3">
               {/* Accompagnateur */}
               <div className="rounded-2xl p-4"
-                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#FFBE00' }}>
+                   style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-3" style={{ color: '#B5863C' }}>
                   👥 Accompagnateur·rice
                 </p>
 
@@ -709,10 +709,10 @@ export default function Seances({ ouvrirForm }) {
                     <select
                       value={accompSelectValue}
                       onChange={handleSelectAccomp}
-                      className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none"
+                      className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink outline-none"
                       style={{
-                        background: 'rgba(255,255,255,0.07)',
-                        border: '1px solid rgba(255,255,255,0.12)',
+                        background: 'rgba(33,28,22,0.07)',
+                        border: '1px solid rgba(33,28,22,0.12)',
                         colorScheme: 'dark',
                       }}
                     >
@@ -735,19 +735,19 @@ export default function Seances({ ouvrirForm }) {
                         <input type="text" placeholder="Mohammed"
                                value={draft.accompagnateur.prenom}
                                onChange={e => setAccomp('prenom', e.target.value)}
-                               className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-                               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                               onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                               onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                               className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none"
+                               style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
+                               onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+                               onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'} />
                       </Champ>
                       <Champ label="Nom">
                         <input type="text" placeholder="Martin"
                                value={draft.accompagnateur.nom}
                                onChange={e => setAccomp('nom', e.target.value)}
-                               className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none"
-                               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                               onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                               onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                               className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none"
+                               style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
+                               onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+                               onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'} />
                       </Champ>
                     </div>
                     <Champ label="N° de permis de conduire">
@@ -755,10 +755,10 @@ export default function Seances({ ouvrirForm }) {
                              value={draft.accompagnateur.numeroPermis}
                              onChange={e => setAccomp('numeroPermis', e.target.value.toUpperCase())}
                              maxLength={15}
-                             className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/40 outline-none uppercase"
-                             style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
-                             onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.6)'}
-                             onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+                             className="w-full px-3 py-2.5 rounded-xl text-sm text-pw-ink placeholder-pw-ink-soft/40 outline-none uppercase"
+                             style={{ background: 'rgba(33,28,22,0.07)', border: '1px solid rgba(33,28,22,0.12)' }}
+                             onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.6)'}
+                             onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.12)'} />
                       {draft.accompagnateur.numeroPermis.length >= 8 && (
                         <p className="text-[10px] mt-1 font-semibold"
                            style={{ color: validerPermis(draft.accompagnateur.numeroPermis) ? '#33cc66' : '#fb923c' }}>
@@ -774,11 +774,11 @@ export default function Seances({ ouvrirForm }) {
                 {/* Résumé accompagnateur sélectionné */}
                 {accompagnateursRecents.length > 0 && accompSelectValue !== '' && accompSelectValue !== 'autre' && (
                   <div className="px-3 py-2.5 rounded-xl mb-2"
-                       style={{ background: 'rgba(255,190,0,0.07)', border: '1px solid rgba(255,190,0,0.2)' }}>
-                    <p className="text-xs text-white/80">
-                      <span className="font-bold text-white">{draft.accompagnateur.prenom} {draft.accompagnateur.nom}</span>
+                       style={{ background: 'rgba(181,134,60,0.07)', border: '1px solid rgba(181,134,60,0.2)' }}>
+                    <p className="text-xs text-pw-ink">
+                      <span className="font-bold text-pw-ink">{draft.accompagnateur.prenom} {draft.accompagnateur.nom}</span>
                       {draft.accompagnateur.numeroPermis &&
-                        <span className="text-white/60"> — Permis {draft.accompagnateur.numeroPermis}</span>
+                        <span className="text-pw-ink"> — Permis {draft.accompagnateur.numeroPermis}</span>
                       }
                     </p>
                   </div>
@@ -791,14 +791,14 @@ export default function Seances({ ouvrirForm }) {
 
               {/* Débrief */}
               <div className="rounded-2xl p-4"
-                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                <p className="text-xs font-extrabold uppercase tracking-wide mb-4" style={{ color: '#FFBE00' }}>
+                   style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
+                <p className="text-xs font-extrabold uppercase tracking-wide mb-4" style={{ color: '#B5863C' }}>
                   ✍️ Débrief de séance
                 </p>
 
                 {/* ── Note /10 avec emoji ── */}
                 <div className="mb-5">
-                  <label className="text-xs font-semibold text-white/80 mb-3 flex items-center gap-1.5">
+                  <label className="text-xs font-semibold text-pw-ink mb-3 flex items-center gap-1.5">
                     <span>🌡️</span> Comment tu t'es senti·e au volant ?
                   </label>
                   <div className="flex gap-1">
@@ -811,9 +811,9 @@ export default function Seances({ ouvrirForm }) {
                           onClick={() => setDraft(d => ({ ...d, noteVolant: n }))}
                           className="flex-1 aspect-square rounded-lg flex items-center justify-center font-extrabold transition-all tap-scale text-[11px]"
                           style={{
-                            background: isSelected ? cfg.color : 'rgba(255,255,255,0.06)',
-                            border: `2px solid ${isSelected ? cfg.color : 'rgba(255,255,255,0.10)'}`,
-                            color: isSelected ? '#fff' : 'rgba(255,255,255,0.45)',
+                            background: isSelected ? cfg.color : 'rgba(33,28,22,0.06)',
+                            border: `2px solid ${isSelected ? cfg.color : 'rgba(33,28,22,0.10)'}`,
+                            color: isSelected ? '#fff' : 'rgba(33,28,22,0.45)',
                             fontSize: isSelected ? '18px' : '11px',
                           }}
                         >
@@ -836,7 +836,7 @@ export default function Seances({ ouvrirForm }) {
                   { key: 'debriefSuite',     emoji: '🎯', q: 'Sur quoi te concentrer à la prochaine séance ?' },
                 ].map(({ key, emoji, q }) => (
                   <div key={key} className="mb-3 relative">
-                    <label className="text-xs font-semibold text-white/80 mb-1 flex items-center gap-1.5">
+                    <label className="text-xs font-semibold text-pw-ink mb-1 flex items-center gap-1.5">
                       <span>{emoji}</span> {q}
                     </label>
                     <div className="relative">
@@ -845,10 +845,10 @@ export default function Seances({ ouvrirForm }) {
                         placeholder={micro.supporte ? 'Tape ou dicte avec le micro 🎤' : '...'}
                         value={draft[key]}
                         onChange={e => setDraft(d => ({ ...d, [key]: e.target.value }))}
-                        className="w-full px-3 py-2 pr-10 rounded-xl text-xs text-white placeholder-white/30 outline-none resize-none"
-                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-                        onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
-                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'}
+                        className="w-full px-3 py-2 pr-10 rounded-xl text-xs text-pw-ink placeholder-pw-ink-soft/30 outline-none resize-none"
+                        style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+                        onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+                        onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'}
                       />
                       <BoutonMicro champKey={key} />
                     </div>
@@ -859,14 +859,14 @@ export default function Seances({ ouvrirForm }) {
                   <textarea rows={2} placeholder="Consignes, points à retenir..."
                             value={draft.notes}
                             onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl text-xs text-white placeholder-white/30 outline-none resize-none"
-                            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-                            onFocus={e => e.target.style.borderColor = 'rgba(255,190,0,0.5)'}
-                            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.10)'} />
+                            className="w-full px-3 py-2 rounded-xl text-xs text-pw-ink placeholder-pw-ink-soft/30 outline-none resize-none"
+                            style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid rgba(33,28,22,0.10)' }}
+                            onFocus={e => e.target.style.borderColor = 'rgba(181,134,60,0.5)'}
+                            onBlur={e => e.target.style.borderColor = 'rgba(33,28,22,0.10)'} />
                 </Champ>
 
                 {micro.supporte && (
-                  <p className="text-[9px] text-white/35 -mt-1">
+                  <p className="text-[9px] text-pw-ink-soft/35 -mt-1">
                     🎤 Appuie sur le micro pour dicter — fonctionne sur Chrome
                   </p>
                 )}
@@ -875,12 +875,12 @@ export default function Seances({ ouvrirForm }) {
               <div className="flex gap-2">
                 <button onClick={() => setEtapeForm(2)}
                         className="py-3 px-5 rounded-full text-sm font-bold"
-                        style={{ background: 'rgba(255,255,255,0.07)', color: '#ffffff' }}>
+                        style={{ background: 'rgba(33,28,22,0.06)', border: '1px solid #E8DFD0', color: '#211C16' }}>
                   ← Retour
                 </button>
                 <button onClick={handleSave}
                         className="flex-1 py-3 rounded-full font-extrabold text-sm tap-scale glow-yellow"
-                        style={{ background: '#FFBE00', color: '#07111f' }}>
+                        style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}>
                   ✅ Valider la séance
                 </button>
               </div>
@@ -895,8 +895,8 @@ export default function Seances({ ouvrirForm }) {
           {seances.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-4xl mb-3">📝</p>
-              <p className="text-sm font-semibold text-white/80">Aucune séance encore</p>
-              <p className="text-xs mt-1 text-white/55">
+              <p className="text-sm font-semibold text-pw-ink">Aucune séance encore</p>
+              <p className="text-xs mt-1 text-pw-ink">
                 Appuie sur + Séance après chaque entraînement
               </p>
             </div>
@@ -919,16 +919,16 @@ export default function Seances({ ouvrirForm }) {
 
                 return (
                   <div key={s.id} className="rounded-2xl overflow-hidden"
-                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+                       style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.09)' }}>
 
                     <div className="px-4 pt-4 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-base shrink-0"
-                           style={{ background: 'rgba(255,190,0,0.12)', border: '1px solid rgba(255,190,0,0.25)' }}>
+                           style={{ background: 'rgba(181,134,60,0.12)', border: '1px solid rgba(181,134,60,0.25)' }}>
                         🚗
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-extrabold text-white">{formatDate(s.date)}</p>
-                        <p className="text-[10px] text-white/65">
+                        <p className="text-sm font-extrabold text-pw-ink">{formatDate(s.date)}</p>
+                        <p className="text-[10px] text-pw-ink">
                           {d ? `${d}` : ''}
                           {s.km ? ` · ${s.km} km` : ''}
                           {villesStr ? ` · ${villesStr}` : ''}
@@ -963,13 +963,13 @@ export default function Seances({ ouvrirForm }) {
                       </div>
                     </div>
 
-                    <div className="px-4 pb-4 pt-3 mt-3 border-t border-white/[0.06] space-y-3">
+                    <div className="px-4 pb-4 pt-3 mt-3 border-t border-pw-line/[0.06] space-y-3">
                       {s.accompagnateur?.nom && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1">
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-1">
                             Accompagnateur·rice
                           </p>
-                          <p className="text-xs text-white/88">
+                          <p className="text-xs text-pw-ink">
                             {s.accompagnateur.prenom} {s.accompagnateur.nom}
                             {s.accompagnateur.numeroPermis ? ` — Permis ${s.accompagnateur.numeroPermis}` : ''}
                           </p>
@@ -978,7 +978,7 @@ export default function Seances({ ouvrirForm }) {
 
                       {compGrouped.length > 0 && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-2">
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-2">
                             Compétences évaluées
                           </p>
                           <div className="space-y-2.5">
@@ -987,7 +987,7 @@ export default function Seances({ ouvrirForm }) {
                               return (
                                 <div key={groupe.id}>
                                   <div className="flex items-center gap-1.5 mb-1.5">
-                                    <span className="px-1.5 py-0.5 rounded text-[8px] font-extrabold text-white"
+                                    <span className="px-1.5 py-0.5 rounded text-[8px] font-extrabold text-pw-cream"
                                           style={{ background: c.solid }}>{groupe.id}</span>
                                     <p className="text-[9px] font-extrabold uppercase tracking-wide"
                                        style={{ color: c.text }}>
@@ -997,9 +997,9 @@ export default function Seances({ ouvrirForm }) {
                                   <div className="space-y-1">
                                     {scs.map(sc => (
                                       <div key={sc.id} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg"
-                                           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                                           style={{ background: 'rgba(33,28,22,0.04)', border: '1px solid rgba(33,28,22,0.07)' }}>
                                         <CarreEtat etat={sc.etat} size="sm" />
-                                        <span className="text-[10px] text-white/82">{sc.label}</span>
+                                        <span className="text-[10px] text-pw-ink">{sc.label}</span>
                                       </div>
                                     ))}
                                   </div>
@@ -1012,14 +1012,14 @@ export default function Seances({ ouvrirForm }) {
 
                       {s.signature && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1">Signature</p>
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-1">Signature</p>
                           <img src={s.signature} alt="Signature accompagnateur" className="h-10 opacity-80" />
                         </div>
                       )}
 
                       {s.cepc && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1.5">
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-1.5">
                             Examen blanc CEPC
                           </p>
                           <div className="flex items-start gap-3 px-3 py-2.5 rounded-xl"
@@ -1033,13 +1033,13 @@ export default function Seances({ ouvrirForm }) {
                               {s.cepc.bilan === 'Favorable' ? '✅' : '❌'}
                             </span>
                             <div className="min-w-0">
-                              <p className="text-sm font-extrabold text-white">{s.cepc.total}</p>
+                              <p className="text-sm font-extrabold text-pw-ink">{s.cepc.total}</p>
                               <p className="text-xs font-bold"
                                  style={{ color: s.cepc.bilan === 'Favorable' ? '#33cc66' : '#ff6680' }}>
                                 {s.cepc.bilan} · {s.cepc.date}
                               </p>
                               {s.cepc.obs && (
-                                <p className="text-xs text-white/60 mt-1 leading-relaxed">{s.cepc.obs}</p>
+                                <p className="text-xs text-pw-ink mt-1 leading-relaxed">{s.cepc.obs}</p>
                               )}
                             </div>
                           </div>
@@ -1048,25 +1048,25 @@ export default function Seances({ ouvrirForm }) {
 
                       {(s.noteVolant > 0 || s.debriefTechnique || s.debriefSuite || s.debriefRessenti) && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1.5">Débrief</p>
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-1.5">Débrief</p>
                           <div className="space-y-1">
                             {s.noteVolant > 0 && NOTE_CONFIG[s.noteVolant] && (
-                              <p className="text-xs text-white/80">
+                              <p className="text-xs text-pw-ink">
                                 {NOTE_CONFIG[s.noteVolant].emoji} Ressenti au volant : {s.noteVolant}/10
                               </p>
                             )}
                             {/* Rétrocompat séances avec debriefRessenti texte */}
-                            {s.debriefRessenti && <p className="text-xs text-white/80">🌡️ {s.debriefRessenti}</p>}
-                            {s.debriefTechnique && <p className="text-xs text-white/80">🔧 {s.debriefTechnique}</p>}
-                            {s.debriefSuite     && <p className="text-xs text-white/80">🎯 {s.debriefSuite}</p>}
+                            {s.debriefRessenti && <p className="text-xs text-pw-ink">🌡️ {s.debriefRessenti}</p>}
+                            {s.debriefTechnique && <p className="text-xs text-pw-ink">🔧 {s.debriefTechnique}</p>}
+                            {s.debriefSuite     && <p className="text-xs text-pw-ink">🎯 {s.debriefSuite}</p>}
                           </div>
                         </div>
                       )}
 
                       {s.notes && (
                         <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-white/55 mb-1">Notes</p>
-                          <p className="text-xs text-white/80">{s.notes}</p>
+                          <p className="text-[10px] font-extrabold uppercase tracking-wide text-pw-ink mb-1">Notes</p>
+                          <p className="text-xs text-pw-ink">{s.notes}</p>
                         </div>
                       )}
 
@@ -1095,7 +1095,7 @@ export default function Seances({ ouvrirForm }) {
 function Champ({ label, children }) {
   return (
     <div className="mb-3">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/80 mb-1.5 block">
+      <label className="text-xs font-bold uppercase tracking-wide text-pw-ink mb-1.5 block">
         {label}
       </label>
       {children}

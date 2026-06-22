@@ -77,12 +77,12 @@ export default function ConsentBanner({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-end justify-center"
-         style={{ background: 'rgba(7,15,30,0.7)', backdropFilter: 'blur(4px)' }}>
+         style={{ background: 'rgba(33,28,22,0.7)', backdropFilter: 'blur(4px)' }}>
 
       <div className="w-full max-w-lg animate-slideUp"
            style={{
-             background: 'linear-gradient(160deg, #0d1b3e, #070f1e)',
-             border: '1px solid rgba(255,255,255,0.12)',
+             background: '#FFFDF9',
+             border: '1px solid #E8DFD0',
              borderBottom: 'none',
              borderRadius: '24px 24px 0 0',
              padding: '24px 20px',
@@ -94,13 +94,13 @@ export default function ConsentBanner({ onClose }) {
           <img src="https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantclé.png"
                alt="Permis Webi" className="w-9 h-9 rounded-full" />
           <div>
-            <p className="text-sm font-extrabold text-white">Respect de ta vie privée</p>
-            <p className="text-[10px] text-white/50">Permis Webi — Livret d'apprentissage</p>
+            <p className="text-sm font-extrabold text-pw-ink">Respect de ta vie privée</p>
+            <p className="text-[10px] text-pw-ink">Permis Webi — Livret d'apprentissage</p>
           </div>
         </div>
 
-        <p className="text-xs text-white/70 leading-relaxed mb-4">
-          Cette application stocke uniquement les données que tu saisis <strong className="text-white/90">sur ton téléphone</strong>.
+        <p className="text-xs text-pw-ink leading-relaxed mb-4">
+          Cette application stocke uniquement les données que tu saisis <strong className="text-pw-ink">sur ton téléphone</strong>.
           Aucune donnée personnelle n'est transmise à des tiers sans ton accord.
           Nous pouvons utiliser des outils d'analyse anonymisés pour améliorer l'app.
         </p>
@@ -108,13 +108,13 @@ export default function ConsentBanner({ onClose }) {
         {/* Mode détaillé */}
         {showDetail && (
           <div className="mb-4 p-3 rounded-xl space-y-3"
-               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+               style={{ background: '#f8f2e5', border: '1px solid #E8DFD0' }}>
 
             {/* Essentiel — toujours actif */}
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0 mr-3">
-                <p className="text-xs font-bold text-white">🔒 Cookies essentiels</p>
-                <p className="text-[10px] text-white/50 mt-0.5">Fonctionnement de l'app, sauvegarde locale. Toujours actifs.</p>
+                <p className="text-xs font-bold text-pw-ink">🔒 Cookies essentiels</p>
+                <p className="text-[10px] text-pw-ink mt-0.5">Fonctionnement de l'app, sauvegarde locale. Toujours actifs.</p>
               </div>
               <div className="px-2.5 py-1 rounded-full text-[10px] font-bold"
                    style={{ background: 'rgba(29,158,117,0.2)', color: '#34d399', border: '1px solid rgba(29,158,117,0.4)' }}>
@@ -125,17 +125,17 @@ export default function ConsentBanner({ onClose }) {
             {/* Analytics — optionnel */}
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0 mr-3">
-                <p className="text-xs font-bold text-white">📊 Analytics anonymisés</p>
-                <p className="text-[10px] text-white/50 mt-0.5">Statistiques d'utilisation pour améliorer l'app. IP anonymisée.</p>
+                <p className="text-xs font-bold text-pw-ink">📊 Analytics anonymisés</p>
+                <p className="text-[10px] text-pw-ink mt-0.5">Statistiques d'utilisation pour améliorer l'app. IP anonymisée.</p>
               </div>
               <button
                 onClick={() => setAnalytics(v => !v)}
                 className="relative w-10 h-5.5 rounded-full transition-all shrink-0"
                 style={{
-                  background: analytics ? '#FFBE00' : 'rgba(255,255,255,0.15)',
+                  background: analytics ? '#B5863C' : 'rgba(33,28,22,0.15)',
                   width: '40px', height: '22px',
                 }}>
-                <span className="absolute top-0.5 rounded-full bg-white transition-all"
+                <span className="absolute top-0.5 rounded-full bg-pw-paper transition-all"
                       style={{
                         width: '18px', height: '18px',
                         left: analytics ? '20px' : '2px',
@@ -150,34 +150,34 @@ export default function ConsentBanner({ onClose }) {
         <div className="flex flex-col gap-2">
           <button onClick={acceptAll}
                   className="w-full py-3 rounded-full font-extrabold text-sm tap-scale glow-yellow"
-                  style={{ background: '#FFBE00', color: '#07111f' }}>
+                  style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}>
             Tout accepter
           </button>
           <div className="flex gap-2">
             {showDetail ? (
               <button onClick={saveChoice}
                       className="flex-1 py-2.5 rounded-full text-xs font-bold"
-                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>
+                      style={{ background: 'rgba(33,28,22,0.08)', border: '1px solid rgba(33,28,22,0.12)', color: '#211C16' }}>
                 Enregistrer mon choix
               </button>
             ) : (
               <button onClick={() => setShowDetail(true)}
                       className="flex-1 py-2.5 rounded-full text-xs font-bold"
-                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>
+                      style={{ background: 'rgba(33,28,22,0.08)', border: '1px solid rgba(33,28,22,0.12)', color: '#211C16' }}>
                 Personnaliser
               </button>
             )}
             <button onClick={acceptEssential}
                     className="flex-1 py-2.5 rounded-full text-xs font-bold"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
+                    style={{ background: 'rgba(33,28,22,0.05)', border: '1px solid rgba(33,28,22,0.08)', color: '#211C16' }}>
               Refuser
             </button>
           </div>
         </div>
 
         {/* Lien politique */}
-        <p className="text-center text-[10px] text-white/30 mt-3">
-          <button onClick={() => setShowPolicy(true)} className="underline hover:text-white/50 transition-colors">
+        <p className="text-center text-[10px] text-pw-ink-soft/30 mt-3">
+          <button onClick={() => setShowPolicy(true)} className="underline hover:text-pw-ink transition-colors">
             Politique de confidentialité & CGU
           </button>
         </p>
@@ -190,20 +190,20 @@ export default function ConsentBanner({ onClose }) {
 function PrivacyPolicy({ onBack }) {
   return (
     <div className="fixed inset-0 z-[210] overflow-y-auto"
-         style={{ background: 'linear-gradient(160deg, #0a1628, #070f1e)' }}>
+         style={{ background: 'linear-gradient(160deg, #f8f2e5, #f8f2e5)' }}>
       <div className="max-w-lg mx-auto px-5 py-6 pb-16">
 
         {/* En-tête */}
         <button onClick={onBack}
-                className="flex items-center gap-2 mb-5 text-sm text-white/60 hover:text-white transition-colors">
+                className="flex items-center gap-2 mb-5 text-sm text-pw-ink hover:text-pw-ink transition-colors">
           ← Retour
         </button>
         <div className="flex items-center gap-3 mb-6">
           <img src="https://d1yei2z3i6k35z.cloudfront.net/13456335/687fb09be66ff_logorondfinalvolantclé.png"
                alt="Permis Webi" className="w-10 h-10 rounded-full" />
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-widest" style={{ color: '#FFBE00' }}>Permis Webi</p>
-            <p className="text-base font-extrabold text-white">Politique de confidentialité & CGU</p>
+            <p className="text-xs font-extrabold uppercase tracking-widest" style={{ color: '#B5863C' }}>Permis Webi</p>
+            <p className="text-base font-extrabold text-pw-ink">Politique de confidentialité & CGU</p>
           </div>
         </div>
 
@@ -258,20 +258,20 @@ Permis Webi décline toute responsabilité en cas d'usage non conforme de cet ou
           },
         ].map((s, i) => (
           <div key={i} className="mb-5 p-4 rounded-2xl"
-               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <p className="text-xs font-extrabold text-white mb-2">{s.titre}</p>
-            <p className="text-xs text-white/65 leading-relaxed whitespace-pre-line">{s.contenu}</p>
+               style={{ background: '#FFFDF9', border: '1px solid #E8DFD0' }}>
+            <p className="text-xs font-extrabold text-pw-ink mb-2">{s.titre}</p>
+            <p className="text-xs text-pw-ink leading-relaxed whitespace-pre-line">{s.contenu}</p>
           </div>
         ))}
 
-        <p className="text-center text-[10px] text-white/30 mt-4">
+        <p className="text-center text-[10px] text-pw-ink-soft/30 mt-4">
           Version 1.0 — Mai 2026<br />
           Permis Webi © 2026 — Marion Falquerho
         </p>
 
         <button onClick={onBack}
                 className="w-full mt-5 py-3 rounded-full font-extrabold text-sm tap-scale"
-                style={{ background: '#FFBE00', color: '#07111f' }}>
+                style={{ background: '#211C16', color: '#f8f2e5', boxShadow: 'inset 0 -2.5px 0 #B5863C' }}>
           J'ai compris — Retour à l'app
         </button>
       </div>

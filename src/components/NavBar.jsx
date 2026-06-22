@@ -22,10 +22,10 @@ export default function NavBar({ activeTab, onTabChange }) {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{
-        background: 'rgba(5,12,26,0.94)',
+        background: 'rgba(255,253,249,0.94)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
+        borderTop: '1px solid #E8DFD0',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
@@ -39,7 +39,7 @@ export default function NavBar({ activeTab, onTabChange }) {
               className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 relative tap-scale"
               style={{
                 minHeight: '62px',
-                color: isActive ? '#FFBE00' : '#ffffff',
+                color: isActive ? '#B5863C' : '#6E665A',
                 transition: 'color 0.2s ease',
               }}
             >
@@ -50,8 +50,8 @@ export default function NavBar({ activeTab, onTabChange }) {
                   style={{
                     top: '6px',
                     bottom: '10px',
-                    background: 'rgba(255,190,0,0.1)',
-                    border: '1px solid rgba(255,190,0,0.18)',
+                    background: 'rgba(181,134,60,0.12)',
+                    border: '1px solid rgba(181,134,60,0.25)',
                   }}
                 />
               )}
@@ -77,7 +77,7 @@ export default function NavBar({ activeTab, onTabChange }) {
                   letterSpacing: '0.05em',
                   textTransform: 'uppercase',
                   transition: 'all 0.2s ease',
-                  color: isActive ? '#FFBE00' : '#ffffff',
+                  color: isActive ? '#B5863C' : '#6E665A',
                 }}
               >
                 {tab.label}
@@ -90,9 +90,9 @@ export default function NavBar({ activeTab, onTabChange }) {
                   style={{
                     width: '20px',
                     height: '3px',
-                    background: '#FFBE00',
+                    background: '#B5863C',
                     borderRadius: '3px 3px 0 0',
-                    boxShadow: '0 0 8px rgba(255,190,0,0.5)',
+                    boxShadow: '0 0 8px rgba(149,112,37,0.45)',
                   }}
                 />
               )}
