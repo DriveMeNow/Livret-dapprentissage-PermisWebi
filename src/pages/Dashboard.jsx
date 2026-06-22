@@ -119,9 +119,6 @@ export default function Dashboard({ onNavigate }) {
                 <div className="h-full rounded-full progress-bar-fill"
                      style={{ width: `${pct}%`, background: c.bar }} />
               </div>
-              <p className="text-[9px] mt-1.5 font-semibold" style={{ color: c.text, opacity: 0.8 }}>
-                {g.poids}% du score global
-              </p>
             </button>
           )
         })}
