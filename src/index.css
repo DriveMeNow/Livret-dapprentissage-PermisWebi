@@ -41,7 +41,7 @@
     background: #f8f2e5;
     background-attachment: fixed;
     color: #211C16;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Fraunces', serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -52,6 +52,16 @@
     font-family: 'Fraunces', serif;
     font-weight: 400;
     letter-spacing: -0.01em;
+  }
+
+  /* Inter sur les champs de saisie (lisibilité au tap, place-holders nets) */
+  input, textarea, select, button[type="submit"] {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Inter sur les libellés MAJUSCULES (Tailwind .uppercase) — netteté du tracking */
+  .uppercase {
+    font-family: 'Inter', sans-serif;
   }
 
   /* Sélection de texte personnalisée */

@@ -40,7 +40,7 @@ export default function ModePresentation({ profil, photo, etats, seances, docs =
   const hasAnyDoc = Object.values(docs).some(Boolean)
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto" style={{ background: '#ffffff', color: '#211C16', fontFamily: 'Inter, sans-serif' }}>
+    <div className="fixed inset-0 z-[100] overflow-y-auto" style={{ background: '#ffffff', color: '#211C16', fontFamily: 'Fraunces, serif' }}>
 
       {/* Bouton quitter discret */}
       <button onClick={onQuitter}
