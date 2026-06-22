@@ -870,8 +870,13 @@ export default function Seances({ ouvrirForm }) {
                 </Champ>
 
                 {micro.supporte && (
-                  <p className="text-[9px] text-pw-ink-soft/35 -mt-1">
-                    🎤 Appuie sur le micro pour dicter — fonctionne sur Chrome
+                  <p className="text-[10px] text-pw-ink-soft/55 -mt-1">
+                    🎤 Appuie sur le micro pour dicter dans chaque zone.
+                  </p>
+                )}
+                {!micro.supporte && /iphone|ipad|ipod/i.test(navigator.userAgent) && (
+                  <p className="text-[10px] text-pw-ink-soft/65 -mt-1 leading-relaxed">
+                    📱 Sur iPhone, appuie sur le micro <span style={{ fontSize: '11px' }}>🎤</span> à droite de la barre d'espace de ton clavier pour dicter tes réponses.
                   </p>
                 )}
               </div>

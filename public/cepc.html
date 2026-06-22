@@ -127,6 +127,8 @@ col.c-auto { width:52px; }
 #btn-mic-obs:hover { transform:translateY(-1px); }
 #btn-mic-obs.recording { background:rgba(239,68,68,0.25); border-color:rgba(239,68,68,0.6); }
 #btn-mic-obs.hidden { display:none; }
+#ios-mic-hint { display:none; font-size:9.5px; color:#666; margin-top:5px; line-height:1.45; padding:6px 9px; background:rgba(181,134,60,0.08); border:1px solid rgba(181,134,60,0.25); border-radius:6px; }
+#ios-mic-hint.visible { display:block; }
 #btn-wrap { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
 .btn { padding:9px 22px; border:none; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s,transform .1s; }
 .btn:hover { opacity:.88; transform:translateY(-1px); }
@@ -530,6 +532,7 @@ col.c-auto { width:52px; }
     <textarea id="obs" placeholder="Points forts · Axes de travail · Erreurs éliminatoires · Situations à retravailler…"></textarea>
     <button type="button" id="btn-mic-obs" class="hidden" title="Dicter ce champ">🎤</button>
   </div>
+  <div id="ios-mic-hint">📱 Sur iPhone, appuie sur le micro 🎤 à droite de la barre d'espace de ton clavier pour dicter tes observations.</div>
 </div>
 
 <div id="btn-wrap">
@@ -741,7 +744,13 @@ function showToast(msg) {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const btn = document.getElementById('btn-mic-obs');
   const obs = document.getElementById('obs');
-  if (!SR || !btn || !obs) return; // navigateur sans Web Speech API
+  const iosHint = document.getElementById('ios-mic-hint');
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (!SR || !btn || !obs) {
+    // Pas de Web Speech API : si on est sur iOS, on rappelle le micro natif du clavier
+    if (isIOS && iosHint) iosHint.classList.add('visible');
+    return;
+  }
   btn.classList.remove('hidden');
   let reco = null;
   let recording = false;
